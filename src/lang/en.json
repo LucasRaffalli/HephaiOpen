@@ -1,0 +1,138 @@
+{
+    "toast": {
+        "export": {
+            "success": "Export successful!",
+            "error": "Export failed. Please try again.",
+            "info": "",
+            "warning": ""
+        },
+        "import": {
+            "success": "Import successful!",
+            "error": "Import failed. Please try again.",
+            "info": "",
+            "warning": ""
+        },
+        "saveInfo": {
+            "success": "Information saved successfully!",
+            "error": "Information failed. Please try again."
+        }
+    },
+    "features": {
+        "invoice": {
+            "title": "Invoice",
+            "date": {
+                "today": "Today",
+                "otherDay": "Other Day"
+            }
+        },
+        "chart": "Chart"
+    },
+    "date": {
+        "months_short": [
+            "jan",
+            "feb",
+            "mar",
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec"
+        ]
+    },
+    "utils": {
+        "savedata": "Save Information",
+        "hephai1": "Hephai Invoice",
+        "img": {
+            "btn": "Upload Image"
+        },
+        "tooltips": {
+            "savedata": "Save your current data to ensure no progress is lost.",
+            "btnimg": "Click here to upload an image for your document or profile.",
+            "importjson": "Import data from a JSON file to restore or update your settings.",
+            "exportjson": "Export your current settings and data as a JSON file.",
+            "lang": "Select your preferred language for the application interface.",
+            "themeL": "Choose the color theme for the application: light.",
+            "themeD": "Choose the color theme for the application: dark.",
+            "colors": {
+                "tomato": "tomato",
+                "red": "red",
+                "ruby": "ruby",
+                "Crimson": "Crimson",
+                "pink": "pink",
+                "plum": "plum",
+                "purple": "purple",
+                "violet": "violet",
+                "iris": "iris",
+                "indigo": "indigo",
+                "blue": "blue",
+                "cyan": "cyan",
+                "teal": "teal",
+                "jade": "jade",
+                "green": "green",
+                "grass": "grass",
+                "orange": "orange",
+                "brown": "brown",
+                "gold": "gold",
+                "bronze": "bronze",
+                "gray": "gray",
+                "sky": "sky",
+                "mint": "mint",
+                "lime": "lime",
+                "yellow": "yellow",
+                "amber": "amber"
+            }
+        }
+    },
+    "setting": {
+        "title": "Appearance / Information",
+        "companyIcon": {
+            "title": "Company Logo",
+            "subtitle": "Update your company logo."
+        },
+        "informationUser": {
+            "title": "Company Informations",
+            "subtitle": "Update your company information.",
+            "utils": {
+                "company": "Your Company",
+                "adress": "Adress",
+                "phone": "Phone",
+                "email": "Email",
+                "siret": "Siret"
+            }
+        },
+        "accentColor": {
+            "title": "Brand color",
+            "subtitle": "Select or customize your brand color."
+        },
+        "themeColor": {
+            "title": "Interface theme",
+            "subtitle": "Select your interface color.",
+            "light": "Light",
+            "dark": "Dark",
+            "system": "Systeme preference"
+        },
+        "language": {
+            "title": "Language",
+            "subtitle": "Select your preferred language.",
+            "lang": {
+                "fr": "French",
+                "en": "English"
+            }
+        },
+        "hephai": {
+            "title": "Utils hephai",
+            "subtitle": "Export your data.",
+            "export": {
+                "json": "Export as JSON",
+                "csv": "Export as CSV"
+            },
+            "import": {
+                "title": "Import Data"
+            }
+        }
+    }
+}

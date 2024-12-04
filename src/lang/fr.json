@@ -1,0 +1,121 @@
+{
+    "toast": {
+        "export": {
+            "success": "Exportation réussie !",
+            "error": "L'exportation a échoué. Veuillez réessayer.",
+            "info": "",
+            "warning": ""
+        },
+        "import": {
+            "success": "Importation réussie !",
+            "error": "L'importation a échoué. Veuillez réessayer.",
+            "info": "",
+            "warning": ""
+        },
+        "saveInfo": {
+            "success": "Informations enregistrées avec succès !",
+            "error": "Échec de l'enregistrement des informations. Veuillez réessayer."
+        }
+    },
+    "date": {
+        "months_short": [
+            "janv",
+            "févr",
+            "mars",
+            "avr",
+            "mai",
+            "juin",
+            "juil",
+            "août",
+            "sept",
+            "oct",
+            "nov",
+            "déc"
+        ]
+    },
+    "utils": {
+        "savedata": "Enregistrer les informations",
+        "hephai1": "Facture Hephai",
+        "img": {
+            "btn": "Télécharger l'image"
+        },
+        "tooltips": {
+            "colors": {
+                "tomato": "tomate",
+                "red": "rouge",
+                "ruby": "rubis",
+                "Crimson": "cramoisi",
+                "pink": "rose",
+                "plum": "prune",
+                "purple": "violet",
+                "violet": "violet",
+                "iris": "iris",
+                "indigo": "indigo",
+                "blue": "bleu",
+                "cyan": "cyan",
+                "teal": "sarcelle",
+                "jade": "jade",
+                "green": "vert",
+                "grass": "herbe",
+                "orange": "orange",
+                "brown": "marron",
+                "gold": "or",
+                "bronze": "bronze",
+                "gray": "gris",
+                "sky": "ciel",
+                "mint": "menthe",
+                "lime": "citron vert",
+                "yellow": "jaune",
+                "amber": "ambre"
+            }
+        }
+    },
+    "setting": {
+        "title": "Apparence / Informations",
+        "companyIcon": {
+            "title": "Logo de l'entreprise",
+            "subtitle": "Mettez à jour le logo de votre entreprise."
+        },
+        "informationUser": {
+            "title": "Informations sur l'entreprise",
+            "subtitle": "Mettez à jour les informations de votre entreprise.",
+            "utils": {
+                "company": "Votre entreprise",
+                "adress": "Adresse",
+                "phone": "Téléphone",
+                "email": "Email",
+                "siret": "Siret"
+            }
+        },
+        "accentColor": {
+            "title": "Couleur de la marque",
+            "subtitle": "Sélectionnez ou personnalisez la couleur de votre marque."
+        },
+        "themeColor": {
+            "title": "Thème de l'interface",
+            "subtitle": "Sélectionnez la couleur de votre interface.",
+            "light": "Clair",
+            "dark": "Sombre",
+            "system": "Préférence système"
+        },
+        "language": {
+            "title": "Langue",
+            "subtitle": "Sélectionnez votre langue préférée.",
+            "lang": {
+                "fr": "Français",
+                "en": "Anglais"
+            }
+        },
+        "hephai": {
+            "title": "Outils Hephai",
+            "subtitle": "Exportez vos données.",
+            "export": {
+                "json": "Exporter en JSON",
+                "csv": "Exporter en CSV"
+            },
+            "import": {
+                "title": "Importer des données"
+            }
+        }
+    }
+}

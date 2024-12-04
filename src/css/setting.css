@@ -1,0 +1,160 @@
+/*! ACCENT COLOR  */
+.accentColor__btn {
+    border-radius: var(--radius-4);
+    background: var(--color-bg);
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: .25s;
+    font-size: 2vh;
+    font-weight: bold;
+    line-height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.accentColor__btn:hover {
+    border-radius: var(--radius-4);
+}
+
+.accentColor__btn::after {
+    border-radius: var(--radius-4);
+    position: absolute;
+    content: "";
+    display: block;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1.5px solid var(--color-bg);
+    transition: .25s;
+}
+
+.accentColor__btn::after {
+    border-color: var(--color-bg);
+}
+
+.accentColor__btn:hover::after {
+    border-radius: var(--radius-4);
+    border-color: var(--color-bg);
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+}
+
+.accentColor__btn.selected:after {
+    border-radius: var(--radius-4);
+    border-color: var(--color-bg);
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+
+}
+
+/*! THEME  */
+.themeColor {
+    border-radius: var(--radius-4);
+    background: var(--color-bg);
+    position: relative;
+    cursor: pointer;
+    width: 240px;
+    height: 140px;
+    -webkit-user-select: none;
+    user-select: none;
+
+    transition: .25s;
+    font-size: 2vh;
+    font-weight: bold;
+    line-height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    img {
+        border-radius: var(--radius-4);
+    }
+}
+
+.themeColor:hover {
+    border-radius: var(--radius-4);
+
+}
+
+.themeColor::after {
+    border-radius: var(--radius-4);
+    position: absolute;
+    content: "";
+    display: block;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1.5px solid var(--color-bg);
+    transition: .25s;
+}
+
+.themeColor::after {
+    border-color: var(--color-bg);
+}
+
+.themeColor:hover::after {
+    border-radius: var(--radius-4);
+    border-color: var(--color-bg);
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+}
+
+.themeColor.selected:after {
+    border-radius: var(--radius-4);
+    border-color: var(--color-bg);
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+}
+
+.card {
+    position: relative;
+    border-radius: var(--radius-4);
+
+    .card__img {
+        border-radius: var(--radius-3);
+        height: 250px;
+        width: 350px;
+        background-color: rgba(255, 255, 255, 0.439);
+    }
+}
+
+.effect__color {
+    filter: brightness(25%) saturate(240%) contrast(100%);
+}
+
+.footer__container {
+    border-radius: var(--radius-4);
+}
+
+.rt-AvatarImage {
+    object-fit: contain !important;
+}
+
+.visible-field {}
+
+.password-field {
+    position: relative;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+

@@ -1,0 +1,91 @@
+.navbar {
+    background-color: var(--gray-1);
+    /* background-color: var(--color-panel); */
+
+    border: 1px solid var(--gray-4);
+    border-radius: var(--radius-4);
+    overflow: hidden;
+}
+
+/*! navbar custom folder style  */
+:root {
+    --tab-corner-size: 16px;
+    --tab-corner-offset: -16px;
+    --tab-border-radius: var(--radius-4);
+    --tab-background: var(--gray-6);
+    --tab-indicator-border-color: #ff0000;
+    --tab-indicator-border-width: 2px;
+}
+
+
+.tabs {
+    position: relative;
+}
+
+.tab {
+    display: flex;
+    width: 100%;
+    position: relative;
+    height: 40px;
+    /* padding: 10px 30px; */
+    border: none;
+
+    border-top-left-radius: var(--tab-border-radius);
+    border-top-right-radius: var(--tab-border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab:not(.active) {
+    color: var(--gray-9);
+}
+
+.active::before {
+    content: "";
+    position: absolute;
+    filter: none;
+    border: none;
+}
+
+.tab-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 100%;
+    background-color: var(--color-panel-solid);
+    border-top-left-radius: var(--tab-border-radius);
+    border-top-right-radius: var(--tab-border-radius);
+    transition: left 0.3s ease;
+    z-index: 0;
+}
+
+
+.tab-indicator::before,
+.tab-indicator::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: var(--tab-corner-size);
+    height: var(--tab-corner-size);
+    background-color: var(--color-panel);
+    mask: url('../assets/trim.svg') no-repeat center;
+    -webkit-mask: url('../assets/trim.svg') no-repeat center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+}
+
+.tab__content {
+    /* background-color: var(--gray-2); */
+    background-color: var(--color-panel);
+}
+
+.tab-indicator::before {
+    scale: -1 1;
+    left: calc(var(--tab-corner-offset));
+    right: auto;
+}
+
+.tab-indicator::after {
+    right: calc(var(--tab-corner-offset));
+}

@@ -1,0 +1,115 @@
+.invoice__container {
+    overflow: hidden;
+    border-radius: var(--radius-4);
+}
+
+.scrollbox {
+    padding: 16px;
+}
+
+.invoice__navigation {
+
+    padding: 10px 20px;
+    /* background-color: red; */
+    background-color: var(--color-panel);
+
+}
+
+.invoice__content {
+
+    /* border: 1px solid var(--base-card-classic-border-color); */
+    border-bottom: 1px solid var(--base-card-classic-border-color);
+    border-left: 1px solid var(--base-card-classic-border-color);
+    border-right: 1px solid var(--base-card-classic-border-color);
+    background-color: var(--color-panel);
+
+}
+
+.pdf-preview-container canvas {
+    height: 100%;
+    width: 100%;
+    border: 1px solid #989898;
+    background-color: #777676;
+    display: block;
+}
+
+.invoice__paper__content {
+    color: black;
+    background-color: #FFFFFF;
+}
+
+.actionbar_left,
+.actionbar_right {
+    /* height: 80% ;
+    width: 14vw; */
+    border: 1px solid var(--base-card-classic-border-color);
+    /* background-color: blue; */
+    border-radius: var(--radius-4);
+    background-color: var(--color-panel);
+}
+
+.actionbar_left__logo {
+    width: 100%;
+    height: fit-content;
+    border-radius: var(--radius-4);
+    border: 2px dashed var(--base-card-classic-border-color);
+}
+
+.actionbar_left__author {}
+
+.actionbar_left__date {}
+
+.button__date__container {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-4);
+    background-color: var(--color-panel);
+    display: flex;
+}
+
+.button__date__indicator {
+    position: absolute;
+    bottom: 0;
+    height: 100%;
+    width: 50%;
+    background-color: var(--accent-9) !important;
+    border-radius: var(--radius-4);
+    transition: left 0.3s ease, width 0.3s ease;
+    z-index: -1;
+}
+
+.button__date.active {}
+
+.button__date:not(.active) {
+    color: var(--gray-9);
+}
+
+.button__date {
+    width: 50%;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: var(--radius-4);
+}
+
+.button__date__container .active:nth-child(1)~.button__date__indicator {
+    left: 0%;
+    width: 50%;
+}
+
+.button__date__container .active:nth-child(2)~.button__date__indicator {
+    left: 50%;
+    width: 50%;
+}
+
+.datepicker{
+    padding: 0 10px;
+    color: var(--gray-0);
+    background-color: var(--gray-a3);
+    outline: none;
+    filter: none;
+    border-radius: var(--radius-4);
+    border: none;
+    height: 32px;
+    width: 100%;
+}
