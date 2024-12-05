@@ -1,91 +1,53 @@
-# electron-vite-react
+# Hephai
+Hephai is an open-source invoice creation application that works locally.
 
-[![awesome-vite](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite)
-![GitHub stars](https://img.shields.io/github/stars/caoxiemeihao/vite-react-electron?color=fa6470)
-![GitHub issues](https://img.shields.io/github/issues/caoxiemeihao/vite-react-electron?color=d8b22d)
-![GitHub license](https://img.shields.io/github/license/caoxiemeihao/vite-react-electron)
-[![Required Node.JS >= 14.18.0 || >=16.0.0](https://img.shields.io/static/v1?label=node&message=14.18.0%20||%20%3E=16.0.0&logo=node.js&color=3f893e)](https://nodejs.org/about/releases)
+[![Static Badge](https://img.shields.io/badge/EVR-Template-blue)](https://github.com/electron-vite/electron-vite-react)
+![GitHub stars](https://img.shields.io/github/stars/LucasRaffalli/hephai?color)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/LucasRaffalli/hephai)
+![GitHub License](https://img.shields.io/github/license/LucasRaffalli/hephai)
+![Required Node.JS >= 18.0.0](https://img.shields.io/static/v1?label=node&message=>=18.0.0&logo=node.js&color=3f893e)
 
-English | [简体中文](README.zh-CN.md)
 
-## 👀 Overview
+[French](README.fr.md) | English
 
-📦 Ready out of the box  
-🎯 Based on the official [template-react-ts](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts), project structure will be familiar to you  
-🌱 Easily extendable and customizable  
-💪 Supports Node.js API in the renderer process  
-🔩 Supports C/C++ native addons  
-🐞 Debugger configuration included  
-🖥 Easy to implement multiple windows  
+
+## 🚀 Features
+
+- **Invoice Creation**: Generate invoices quickly and easily.
+- **Statistics Visualization**: View graphs on the number of invoices generated and other important metrics.
+- **Offline Mode**: Works entirely locally, without the need for an internet connection.
+- **Local Storage**: All data is securely stored on your machine.
+
 
 ## 🛫 Quick Setup
 
 ```sh
-# clone the project
-git clone https://github.com/electron-vite/electron-vite-react.git
+# Clone the project
+git clone https://github.com/LucasRaffalli/hephai.git
 
-# enter the project directory
-cd electron-vite-react
+# Enter the project directory
+cd hephai
 
-# install dependency
+# Install dependencies
 npm install
 
-# develop
+# Launch the application in development mode
 npm run dev
 ```
 
-## 🐞 Debug
+## 🧰 Technologies Used
+This project uses the following technologies and libraries:
+- **Electron**  for the desktop application: `electron`,`electron-builder`, `electron-store`, `electron-updater`
+- **React** for the user interface: `react`, `react-dom`, `react-router-dom`, `react-toastify`, `react-i18next`
+- **PDF** Generation with `jsPDF` and `react-pdf` for creating PDF invoices
+- **Internationalisation** with  `i18next` and `react-i18next`
+- **UI/UX** with Radix UI: `@radix-ui/react-icons`, `@radix-ui/themes`
 
-![electron-vite-react-debug.gif](/electron-vite-react-debug.gif)
+## 🤝 Contributing
+If you wish to contribute to Hephai, feel free to open a pull request or report bugs via issues.
 
-## 📂 Directory structure
 
-Familiar React application structure, just with `electron` folder on the top :wink:  
-*Files in this folder will be separated from your React application and built into `dist-electron`*  
+## 📄 License
+This project is under the MIT license. See the LICENSE file for more details.
 
-```tree
-├── electron                                 Electron-related code
-│   ├── main                                 Main-process source code
-│   └── preload                              Preload-scripts source code
-│
-├── release                                  Generated after production build, contains executables
-│   └── {version}
-│       ├── {os}-{os_arch}                   Contains unpacked application executable
-│       └── {app_name}_{version}.{ext}       Installer for the application
-│
-├── public                                   Static assets
-└── src                                      Renderer source code, your React application
-```
-
-<!--
-## 🚨 Be aware
-
-This template integrates Node.js API to the renderer process by default. If you want to follow **Electron Security Concerns** you might want to disable this feature. You will have to expose needed API by yourself.  
-
-To get started, remove the option as shown below. This will [modify the Vite configuration and disable this feature](https://github.com/electron-vite/vite-plugin-electron-renderer#config-presets-opinionated).
-
-```diff
-# vite.config.ts
-
-export default {
-  plugins: [
-    ...
--   // Use Node.js API in the Renderer-process
--   renderer({
--     nodeIntegration: true,
--   }),
-    ...
-  ],
-}
-```
--->
-
-## 🔧 Additional features
-
-1. electron-updater 👉 [see docs](src/components/update/README.md)
-1. playwright
-
-## ❔ FAQ
-
-- [C/C++ addons, Node.js modules - Pre-Bundling](https://github.com/electron-vite/vite-plugin-electron-renderer#dependency-pre-bundling)
-- [dependencies vs devDependencies](https://github.com/electron-vite/vite-plugin-electron-renderer#dependencies-vs-devdependencies)
+## 🌐 Website
