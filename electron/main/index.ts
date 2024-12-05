@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, nativeImage } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -53,46 +53,45 @@ async function createWindow() {
     minHeight: 860,
     minWidth: 1260,
     icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
-    webPreferences: {
-
-      preload,
-      nodeIntegration: true,
-      contextIsolation: true, // Assurez-vous que le contexte est isolé
-      // enableRemoteModule: false // Ne pas activer le module à distance
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // nodeIntegration: true,
-
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      // contextIsolation: false,
-    },
+    webPreferences: { preload, nodeIntegration: true, contextIsolation: true, },
   })
-
+  // win.setOverlayIcon(nativeImage.createFromPath('path/to/overlay.png'), 'Description de la superposition')
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)
     // Open devTool if the app is not packaged
-
   } else {
     win.loadFile(indexHtml)
   }
 
   // Test actively push message to the Electron-Renderer
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString())
-  })
+  // win.webContents.on('did-finish-load', () => {
+  //   win?.webContents.send('main-process-message', new Date().toLocaleString())
+  // })
 
   // Make all links open with the browser, not with the application
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('https:')) shell.openExternal(url)
-    return { action: 'deny' }
-  })
-
+  // win.webContents.setWindowOpenHandler(({ url }) => {
+  //   if (url.startsWith('https:')) shell.openExternal(url)
+  //   return { action: 'deny' }
+  // })
   // Auto update
   update(win)
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(async () => {
+  await createWindow()
 
+});
+
+app.setUserTasks([
+  {
+    program: process.execPath,
+    arguments: '--new-window',
+    iconPath: process.execPath,
+    iconIndex: 0,
+    title: 'Nouvelle fenêtre',
+    description: 'Créer une nouvelle fenêtre'
+  }
+])
 app.on('window-all-closed', () => {
   win = null
   if (process.platform !== 'darwin') app.quit()
@@ -100,14 +99,12 @@ app.on('window-all-closed', () => {
 
 app.on('second-instance', () => {
   if (win) {
-    // Focus on the main window if the user tried to open another
     if (win.isMinimized()) win.restore()
     win.focus()
   }
 })
 
 app.on('activate', () => {
-
   const allWindows = BrowserWindow.getAllWindows()
   if (allWindows.length) {
     allWindows[0].focus()
@@ -115,13 +112,6 @@ app.on('activate', () => {
     createWindow()
   }
 })
-const store = new Store<SettingsSchema>() as any;
-// / Gestion des paramètres avec electron-store
-ipcMain.handle('getIsDarkMode', () => store.get('isDarkMode'));
-ipcMain.handle('setIsDarkMode', (event, isDark: boolean) => store.set('isDarkMode', isDark));
-
-ipcMain.handle('getAccentColor', () => store.get('accentColor'));
-ipcMain.handle('setAccentColor', (event, color: string) => store.set('accentColor', color));
 
 // New window example arg: new windows url
 ipcMain.handle('open-win', (_, arg) => {

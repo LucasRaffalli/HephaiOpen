@@ -3,7 +3,7 @@ import "../../css/navbar.css";
 import Clients from './nav_content/Clients';
 import Features from '@/components/navbar/nav_content/Features';
 import { useEffect, useState } from 'react';
-import { getAccentColorHex } from '../utils/getAccentColorHex';
+import { getAccentColorHex } from '../../utils/getAccentColorHex';
 import { SettingsGearIcon } from '../design/IconsAnimate';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 

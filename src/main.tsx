@@ -4,11 +4,12 @@ import App from './App'
 import "@radix-ui/themes/styles.css";
 import "@radix-ui/themes/layout.css";
 import './index.css'
+
 import 'react-toastify/dist/ReactToastify.css';
 import './demos/ipc'
 import { BrowserRouter } from 'react-router-dom';
 import { Theme, ThemePanel } from '@radix-ui/themes';
-import { ThemeProvider, useTheme } from './components/utils/ThemeContext';
+import { ThemeProvider, useTheme } from './utils/ThemeContext';
 import { AccentColor, SettingsSchema,ThemeContextType } from './type/hephai';
 import './i18n';
 

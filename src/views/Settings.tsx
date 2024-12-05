@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, forwardRef } from 'react'
-import { useTheme } from '@/components/utils/ThemeContext';
+import { useTheme } from '@/utils/ThemeContext';
 import { AspectRatio, Avatar, Box, Button, Flex, Heading, IconButton, Select, Separator, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
 import { AccentColor, CompanyInfo } from '@/type/hephai'
 import { useTranslation } from 'react-i18next';
@@ -7,12 +7,12 @@ import '@/css/setting.css'
 import themeLight from '/img/themeLight.png'
 import themeDark from '/img/themeDark.png'
 import themeSystem from '/img/themeSystem.png'
-import { exportData } from '@/components/utils/exportData';
-import { importData } from '@/components/utils/importData';
+import { exportData } from '@/utils/exportData';
+import { importData } from '@/utils/importData';
 import i18n from '@/i18n';
 import { ToastContainer, toast } from 'react-toastify';
 import { DotsHorizontalIcon, EyeClosedIcon, EyeOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@radix-ui/react-icons';
-import { getAccentColorHex, colorMap } from '@/components/utils/getAccentColorHex';
+import { getAccentColorHex, colorMap } from '@/utils/getAccentColorHex';
 
 
 export default function Settings() {
