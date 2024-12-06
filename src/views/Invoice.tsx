@@ -8,6 +8,9 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 import { motion } from "motion/react"
+import UserInformation from '@/components/UserInformation';
+import PaymentSelection from '@/components/Invoice/PaymentSelection';
+import ProfileImage from '@/components/ProfileImage';
 
 export const Invoice = () => {
     const { t } = useTranslation();
@@ -17,6 +20,10 @@ export const Invoice = () => {
     const [isLoadingPDF, setIsLoadingPDF] = useState(true);
 
     const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
+    const [paymentInfo, setPaymentInfo] = useState({
+        type: '',
+        details: '',
+    });
     const loadVisibilityPreferences = () => {
         const savedVisibility = localStorage.getItem('visibilityPreferences');
         return savedVisibility ? JSON.parse(savedVisibility) : {
@@ -95,43 +102,66 @@ export const Invoice = () => {
     const generateInvoicePDF = (): Promise<Uint8Array> => {
         return new Promise<Uint8Array>((resolve, reject) => {
             const doc = new jsPDF("portrait", "mm", "a4");
+            const paymentType = "Iban"; // Valeur dynamique : "iban", "paypal", ou "other"
 
+            // Définir le texte en fonction du mode de paiement
+            let paymentText = "";
+
+            if (paymentType === "Iban") {
+                paymentText = "Virement bancaire";
+            } else if (paymentType === "Paypal") {
+                paymentText = "PayPal";
+            } else if (paymentType === "Other") {
+                paymentText = "Autre";
+            }
             // Obtenir les dimensions de la page
             const pageWidth = doc.internal.pageSize.getWidth(); // 210 mm
             const pageHeight = doc.internal.pageSize.getHeight(); // 297 mm
 
             // 1. En-tête (Bandeau supérieur)
-            doc.setFillColor("F2F2F2"); // Couleur gris clair
-            doc.rect(0, 0, pageWidth, 60, "F"); // Bandeau en haut
+            doc.setFillColor("F2F2F2");
+            doc.rect(0, 0, pageWidth, 60, "F");
             doc.setFont("helvetica", "bold");
             doc.setFontSize(24);
-            doc.text("Facture", pageWidth - 10, 20, { align: "right" }); // Titre aligné à droite
-            doc.setFontSize(10);
+            doc.text("Facture", pageWidth - 10, 20, { align: "right" });
+            doc.setTextColor("#4D4D4D");
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(12);
             doc.text("N° de facture : #0000", pageWidth - 10, 30, { align: "right" });
             doc.text(`${selectedDate}`, pageWidth - 10, 35, { align: "right" });
-
-            // Logo de l'auteur
+            doc.text(`Mode de paiement : ${paymentText}`, pageWidth - 10, 40, { align: "right" });
+            doc.text(` ${paymentInfo.type || 'Non défini'} : ${paymentInfo.details || 'Non renseigné'}`, pageWidth - 10, 45, { align: "right" });
             if (imageSrc) {
-                doc.addImage(imageSrc, "PNG", 10, 10, 40, 40); // Logo en haut à gauche
+                doc.addImage(imageSrc, "PNG", 10, 10, 50, 40);
             } else {
                 doc.setFillColor("150"); // Gris foncé
                 doc.rect(10, 10, 40, 40, "F");
             }
-
+            doc.setTextColor("");
             // 2. Section client et auteur
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(12);
-
             // Informations du client (à gauche)
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
             doc.text("Facturé à :", 10, 75);
-            doc.text("Entreprise Client\nAdresse Client\nTel client\nEmail", 10, 80);
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(13);
+            doc.setTextColor("#4D4D4D");
+            doc.text("Entreprise Client\nAdresse Client\nTel client\nEmail", 10, 82);
+            doc.setTextColor("");
 
             // Informations de l'auteur (à droite)
-            doc.text("Facture de :", pageWidth - 20, 75, { align: "right" });
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.text("Facture de :", pageWidth - 10, 75, { align: "right" });
+            doc.setTextColor("#4D4D4D");
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(13);
             doc.text(
                 `${companyInfo.authorCompanyName}\n${companyInfo.authorAddress}\n${companyInfo.authorPhone}\n${companyInfo.authorEmail}\nSIRET: ${companyInfo.siret}`,
-                pageWidth - 20, 80, { align: "right" }
+                pageWidth - 10, 82, { align: "right" }
             );
+            doc.setTextColor("");
+
             // 3. Tableau des lignes de facturation
 
 
@@ -179,22 +209,24 @@ export const Invoice = () => {
         }
     };
 
-    // useEffect(() => {
-    //     const fetchPDF = async () => {
-    //         setIsLoadingPDF(true);
-    //         const pdfBytes = await generateInvoicePDF();
-    //         const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-    //         const blobUrl = URL.createObjectURL(pdfBlob);
-    //         localStorage.setItem('pdfPreviewUrl', blobUrl);
-    //         setPdfPreviewUrl(blobUrl);
-    //         setIsLoadingPDF(false);
-    //     };
-    //     const timeout = setTimeout(() => {
-    //         fetchPDF();
-    //     }, 100);
+    useEffect(() => {
+        // Crée un délai (debounce) pour attendre avant de régénérer
+        const timeout = setTimeout(async () => {
+            try {
+                const pdfBytes = await generateInvoicePDF(); // Regénère le PDF
+                const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const blobUrl = URL.createObjectURL(pdfBlob);
 
-    //     return () => clearTimeout(timeout);
-    // }, [companyInfo]);
+                // Mets à jour l'iframe avec le nouveau PDF
+                setPdfPreviewUrl(blobUrl);
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour du PDF :', error);
+            }
+        }, 2000); // Ajuste le délai selon tes besoins (ex. 2 secondes)
+
+        // Nettoie le timeout précédent s'il y a un nouveau changement
+        return () => clearTimeout(timeout);
+    }, [companyInfo, paymentInfo, selectedDate]);
 
     useEffect(() => {
         if (isAutoDate) {
@@ -208,26 +240,9 @@ export const Invoice = () => {
         }
     }, [isAutoDate]);
 
-    const toggleDateMode = () => {
-        setIsAutoDate(!isAutoDate);
-    };
     const handleCustomDate = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDate(e?.target.value);
     }
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.2, // Décalage entre chaque animation des enfants
-            },
-        },
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 0 },
-        visible: { opacity: 1, y: 0, transition: { duration: 1.5 } },
-    };
 
     return (
         <>
@@ -238,190 +253,78 @@ export const Invoice = () => {
                 </Flex >
                 <Flex p={'8'} direction={'row'} justify={'between'} gap={'4'} align={'center'} className='invoice__content' height={"100%"}>
 
-                    <motion.div variants={itemVariants}>
-                        <Box className='actionbar_left' height={'80%'} width={'14vw'}>
-                            <ScrollArea className='scrollbox'>
-                                <Flex direction="column" align={'center'} gap={'8'} >
+                    <ScrollArea className='scrollbox actionbar_left' scrollbars={"vertical"} >
+                        <Flex direction="column" align={'center'} gap={'8'} >
 
-                                    <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
-                                        <Text size={"2"} weight="bold">Logo</Text>
-                                        <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__logo'>
-                                            <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} className='card__img' />
-                                        </Flex>
-                                    </Flex>
-                                    {/* Date */}
-                                    <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
-
-                                        <motion.div variants={itemVariants}>
-
-                                            <Text size={"2"} weight="bold">Date</Text>
-                                        </motion.div>
-                                        <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__date' width={"100%"}>
-                                            <Flex direction="column" width="100%">
-                                                <Flex mb={'4'} position="relative" display="flex" justify="between" overflow="hidden" className='button__date__container' p={"1"}>
-                                                    <Flex justify={'center'} onClick={() => setIsAutoDate(true)} className={`button__date ${isAutoDate ? "active" : ""}`} p={"1"}> {t('features.invoice.date.today')}</Flex>
-                                                    <Flex justify={'center'} onClick={() => setIsAutoDate(false)} className={`button__date ${!isAutoDate ? "active" : ""}`} p={"1"}>{t('features.invoice.date.otherDay')}</Flex>
-                                                    <Box className="button__date__indicator" style={{}}></Box>
-                                                </Flex>
-                                                <Box width={"100%"}>
-
-                                                    {isAutoDate ? (
-                                                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }}>
-                                                            <Button disabled style={{ width: "100%" }}>
-                                                                {selectedDate}
-                                                            </Button>
-                                                        </motion.div>
-                                                    ) : (
-                                                        <motion.input type="date" value={selectedDate} onChange={handleCustomDate} className="datepicker" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }} />
-                                                    )}
-
-                                                </Box>
-                                            </Flex>
-
-                                        </Flex>
-                                    </Flex>
-                                    {/* auteur */}
-                                    <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
-                                        <Text size={"2"} weight="bold">
-                                            author
-                                        </Text>
-                                        <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__author'>
-                                            {isLoading ? (
-                                                <>
-                                                    <Skeleton width="100px" height="20px" />
-                                                    <Skeleton width="200px" height="16px" />
-                                                    <Skeleton width="150px" height="16px" />
-                                                    <Skeleton width="180px" height="16px" />
-                                                    <Skeleton width="120px" height="16px" />
-                                                </>
-                                            ) : companyInfo ? (
-                                                <>
-                                                    <motion.div
-                                                        initial="hidden"
-                                                        animate="visible"
-                                                        variants={containerVariants}
-                                                        className="form-container"
-                                                    >
-                                                        <Flex direction="row" gap="4" justify={'center'} width="100%" height="fit-content" wrap="wrap">
-                                                            <Box width="100%" >
-                                                                <motion.div variants={itemVariants}>
-
-                                                                    <TextField.Root placeholder="CompanyName" name="authorCompanyName" onChange={handleChange} value={companyInfo.authorCompanyName} size="2" type={visibility.companyName ? 'text' : 'password'}>
-                                                                        <TextField.Slot side={'right'}>
-                                                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('companyName')}>
-                                                                                {visibility.companyName ? (
-                                                                                    <EyeOpenIcon height="14" width="14" />
-                                                                                ) : (
-                                                                                    <EyeClosedIcon height="14" width="14" />
-                                                                                )}
-                                                                            </IconButton>
-                                                                        </TextField.Slot>
-                                                                    </TextField.Root>
-                                                                </motion.div>
-                                                            </Box>
-                                                            <Box width="100%" >
-                                                                <motion.div variants={itemVariants}>
-
-                                                                    <TextField.Root placeholder="Adress" name="authorAddress" onChange={handleChange} value={companyInfo.authorAddress} size="2" type={visibility.authorAddress ? 'text' : 'password'}>
-                                                                        <TextField.Slot side={'right'}>
-                                                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('authorAddress')}>
-                                                                                {visibility.authorAddress ? (
-                                                                                    <EyeOpenIcon height="14" width="14" />
-                                                                                ) : (
-                                                                                    <EyeClosedIcon height="14" width="14" />
-                                                                                )}
-                                                                            </IconButton>
-                                                                        </TextField.Slot>
-                                                                    </TextField.Root>
-                                                                </motion.div>
-                                                            </Box>
-                                                            <Box width="100%">
-                                                                <motion.div variants={itemVariants}>
-
-                                                                    <TextField.Root placeholder="Phone" name="authorPhone" onChange={handleChange} value={visibility.authorPhone ? companyInfo.authorPhone : maskPhone(companyInfo.authorPhone)} size="2" type="tel">
-                                                                        <TextField.Slot side={'right'}>
-                                                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('authorPhone')}>
-                                                                                {visibility.authorPhone ? (
-                                                                                    <EyeOpenIcon height="14" width="14" />
-                                                                                ) : (
-                                                                                    <EyeClosedIcon height="14" width="14" />
-                                                                                )}
-                                                                            </IconButton>
-                                                                        </TextField.Slot>
-                                                                    </TextField.Root>
-                                                                </motion.div>
-                                                            </Box>
-                                                            <Box width="100%">
-                                                                <motion.div variants={itemVariants}>
-
-                                                                    <TextField.Root placeholder="Email" name="authorEmail" onChange={handleChange} value={visibility.authorEmail ? companyInfo.authorEmail : maskEmail(companyInfo.authorEmail)} size="2" type="email">
-                                                                        <TextField.Slot side={'right'}>
-                                                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('authorEmail')}>
-                                                                                {visibility.authorEmail ? (
-                                                                                    <EyeOpenIcon height="14" width="14" />
-                                                                                ) : (
-                                                                                    <EyeClosedIcon height="14" width="14" />
-                                                                                )}
-                                                                            </IconButton>
-                                                                        </TextField.Slot>
-                                                                    </TextField.Root>
-                                                                </motion.div>
-                                                            </Box>
-                                                            <Box width="100%">
-                                                                <motion.div variants={itemVariants}>
-
-                                                                    <TextField.Root placeholder="Siret" name="siret" onChange={handleChange} value={companyInfo.siret} size="2" type={visibility.siret ? 'text' : 'password'}>
-                                                                        <TextField.Slot side={'right'}>
-                                                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('siret')}>
-                                                                                {visibility.siret ? (
-                                                                                    <EyeOpenIcon height="14" width="14" />
-                                                                                ) : (
-                                                                                    <EyeClosedIcon height="14" width="14" />
-                                                                                )}
-                                                                            </IconButton>
-                                                                        </TextField.Slot>
-                                                                    </TextField.Root>
-                                                                </motion.div>
-                                                            </Box>
-                                                            <motion.div variants={itemVariants}>
-                                                                <Tooltip content={t('utils.tooltips.savedata')}>
-                                                                    <Button color={AccentColor as any} variant="soft" className='btncursor' size={'3'} onClick={handleSave} >
-                                                                        <Text size="2" weight={'regular'}>{t('utils.savedata')}</Text>
-                                                                    </Button>
-                                                                </Tooltip>
-                                                            </motion.div>
-                                                        </Flex>
-                                                    </motion.div>
-                                                </>
-                                            ) : (
-                                                <Text size="2" color="gray">Aucune information trouvée</Text>
-                                            )}
-                                        </Flex>
-                                    </Flex>
-
-
-                                    {/* Fin */}
+                            <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                <Text size={"2"} weight="bold">Logo</Text>
+                                <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__logo'>
+                                    <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} className='card__img' style={{ width: "100%" }} />
                                 </Flex>
-                            </ScrollArea>
-                        </Box >
-                    </motion.div>
+                            </Flex>
+                            {/* Date */}
+                            <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+
+
+                                <Text size={"2"} weight="bold">Date</Text>
+                                <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__date' width={"100%"}>
+                                    <Flex direction="column" width="100%">
+                                        <Flex mb={'4'} position="relative" display="flex" justify="between" overflow="hidden" className='button__date__container' p={"1"}>
+                                            <Flex justify={'center'} onClick={() => setIsAutoDate(true)} className={`button__date ${isAutoDate ? "active" : ""}`} p={"1"}> {t('features.invoice.date.today')}</Flex>
+                                            <Flex justify={'center'} onClick={() => setIsAutoDate(false)} className={`button__date ${!isAutoDate ? "active" : ""}`} p={"1"}>{t('features.invoice.date.otherDay')}</Flex>
+                                            <Box className="button__date__indicator" style={{}}></Box>
+                                        </Flex>
+                                        <Box width={"100%"}>
+
+                                            {isAutoDate ? (
+                                                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }}>
+                                                    <Button disabled style={{ width: "100%" }}>
+                                                        {selectedDate}
+                                                    </Button>
+                                                </motion.div>
+                                            ) : (
+                                                <motion.input type="date" value={selectedDate} onChange={handleCustomDate} className="datepicker" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }} />
+                                            )}
+
+                                        </Box>
+                                    </Flex>
+
+                                </Flex>
+                            </Flex>
+                            {/* payement */}
+                            <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+
+
+                                <Text size={"2"} weight="bold">payement</Text>
+                                <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__date' width={"100%"}>
+                                    <Flex direction="column" width="100%">
+                                        <PaymentSelection onPaymentChange={(type, value) => setPaymentInfo({ type, details: value })} />
+                                    </Flex>
+
+                                </Flex>
+                            </Flex>
+                            {/* auteur */}
+                            <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                <Text size={"2"} weight="bold">
+                                    author
+                                </Text>
+                                <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__author'>
+                                    <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} boxWidth='100%' flexJustify='center' />
+
+                                </Flex>
+                            </Flex>
+
+
+                            {/* Fin */}
+                        </Flex>
+                    </ScrollArea>
                     <Flex className='invoice__paper' direction={'column'} justify={'center'} align={'center'} gap={'4'}>
                         <Box height={'840px'} width={'595px'} style={{ "backgroundColor": "aliceblue" }}>
-                            {/* {isLoadingPDF ? (
-                            <Skeleton>
-                                <Box height={'840px'} width={'595px'} className='invoice__paper__content pdf-preview-container' ></Box>
-                            </Skeleton>
-                        ) : (
-
-                            <Box height={'840px'} width={'595px'} className='invoice__paper__content pdf-preview-container' >
+                            <Box height={'840px'} width={'595px'} className='invoice__paper__content pdf-preview-container'>
                                 {pdfPreviewUrl && (
-
-                                    <>
-                                        <iframe src={`${pdfPreviewUrl}#toolbar=0&zoom=73.6`} width="100%" height="100%" />
-                                    </>
+                                    <iframe src={`${pdfPreviewUrl}#toolbar=0&zoom=73.6`} width="100%" height="100%" />
                                 )}
                             </Box>
-                        )} */}
                         </Box>
                         <Box>
                             test

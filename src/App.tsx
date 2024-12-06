@@ -7,6 +7,7 @@ import Chart from './views/Chart'
 import Settings from './views/Settings'
 import Clients from './components/navbar/nav_content/Clients'
 import NavigationLayout from './layout/NavigationLayout'
+import SettingsBackup from './views/Settings__backup'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         </Route> */}
         <Route path="clients" element={<Clients />} />
         <Route path="settings" element={<Settings />} />
+        {/* <Route path="settings" element={<SettingsBackup />} /> */}
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

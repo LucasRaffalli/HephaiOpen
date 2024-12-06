@@ -4,6 +4,8 @@
 }
 
 .scrollbox {
+    max-width: 14vw;
+    height: 800px !important;
     padding: 16px;
 }
 
@@ -11,17 +13,17 @@
 
     padding: 10px 20px;
     /* background-color: red; */
-    background-color: var(--color-panel);
+    background-color: var(--gray-1);
 
 }
 
 .invoice__content {
 
     /* border: 1px solid var(--base-card-classic-border-color); */
-    border-bottom: 1px solid var(--base-card-classic-border-color);
-    border-left: 1px solid var(--base-card-classic-border-color);
-    border-right: 1px solid var(--base-card-classic-border-color);
-    background-color: var(--color-panel);
+    border-bottom: 1px solid var(--gray-6);
+    border-left: 1px solid var(--gray-6);
+    border-right: 1px solid var(--gray-6);
+    background-color: var(--gray-1);
 
 }
 
@@ -42,17 +44,17 @@
 .actionbar_right {
     /* height: 80% ;
     width: 14vw; */
-    border: 1px solid var(--base-card-classic-border-color);
+    border: 1px solid var(--gray-6);
     /* background-color: blue; */
     border-radius: var(--radius-4);
-    background-color: var(--color-panel);
+    background-color: var(--gray-2);
 }
 
 .actionbar_left__logo {
     width: 100%;
     height: fit-content;
     border-radius: var(--radius-4);
-    border: 2px dashed var(--base-card-classic-border-color);
+    border: 2px dashed var(--gray-6);
 }
 
 .actionbar_left__author {}
@@ -75,7 +77,7 @@
     background-color: var(--accent-9) !important;
     border-radius: var(--radius-4);
     transition: left 0.3s ease, width 0.3s ease;
-    z-index: -1;
+    z-index: 0;
 }
 
 .button__date.active {}
@@ -85,6 +87,7 @@
 }
 
 .button__date {
+    z-index: 2;
     width: 50%;
     padding: 1rem;
     text-align: center;
@@ -102,7 +105,7 @@
     width: 50%;
 }
 
-.datepicker{
+.datepicker {
     padding: 0 10px;
     color: var(--gray-0);
     background-color: var(--gray-a3);

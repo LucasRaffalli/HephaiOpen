@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { getAccentColorHex } from '../../utils/getAccentColorHex';
 import { SettingsGearIcon } from '../design/IconsAnimate';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-
+import { version,name,author,description,license,type } from '../../../package.json';
 
 
 export default function Navbar() {
@@ -44,22 +44,13 @@ export default function Navbar() {
             </Box >
             <Box maxWidth="100%">
                 <NavLink to="/settings" >
-                    <Card>
+                    <Card className='card_hephai'>
                         <Flex gap="3" align="center">
-                            <Avatar
-                                size="3"
-                                src="hephai_pp.png"
-                                radius="small"
-                                fallback="heph"
-                            />
+                            <Avatar size="3" src="/favicon.ico" radius="small" fallback="heph" />
                             <Flex direction="row" gap="2" align="center" justify="between" width="100%">
                                 <Box>
-                                    <Text as="div" size="2" weight="bold">
-                                        Hephai
-                                    </Text>
-                                    <Text as="div" size="1" weight="light">
-                                        Version 0.0.5
-                                    </Text>
+                                    <Text as="div" size="2" weight="bold">{name}</Text>
+                                    <Text as="div" size="1" weight="light">Version {version}</Text>
                                 </Box>
                                 <SettingsGearIcon size={20} />
                             </Flex>
