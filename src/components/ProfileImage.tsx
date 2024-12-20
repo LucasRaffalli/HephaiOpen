@@ -18,7 +18,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ imageSrc, handleImageChange
             <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || 'placeholder.png'} alt="Profile" />
             <Tooltip content={t('utils.tooltips.btnimg')}>
                 <Button variant="soft" className='btncursor' size={'3'} onClick={handleButtonClick}>
-                    <Text size="2" weight={'regular'}>{t('utils.img.btn')}</Text>
+                    <Text size="2" weight={'regular'}>{t('buttons.upload.image')}</Text>
                     <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                 </Button>
             </Tooltip>

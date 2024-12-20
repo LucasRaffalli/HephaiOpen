@@ -3,22 +3,23 @@ import { Box, Flex, ScrollArea } from '@radix-ui/themes';
 import { Outlet } from 'react-router-dom';
 import "../css/layout.css";
 import { motion } from "motion/react"
+import { ClientProvider } from '@/components/ClientContext';
 
 
 function Layout() {
 
     return (
-        <Box className='layout'>
-            <Flex direction="row" height="100vh">
-                <Box m="2">
-                    <Navbar />
-                </Box>
+        <Box className='layout' m={"0"}>
+            <Flex direction="row" height="100vh" >
+                <ClientProvider>
+                    <Box m={"4"} mr="2">
+                        <Navbar />
+                    </Box>
 
-                <Box m="2" width={"100%"} className='view__container'>
-                    <ScrollArea type={'auto'} scrollbars="vertical">
+                    <Box m="4" ml="2" width={"100%"} className='view__container'>
                         <Outlet />
-                    </ScrollArea>
-                </Box>
+                    </Box>
+                </ClientProvider>
             </Flex>
         </Box>
     );

@@ -17,7 +17,14 @@ export interface CompanyInfo {
     authorEmail: string;
     siret: string;
 }
-
+export interface Client {
+    id: string;
+    bookmarks: boolean;
+    companyName: string;
+    address: string;
+    email: string;
+    phone: string;
+}
 export interface IconProperties {
     size: number;
     color?: string;

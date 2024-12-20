@@ -2,6 +2,67 @@
 
 import { IconProperties } from '@/type/hephai';
 import { motion, useAnimation } from 'motion/react';
+import type { Variants } from 'motion/react';
+
+const lidVariants: Variants = {
+    normal: { y: 0 },
+    animate: { y: -1.1 },
+};
+
+const springTransition = {
+    type: 'spring',
+    stiffness: 500,
+    damping: 30,
+};
+
+const sparkleVariants: Variants = {
+    initial: {
+        y: 0,
+        fill: 'none',
+    },
+    hover: {
+        y: [0, -1, 0, 0],
+        fill: 'currentColor',
+        transition: {
+            duration: 1,
+            bounce: 0.3,
+        },
+    },
+};
+
+const starVariants: Variants = {
+    initial: {
+        opacity: 1,
+        x: 0,
+        y: 0,
+    },
+    blink: () => ({
+        opacity: [0, 1, 0, 0, 0, 0, 1],
+        transition: {
+            duration: 2,
+            type: 'spring',
+            stiffness: 70,
+            damping: 10,
+            mass: 0.4,
+        },
+    }),
+};
+
+const penVariants: Variants = {
+    normal: {
+        rotate: 0,
+        x: 0,
+        y: 0,
+    },
+    animate: {
+        rotate: [-0.5, 0.5, -0.5],
+        x: [0, -1, 1.5, 0],
+        y: [0, 1.5, -1, 0],
+    },
+};
+
+
+
 
 const SettingsGearIcon = ({ size = 20 }: IconProperties) => {
     const controls = useAnimation();
@@ -39,5 +100,165 @@ const SettingsGearIcon = ({ size = 20 }: IconProperties) => {
         </div>
     );
 };
+const DeleteIcon = ({ size = 20 }: IconProperties) => {
+    const controls = useAnimation();
 
-export { SettingsGearIcon };
+    return (
+        <div
+            className="cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center"
+            onMouseEnter={() => controls.start('animate')}
+            onMouseLeave={() => controls.start('normal')}
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={size}
+                height={size}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <motion.g
+                    variants={lidVariants}
+                    animate={controls}
+                    transition={springTransition}
+                >
+                    <path d="M3 6h18" />
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                </motion.g>
+                <motion.path
+                    d="M19 8v12c0 1-1 2-2 2H7c-1 0-2-1-2-2V8"
+                    variants={{
+                        normal: { d: 'M19 8v12c0 1-1 2-2 2H7c-1 0-2-1-2-2V8' },
+                        animate: { d: 'M19 9v12c0 1-1 2-2 2H7c-1 0-2-1-2-2V9' },
+                    }}
+                    animate={controls}
+                    transition={springTransition}
+                />
+                <motion.line
+                    x1="10"
+                    x2="10"
+                    y1="11"
+                    y2="17"
+                    variants={{
+                        normal: { y1: 11, y2: 17 },
+                        animate: { y1: 11.5, y2: 17.5 },
+                    }}
+                    animate={controls}
+                    transition={springTransition}
+                />
+                <motion.line
+                    x1="14"
+                    x2="14"
+                    y1="11"
+                    y2="17"
+                    variants={{
+                        normal: { y1: 11, y2: 17 },
+                        animate: { y1: 11.5, y2: 17.5 },
+                    }}
+                    animate={controls}
+                    transition={springTransition}
+                />
+            </svg>
+        </div>
+    );
+}
+
+const SparklesIcon = ({ size = 20 }: IconProperties) => {
+    const starControls = useAnimation();
+    const sparkleControls = useAnimation();
+
+    return (
+        <div
+            className="cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center"
+            onMouseEnter={() => {
+                sparkleControls.start('hover');
+                starControls.start('blink', { delay: 1 });
+            }}
+            onMouseLeave={() => {
+                sparkleControls.start('initial');
+                starControls.start('initial');
+            }}
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={size}
+                height={size}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <motion.path
+                    d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"
+                    variants={sparkleVariants}
+                    animate={sparkleControls}
+                />
+                <motion.path
+                    d="M20 3v4"
+                    variants={starVariants}
+                    animate={starControls}
+                />
+                <motion.path
+                    d="M22 5h-4"
+                    variants={starVariants}
+                    animate={starControls}
+                />
+                <motion.path
+                    d="M4 17v2"
+                    variants={starVariants}
+                    animate={starControls}
+                />
+                <motion.path
+                    d="M5 18H3"
+                    variants={starVariants}
+                    animate={starControls}
+                />
+            </svg>
+        </div>
+    );
+};
+
+const SquarePenIcon = ({ size = 20 }: IconProperties) => {
+    const controls = useAnimation();
+
+    return (
+        <div
+            className="cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center"
+            onMouseEnter={() => controls.start('animate')}
+            onMouseLeave={() => controls.start('normal')}
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={size}
+                height={size}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <motion.path
+                    d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"
+                    variants={penVariants}
+                    animate={controls}
+                    transition={{
+                        duration: 0.5,
+                        repeat: 1,
+                        ease: 'easeInOut',
+                    }}
+                />
+            </svg>
+        </div>
+    );
+};
+
+
+
+export { SettingsGearIcon, DeleteIcon, SparklesIcon, SquarePenIcon };

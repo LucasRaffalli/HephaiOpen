@@ -1,50 +1,45 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import '../css/invoice.css';
-import { Avatar, Box, Button, Flex, Heading, IconButton, Progress, ScrollArea, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
-import { AccentColor, CompanyInfo } from '@/type/hephai';
-import { CalendarIcon, ClockIcon, EyeClosedIcon } from 'lucide-react';
-import { EyeOpenIcon } from '@radix-ui/react-icons';
+import { Avatar, Box, Button, DropdownMenu, Flex, Heading, IconButton, Progress, ScrollArea, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
+import { AccentColor, Client, CompanyInfo } from '@/type/hephai';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 import { motion } from "motion/react"
 import UserInformation from '@/components/UserInformation';
 import PaymentSelection from '@/components/Invoice/PaymentSelection';
-import ProfileImage from '@/components/ProfileImage';
+import ClientsList from '@/components/ClientsList';
+import { useClientContext } from '@/components/ClientContext';
+import Popup from '@/components/Popup';
+import ClientForm from '@/components/ClientForm';
+import autoTable from 'jspdf-autotable';
+import { Lock, Trash, Trash2Icon } from 'lucide-react';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import { useDynamicTable } from '@/hooks/useDynamicTable';
+import { useInvoicePDF } from '@/hooks/useInvoicePDF';
+import { setupPDFHeader, setupPDFTable } from '@/utils/pdfUtils';
+import ContainerFeature from '@/components/template/ContainerFeature';
 
 export const Invoice = () => {
     const { t } = useTranslation();
+    const { selectedClient, setSelectedClient } = useClientContext();
+    const [isDarkMode, setIsDarkMode] = useDarkMode();
+    const { columns, rows, setRows, addColumn } = useDynamicTable();
     const [selectedDate, setSelectedDate] = useState<string>('');
     const [isAutoDate, setIsAutoDate] = useState<boolean>(true);
-    const [isDarkMode, setIsDarkMode] = useState<boolean>(() => { const savedMode = localStorage.getItem('isDarkMode'); return savedMode ? JSON.parse(savedMode) : false; });
-    const [isLoadingPDF, setIsLoadingPDF] = useState(true);
-
     const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
-    const [paymentInfo, setPaymentInfo] = useState({
-        type: '',
-        details: '',
-    });
-    const loadVisibilityPreferences = () => {
-        const savedVisibility = localStorage.getItem('visibilityPreferences');
-        return savedVisibility ? JSON.parse(savedVisibility) : {
-            companyName: true,
-            authorAddress: false,
-            authorPhone: false,
-            authorEmail: false,
-            siret: false
-        };
-    };
-
+    const [paymentInfo, setPaymentInfo] = useState({ type: '', details: '', });
     const [imageSrc, setImageSrc] = useState<string | null>(localStorage.getItem('profileImage') || null);
-    const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
-        authorCompanyName: '',
-        authorAddress: '',
-        authorPhone: '',
-        authorEmail: '',
-        siret: '',
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [visibility, setVisibility] = useState(loadVisibilityPreferences);
+    const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({ authorCompanyName: '', authorAddress: '', authorPhone: '', authorEmail: '', siret: '', });
+    const [clientInfo, setClientInfo] = useState<Client>({ companyName: '', address: '', phone: '', email: '', bookmarks: false, id: '' });
+    const [clients, setClients] = useState<Client[]>(() => { const storedClients = localStorage.getItem('clients'); return storedClients ? JSON.parse(storedClients) : []; });
+    const [formData, setFormData] = useState<{ [key: string]: string }>({ product: "", total: "", });
+    const [dynamicColumns, setDynamicColumns] = useState(() => { const savedColumns = localStorage.getItem("invoiceColumns"); return savedColumns ? JSON.parse(savedColumns) : []; });
+    const [selectedProductIndex, setSelectedProductIndex] = useState<number | null>(null);
+    const [priceUnit, setPriceUnit] = useState(localStorage.getItem('priceUnit') || '€');
+
+    const { downloadPDF, isLoading, generatePDF, generatePreview } = useInvoicePDF({ clientInfo, companyInfo, paymentInfo, rows, columns: dynamicColumns, selectedDate, imageSrc, priceUnit });
+
     useEffect(() => {
         const storedInfo = localStorage.getItem('companyInfos');
         if (storedInfo) {
@@ -59,37 +54,9 @@ export const Invoice = () => {
         }
     }, []);
 
-
-    const toggleVisibility = (field: keyof typeof visibility) => {
-        setVisibility((prev: any) => {
-            const newVisibility = { ...prev, [field]: !prev[field] };
-            return newVisibility;
-        });
-    };
-    const maskEmail = (email: string) => {
-        const [localPart, domain] = email.split('@');
-        const maskedLocalPart = localPart.replace(/./g, '*');
-        return `${maskedLocalPart}@${domain}`;
-    };
-
-    const maskPhone = (phone: string) => {
-        const phoneNumber = phone.replace(/\D/g, '');
-        const visiblePart = phoneNumber.slice(-4);
-        const maskedPart = phoneNumber.slice(0, -4).replace(/\d/g, '*');
-
-        return `${maskedPart}${visiblePart}`;
-    };
     const handleSave = () => {
         localStorage.setItem('companyInfos', JSON.stringify([companyInfo]));
-        toast.success(t('toast.saveInfo.success'), {
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: isDarkMode ? 'dark' : 'light',
-        });
+        toast.success(t('toast.saveInfo.success'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
     };
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -99,134 +66,51 @@ export const Invoice = () => {
         }));
     };
 
-    const generateInvoicePDF = (): Promise<Uint8Array> => {
-        return new Promise<Uint8Array>((resolve, reject) => {
-            const doc = new jsPDF("portrait", "mm", "a4");
-            const paymentType = "Iban"; // Valeur dynamique : "iban", "paypal", ou "other"
-
-            // Définir le texte en fonction du mode de paiement
-            let paymentText = "";
-
-            if (paymentType === "Iban") {
-                paymentText = "Virement bancaire";
-            } else if (paymentType === "Paypal") {
-                paymentText = "PayPal";
-            } else if (paymentType === "Other") {
-                paymentText = "Autre";
-            }
-            // Obtenir les dimensions de la page
-            const pageWidth = doc.internal.pageSize.getWidth(); // 210 mm
-            const pageHeight = doc.internal.pageSize.getHeight(); // 297 mm
-
-            // 1. En-tête (Bandeau supérieur)
-            doc.setFillColor("F2F2F2");
-            doc.rect(0, 0, pageWidth, 60, "F");
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(24);
-            doc.text("Facture", pageWidth - 10, 20, { align: "right" });
-            doc.setTextColor("#4D4D4D");
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(12);
-            doc.text("N° de facture : #0000", pageWidth - 10, 30, { align: "right" });
-            doc.text(`${selectedDate}`, pageWidth - 10, 35, { align: "right" });
-            doc.text(`Mode de paiement : ${paymentText}`, pageWidth - 10, 40, { align: "right" });
-            doc.text(` ${paymentInfo.type || 'Non défini'} : ${paymentInfo.details || 'Non renseigné'}`, pageWidth - 10, 45, { align: "right" });
-            if (imageSrc) {
-                doc.addImage(imageSrc, "PNG", 10, 10, 50, 40);
-            } else {
-                doc.setFillColor("150"); // Gris foncé
-                doc.rect(10, 10, 40, 40, "F");
-            }
-            doc.setTextColor("");
-            // 2. Section client et auteur
-            // Informations du client (à gauche)
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
-            doc.text("Facturé à :", 10, 75);
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(13);
-            doc.setTextColor("#4D4D4D");
-            doc.text("Entreprise Client\nAdresse Client\nTel client\nEmail", 10, 82);
-            doc.setTextColor("");
-
-            // Informations de l'auteur (à droite)
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
-            doc.text("Facture de :", pageWidth - 10, 75, { align: "right" });
-            doc.setTextColor("#4D4D4D");
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(13);
-            doc.text(
-                `${companyInfo.authorCompanyName}\n${companyInfo.authorAddress}\n${companyInfo.authorPhone}\n${companyInfo.authorEmail}\nSIRET: ${companyInfo.siret}`,
-                pageWidth - 10, 82, { align: "right" }
-            );
-            doc.setTextColor("");
-
-            // 3. Tableau des lignes de facturation
-
-
-            // Sauvegarde du PDF
-            // const date = new Date().toISOString().slice(0, 10);
-            // doc.save(`facture_${date}.pdf`);
-            const pdfBytes = doc.output("arraybuffer");
-            resolve(new Uint8Array(pdfBytes));
-        })
-    }
-    const handleDownloadPDF = async () => {
-        try {
-            setIsLoading(true);
-            const pdfBytes = await generateInvoicePDF();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            const date = new Date().toISOString().slice(0, 10);
-            link.download = `facture_${date}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setIsLoading(false);
-            toast.success(t('toast.downloadPDF.success'), {
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: isDarkMode ? 'dark' : 'light',
-            });
-        } catch (error) {
-            console.error('Erreur lors du téléchargement du PDF:', error);
-            setIsLoading(false);
-            toast.error(t('toast.downloadPDF.error'), {
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: isDarkMode ? 'dark' : 'light',
-            });
-        }
+    const handleInsertClient = (client: Client) => {
+        setClientInfo(client);
+        toast.success(`Client "${client.companyName}" inséré avec succès !`, {
+            autoClose: 3000,
+        });
     };
 
     useEffect(() => {
-        // Crée un délai (debounce) pour attendre avant de régénérer
+        localStorage.setItem("invoiceColumns", JSON.stringify(dynamicColumns));
+        localStorage.setItem("invoiceRows", JSON.stringify(rows));
+    }, [dynamicColumns, rows]);
+
+    const addDynamicColumn = () => {
+        if (dynamicColumns.length >= 4) {
+            toast.error("Vous ne pouvez pas ajouter plus de 4 colonnes.", { theme: isDarkMode ? 'dark' : 'light' });
+            return;
+        }
+        const newColumn = {
+            header: `Colonne ${dynamicColumns.length + 1}`,
+            dataKey: `col${dynamicColumns.length + 1}`,
+        };
+        setDynamicColumns([...dynamicColumns, newColumn]);
+        setRows(rows.map((row: { [x: string]: any; }) => ({ ...row, [newColumn.dataKey]: "" })));
+    };
+
+    const handleEditColumn = (index: any, newHeader: any) => {
+        const updatedColumns = [...dynamicColumns];
+        updatedColumns[index].header = newHeader;
+        setDynamicColumns(updatedColumns);
+    };
+
+    useEffect(() => {
         const timeout = setTimeout(async () => {
             try {
-                const pdfBytes = await generateInvoicePDF(); // Regénère le PDF
+                const pdfBytes = await generatePDF();
                 const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const blobUrl = URL.createObjectURL(pdfBlob);
 
-                // Mets à jour l'iframe avec le nouveau PDF
                 setPdfPreviewUrl(blobUrl);
             } catch (error) {
                 console.error('Erreur lors de la mise à jour du PDF :', error);
             }
-        }, 2000); // Ajuste le délai selon tes besoins (ex. 2 secondes)
-
-        // Nettoie le timeout précédent s'il y a un nouveau changement
+        }, 2000);
         return () => clearTimeout(timeout);
-    }, [companyInfo, paymentInfo, selectedDate]);
+    }, [clientInfo, companyInfo, paymentInfo, selectedDate, dynamicColumns, rows]);
 
     useEffect(() => {
         if (isAutoDate) {
@@ -239,85 +123,146 @@ export const Invoice = () => {
             return () => clearInterval(intervalId);
         }
     }, [isAutoDate]);
+    useEffect(() => {
+        setClientInfo(selectedClient || clientInfo);
+    }, [selectedClient]);
 
     const handleCustomDate = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDate(e?.target.value);
     }
 
+    const handleDeleteClient = (email: string) => {
+        const updatedClients = clients.filter((client) => client.email !== email);
+        localStorage.setItem('clients', JSON.stringify(updatedClients));
+        setClients(updatedClients);
+    };
+    const handleEditClient = (updatedClient: Client) => {
+        const savedClients = JSON.parse(localStorage.getItem('clients') || '[]') as Client[];
+        const updatedClients = savedClients.map(client =>
+            client.email === updatedClient.email ? updatedClient : client
+        );
+        localStorage.setItem('clients', JSON.stringify(updatedClients));
+        setClients(updatedClients); // Met à jour l'état si nécessaire
+    };
+
+
+    const removeColumn = (indexToRemove: number) => {
+        const columnToRemove = dynamicColumns[indexToRemove].dataKey;
+        const updatedColumns = dynamicColumns.filter((_: any, index: number) => index !== indexToRemove);
+        setDynamicColumns(updatedColumns);
+        const updatedRows = rows.map((row: { [x: string]: any; }) => {
+            const { [columnToRemove]: _, ...rest } = row;
+            return rest;
+        });
+        setRows(updatedRows);
+    };
+    const addRowToTable = () => {
+        if (!formData.product || !formData.total) {
+            toast.error(("Les champs Produit et Total sont obligatoires."), { theme: isDarkMode ? 'dark' : 'light', });
+            return;
+        }
+
+        const newRow = {
+            product: formData.product,
+            total: formData.total,
+            ...dynamicColumns.reduce((acc: { [x: string]: string; }, col: { dataKey: string | number; }) => {
+                acc[col.dataKey] = formData[col.dataKey] || "";
+                return acc;
+            }, {}),
+        };
+
+        setRows([...rows, newRow]);
+        setFormData({ product: "", total: "" });
+    };
+
+    const handleEditProduct = (index: number, key: string, value: string) => {
+        const updatedRows = [...rows];
+        updatedRows[index][key] = value;
+        setRows(updatedRows);
+    };
+
+    const handleDeleteProduct = (index: number) => {
+        const updatedRows = rows.filter((_: any, i: number) => i !== index);
+        setRows(updatedRows);
+    };
+
     return (
         <>
 
-            <Flex direction={'column'} className='invoice__container' height={"100%"} >
-                <Flex className='invoice__navigation' height={'40px'} width={'fit-content'}>
+            <Flex direction={'column'} height={"100%"}>
+                {/* <Flex className='invoice__navigation' height={'40px'} width={'fit-content'}>
                     <Box>Invoice, nav</Box>
-                </Flex >
-                <Flex p={'8'} direction={'row'} justify={'between'} gap={'4'} align={'center'} className='invoice__content' height={"100%"}>
+                </Flex > */}
+                <Flex p={'4'} direction={'row'} justify={'between'} gap={'0'} align={'center'} className='invoice__content' height={"100%"}>
+                    <Flex height={"100%"} direction="column" align={'center'} gap={'2'} className='' >
 
-                    <ScrollArea className='scrollbox actionbar_left' scrollbars={"vertical"} >
-                        <Flex direction="column" align={'center'} gap={'8'} >
+                        <ScrollArea className='scrollbox actionbar full-height' scrollbars={"vertical"} >
+                            <Flex direction="column" align={'center'} gap={'8'} >
 
-                            <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
-                                <Text size={"2"} weight="bold">Logo</Text>
-                                <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__logo'>
-                                    <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} className='card__img' style={{ width: "100%" }} />
+                                <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                    <Text size={"2"} weight="bold">{t('features.invoice.logo')}</Text>
+                                    <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__logo'>
+                                        <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} className='card__img' style={{ width: "100%" }} />
+                                    </Flex>
                                 </Flex>
-                            </Flex>
-                            {/* Date */}
-                            <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                {/* Date */}
+                                <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
 
 
-                                <Text size={"2"} weight="bold">Date</Text>
-                                <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__date' width={"100%"}>
-                                    <Flex direction="column" width="100%">
-                                        <Flex mb={'4'} position="relative" display="flex" justify="between" overflow="hidden" className='button__date__container' p={"1"}>
-                                            <Flex justify={'center'} onClick={() => setIsAutoDate(true)} className={`button__date ${isAutoDate ? "active" : ""}`} p={"1"}> {t('features.invoice.date.today')}</Flex>
-                                            <Flex justify={'center'} onClick={() => setIsAutoDate(false)} className={`button__date ${!isAutoDate ? "active" : ""}`} p={"1"}>{t('features.invoice.date.otherDay')}</Flex>
-                                            <Box className="button__date__indicator" style={{}}></Box>
+                                    <Text size={"2"} weight="bold">{t('features.invoice.date.title')}</Text>
+                                    <Flex direction="column" justify={'center'} align={'center'} className='actionbar_left__date' width={"100%"}>
+                                        <Flex direction="column" width="100%">
+                                            <Flex mb={'4'} position="relative" display="flex" justify="between" overflow="hidden" className='button__date__container' p={"1"}>
+                                                <Flex justify={'center'} onClick={() => setIsAutoDate(true)} className={`button__date ${isAutoDate ? "active" : ""}`} p={"1"}>{t('features.invoice.date.today')}</Flex>
+                                                <Flex justify={'center'} onClick={() => setIsAutoDate(false)} className={`button__date ${!isAutoDate ? "active" : ""}`} p={"1"}>{t('features.invoice.date.otherDay')}</Flex>
+                                                <Box className="button__date__indicator" style={{}}></Box>
+                                            </Flex>
+                                            <Box width={"100%"}>
+
+                                                {isAutoDate ? (
+                                                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }}>
+                                                        <Button disabled style={{ width: "100%" }}>
+                                                            {selectedDate}
+                                                        </Button>
+                                                    </motion.div>
+                                                ) : (
+                                                    <motion.input type="date" value={selectedDate} onChange={handleCustomDate} className="datepicker" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }} />
+                                                )}
+
+                                            </Box>
                                         </Flex>
-                                        <Box width={"100%"}>
 
-                                            {isAutoDate ? (
-                                                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }}>
-                                                    <Button disabled style={{ width: "100%" }}>
-                                                        {selectedDate}
-                                                    </Button>
-                                                </motion.div>
-                                            ) : (
-                                                <motion.input type="date" value={selectedDate} onChange={handleCustomDate} className="datepicker" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }} />
-                                            )}
-
-                                        </Box>
                                     </Flex>
-
                                 </Flex>
-                            </Flex>
-                            {/* payement */}
-                            <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                {/* payement */}
+                                <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                    <Text size={"2"} weight="bold">{t('features.invoice.payment')}</Text>
+                                    <Flex direction="column" justify={'center'} align={'center'} className='actionbar_left__date' width={"100%"}>
+                                        <Flex direction="column" width="100%">
+                                            <PaymentSelection onPaymentChange={(type, value) => setPaymentInfo({ type, details: value })} />
+                                        </Flex>
 
-
-                                <Text size={"2"} weight="bold">payement</Text>
-                                <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__date' width={"100%"}>
-                                    <Flex direction="column" width="100%">
-                                        <PaymentSelection onPaymentChange={(type, value) => setPaymentInfo({ type, details: value })} />
                                     </Flex>
+                                </Flex>
+                                {/* auteur */}
+                                <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                    <Text size={"2"} weight="bold">{t('features.invoice.author')}</Text>
+                                    <Flex direction="column" justify={'center'} align={'center'} className='actionbar_left__author'>
+                                        <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} boxWidth='100%' flexJustify='center' />
 
+                                    </Flex>
+                                </Flex>
+                                {/* client */}
+                                <Flex direction="column" align="center" gap="4" width="100%">
+                                    <Text size="2" weight="bold">{t('features.invoice.customer')}</Text>
+                                    <Flex direction="column" gap="2" width="100%">
+                                        <ClientForm clientInfo={selectedClient} handleChange={handleChange} handleSave={handleSave} boxWidth='100%' />
+                                    </Flex>
                                 </Flex>
                             </Flex>
-                            {/* auteur */}
-                            <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
-                                <Text size={"2"} weight="bold">
-                                    author
-                                </Text>
-                                <Flex direction="column" justify={'center'} align={'center'} p={'2'} className='actionbar_left__author'>
-                                    <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} boxWidth='100%' flexJustify='center' />
+                        </ScrollArea>
+                    </Flex>
 
-                                </Flex>
-                            </Flex>
-
-
-                            {/* Fin */}
-                        </Flex>
-                    </ScrollArea>
                     <Flex className='invoice__paper' direction={'column'} justify={'center'} align={'center'} gap={'4'}>
                         <Box height={'840px'} width={'595px'} style={{ "backgroundColor": "aliceblue" }}>
                             <Box height={'840px'} width={'595px'} className='invoice__paper__content pdf-preview-container'>
@@ -326,23 +271,110 @@ export const Invoice = () => {
                                 )}
                             </Box>
                         </Box>
-                        <Box>
-                            test
-                        </Box>
                     </Flex>
-                    <Box className='actionbar_right' height={'80%'} width={'14vw'}>
-                        <ScrollArea>
-                            <Box mt="4" width="100%">
-                                <Tooltip content={t('utils.tooltips.downloadpdf')}>
-                                    <Button color="blue" variant="soft" className='btncursor' size={'3'} onClick={handleDownloadPDF}>
-                                        <Text size="2" weight="regular">{t('utils.downloadpdf')}</Text>
-                                    </Button>
-                                </Tooltip>
-                            </Box>
+                    <Flex direction="column" align={'center'} gap={'2'} className='' height={"100%"}>
 
+                        <ScrollArea className='scrollbox actionbar full-height' scrollbars={"vertical"} >
+                            <Flex direction="column" align={'center'} gap={'8'} width={"100%"} >
+
+                                {/* colonne */}
+                                <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                    <Text size={"2"} weight="bold">{t('features.invoice.table')}</Text>
+                                    <Flex direction="column" justify={'center'} align={'center'} width={"100%"}>
+                                        <Flex direction="column" width="100%" gap="3">
+                                            <TextField.Root placeholder="Produit" size="2" disabled>
+                                                <TextField.Slot side={"right"}>
+                                                    <Lock size={14} />
+                                                </TextField.Slot>
+                                            </TextField.Root>
+                                            {dynamicColumns.map((col: any, index: number) => (
+                                                <Box key={col.dataKey} width={"100%"} >
+                                                    <TextField.Root placeholder="" size="2" value={col.header} onChange={(e) => handleEditColumn(index, e.target.value)}>
+                                                        <TextField.Slot side={'right'}>
+                                                            <IconButton onClick={() => removeColumn(index)} variant="ghost" size={"1"}>
+                                                                <Trash2Icon size={14} />
+                                                            </IconButton>
+                                                        </TextField.Slot>
+                                                    </TextField.Root>
+
+                                                </Box>
+                                            ))}
+                                            <TextField.Root placeholder="Total" size="2" disabled>
+                                                <TextField.Slot side={"right"}>
+                                                    <Lock size={14} />
+                                                </TextField.Slot>
+                                            </TextField.Root>
+                                            <Button variant="soft" onClick={addDynamicColumn}>
+                                                <Text size="2" weight="regular">{t('buttons.addColumns')}</Text>
+                                            </Button>
+
+                                        </Flex>
+
+                                    </Flex>
+                                </Flex>
+                                <ContainerFeature title="features.invoice.product">
+                                    <Flex direction="column" gap="2" width="100%">
+                                        <TextField.Root placeholder={t('features.invoice.tableItem.product')} value={formData.product} onChange={(e) => setFormData({ ...formData, product: e.target.value })} />
+                                        {dynamicColumns.map((col: any) => (<TextField.Root key={col.dataKey} placeholder={col.header} value={formData[col.dataKey] || ""} onChange={(e) => setFormData({ ...formData, [col.dataKey]: e.target.value })} />))}
+                                        <TextField.Root placeholder={`${t('features.invoice.tableItem.total')} (${priceUnit})`} value={formData.total} onChange={(e) => setFormData({ ...formData, total: e.target.value })} />
+                                        <Button variant="soft" onClick={() => addRowToTable()}>{t('buttons.addProduct')}</Button>
+                                    </Flex>
+                                </ContainerFeature>
+
+                                <ContainerFeature title="features.invoice.product">
+                                    <Flex direction="column" gap="2" width="100%">
+                                        <DropdownMenu.Root>
+                                            <DropdownMenu.Trigger>
+                                                <Button variant="soft">{selectedProductIndex !== null && rows[selectedProductIndex] ? rows[selectedProductIndex].product : 'Sélectionner un produit'}</Button>
+                                            </DropdownMenu.Trigger>
+                                            <DropdownMenu.Content>
+                                                {rows.length > 0 ? rows.map((row: any, index: number) => (
+                                                    <DropdownMenu.Item key={index} onSelect={() => setSelectedProductIndex(index)}>
+                                                        {row.product}
+                                                    </DropdownMenu.Item>
+                                                )) : (
+                                                    <DropdownMenu.Item disabled>Aucun produit disponible</DropdownMenu.Item>
+                                                )}
+                                            </DropdownMenu.Content>
+                                        </DropdownMenu.Root>
+                                        {selectedProductIndex !== null && rows[selectedProductIndex] && (
+                                            <Flex direction="column" gap="2" width="100%">
+                                                <TextField.Root value={rows[selectedProductIndex].product} onChange={(e) => handleEditProduct(selectedProductIndex, 'product', e.target.value)} />
+                                                {dynamicColumns.map((col: any) => (
+                                                    <TextField.Root key={col.dataKey} value={rows[selectedProductIndex][col.dataKey]} onChange={(e) => handleEditProduct(selectedProductIndex, col.dataKey, e.target.value)} />
+                                                ))}
+                                                <TextField.Root value={rows[selectedProductIndex].total} placeholder={`Total (${priceUnit})`} onChange={(e) => handleEditProduct(selectedProductIndex, 'total', e.target.value)} />
+                                                <Flex gap="2">
+                                                    <Button variant="soft" color="red" onClick={() => handleDeleteProduct(selectedProductIndex)}>{t('buttons.delete')}</Button>
+                                                    <Button variant="soft" onClick={() => setSelectedProductIndex(null)}>{t('buttons.save')}</Button>
+                                                </Flex>
+                                            </Flex>
+                                        )}
+                                    </Flex>
+                                </ContainerFeature>
+
+                                {/* template */}
+                                <Flex direction="column" align={'center'} gap={'4'} width={"100%"}>
+                                    <Text size={"2"} weight="bold">{t('features.invoice.payment')}</Text>
+                                    <Flex direction="column" justify={'center'} align={'center'} className='actionbar_left__date' width={"100%"}>
+                                        <Flex direction="column" width="100%">
+                                            <PaymentSelection onPaymentChange={(type, value) => setPaymentInfo({ type, details: value })} />
+                                        </Flex>
+
+                                    </Flex>
+                                </Flex>
+                            </Flex>
 
                         </ScrollArea>
-                    </Box>
+                        <Flex className='actionbar ' width={"100%"} minHeight={"10%"}>
+                            <Tooltip content={t('utils.tooltips.downloadpdf')}>
+                                <Button color="blue" variant="soft" className='btncursor' size={'3'} onClick={downloadPDF}>
+                                    <Text size="2" weight="regular">{t('buttons.download.pdf')}</Text>
+                                </Button>
+                            </Tooltip>
+                        </Flex>
+                    </Flex>
+
                 </Flex >
             </Flex >
         </>

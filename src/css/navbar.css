@@ -27,7 +27,6 @@
     width: 100%;
     position: relative;
     height: 40px;
-    /* padding: 10px 30px; */
     border: none;
 
     border-top-left-radius: var(--tab-border-radius);
@@ -76,7 +75,6 @@
 }
 
 .tab__content {
-    /* background-color: var(--gray-2); */
     background-color: var(--gray-2);
 }
 

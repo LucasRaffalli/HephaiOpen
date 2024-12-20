@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Flex, Box, TextField, Button, Text } from '@radix-ui/themes';
 
 interface PaymentSelectionProps {
-    onPaymentChange?: (type: string, value: string) => void; // Callback optionnel pour envoyer les données sélectionnées
+    onPaymentChange?: (type: string, value: string) => void;
 }
 
 const PaymentSelection: React.FC<PaymentSelectionProps> = ({ onPaymentChange }) => {
-    const [selectedField, setSelectedField] = useState<string | null>(null); // Champ actuellement sélectionné
+    const [selectedField, setSelectedField] = useState<string | null>(null);
     const [paymentData, setPaymentData] = useState({
         Iban: '',
         Paypal: '',
@@ -18,10 +18,9 @@ const PaymentSelection: React.FC<PaymentSelectionProps> = ({ onPaymentChange }) 
         Other: '',
     });
 
-    // Regex pour valider les champs
     const regexRules = {
-        iban: /^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$/, // Format de base pour l'IBAN (2 lettres, 2 chiffres, suivi d'une chaîne alphanumérique)
-        paypal: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, // Email classique
+        iban: /^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$/,
+        paypal: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     };
 
     const validateField = (field: string, value: string) => {
@@ -35,11 +34,11 @@ const PaymentSelection: React.FC<PaymentSelectionProps> = ({ onPaymentChange }) 
             ...prevErrors,
             [field]: errorMessage,
         }));
-        return errorMessage === ''; // Retourne vrai si pas d'erreur
+        return errorMessage === '';
     };
 
     const handleFieldSelect = (field: string) => {
-        setSelectedField(field); // Définit le champ actif
+        setSelectedField(field);
     };
 
     const handleInputChange = (field: string, value: string) => {

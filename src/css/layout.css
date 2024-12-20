@@ -1,13 +1,3 @@
-#layout {
-    background-color: blue;
-    /* width: 100vw; */
-    /* height: 100vh; */
-}
-
-.header {
-    /* background-color: aqua; */
-}
-
 .layout-container {
     display: flex;
     flex-direction: column;
@@ -77,6 +67,6 @@
     background-color: #fff;
 }
 
-.view__container{
+.view__container {
     overflow: hidden;
 }

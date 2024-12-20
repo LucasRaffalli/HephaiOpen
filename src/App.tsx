@@ -6,8 +6,6 @@ import { Invoice } from '@/views/Invoice'
 import Chart from './views/Chart'
 import Settings from './views/Settings'
 import Clients from './components/navbar/nav_content/Clients'
-import NavigationLayout from './layout/NavigationLayout'
-import SettingsBackup from './views/Settings__backup'
 
 function App() {
   return (
@@ -16,13 +14,8 @@ function App() {
         <Route index element={<Home />} />
         <Route path="navigation/factures" element={<Invoice />} />
         <Route path="navigation/graphique" element={<Chart />} />
-        {/* <Route path="navigation" element={<NavigationLayout />}>
-          <Route path="factures" element={<Invoice />} />
-          <Route path="graphique" element={<Chart />} />
-        </Route> */}
         <Route path="clients" element={<Clients />} />
         <Route path="settings" element={<Settings />} />
-        {/* <Route path="settings" element={<SettingsBackup />} /> */}
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

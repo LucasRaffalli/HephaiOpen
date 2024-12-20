@@ -1,18 +1,16 @@
-import { Avatar, Box, Card, Flex, TabNav, Tabs, Text } from '@radix-ui/themes';
+import { Avatar, Box, Card, Flex, ScrollArea, TabNav, Tabs, Text } from '@radix-ui/themes';
 import "../../css/navbar.css";
 import Clients from './nav_content/Clients';
 import Features from '@/components/navbar/nav_content/Features';
 import { useEffect, useState } from 'react';
 import { getAccentColorHex } from '../../utils/getAccentColorHex';
 import { SettingsGearIcon } from '../design/IconsAnimate';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { version,name,author,description,license,type } from '../../../package.json';
+import { NavLink } from 'react-router-dom';
+import { version, name, } from '../../../package.json';
 
 
 export default function Navbar() {
     const [mainTab, setMainTab] = useState<'navigation' | 'clients'>('navigation');
-    const location = useLocation();
-    const colorHexTheme = getAccentColorHex();
 
     const borderRadius = mainTab === 'navigation' ? '0 var(--radius-4) 0 0' : 'var(--radius-4) 0 0 0';
 
@@ -25,7 +23,7 @@ export default function Navbar() {
         <Flex justify={'between'} direction={'column'} height={'100%'} gap={'4'}>
             <Box className="navbar" height={'100%'} >
                 <Flex direction={"column"} justify={"between"} maxWidth='240px' height={"100%"}>
-                    <Flex width="28vw" maxWidth="240px" direction="column" gap="2">
+                    <Flex width="29vw" maxWidth="240px" direction="column" gap="2">
                         <Flex className="tabs" width="100%" justify="between" align="center">
                             {tabs.map((tab) => (
                                 <div key={tab.id} className={`tab ${mainTab === tab.id ? 'active' : ''}`} onClick={() => setMainTab(tab.id as 'navigation' | 'clients')}>
@@ -36,9 +34,13 @@ export default function Navbar() {
                         </Flex>
                     </Flex>
 
-                    <Flex className="tab__content" p={'2'} width="100%" height="100%" direction={'column'} gap={"2"} style={{ borderRadius }}>
-                        {mainTab === 'navigation' && <Features />}
-                        {mainTab === 'clients' && <Clients />}
+                    <Flex className="tab__content" height="100%" pt={'4'} pb="4" pl="4" style={{ borderRadius }}>
+                        {mainTab === 'navigation' &&
+                            <Features />
+                        }
+                        {mainTab === 'clients' &&
+                            <Clients />
+                        }
                     </Flex>
                 </Flex>
             </Box >
