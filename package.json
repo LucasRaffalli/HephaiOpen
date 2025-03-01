@@ -35,7 +35,7 @@
     "pdfjs-dist": "^4.8.69",
     "pspdfkit": "^2024.8.0",
     "react-i18next": "^15.1.1",
-    "react-router-dom": "^6.27.0",
+    "react-router-dom": "^7.2.0",
     "react-svg": "^16.1.34",
     "react-toastify": "^10.0.6"
   },
