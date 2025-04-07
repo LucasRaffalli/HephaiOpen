@@ -1,24 +1,43 @@
 import React, { useEffect, useRef, useState, forwardRef } from 'react'
 import { useTheme } from '@/utils/ThemeContext';
 import { AspectRatio, Avatar, Box, Button, Flex, Heading, IconButton, Select, Separator, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
-import { AccentColor, CompanyInfo, Client } from '@/type/hephai'
+import { AccentColor, CompanyInfo, Client } from '@/types/hephai'
 import { useTranslation } from 'react-i18next';
 import '@/css/setting.css'
 import { exportData } from '@/utils/exportData';
 import i18n from '@/i18n';
 import { ToastContainer, toast } from 'react-toastify';
 import { getAccentColorHex, colorMap } from '@/utils/getAccentColorHex';
-import LanguageSettings from '@/components/LanguageSettings';
-import UserInformation from '@/components/UserInformation';
-import ProfileImage from '@/components/ProfileImage';
-import ThemeSettings from '@/components/ThemeSettings';
+import LanguageSettings from '@/components/Settings/LanguageSettings';
+import UserInformation from '@/components/Settings/UserInformation';
+import ProfileImage from '@/components/Settings/ProfileImage';
+import ThemeSettings from '@/components/Settings/ThemeSettings';
 import { useDarkMode } from '@/hooks/useDarkMode';
-
+import Tva from '@/components/Settings/Tva';
+import { motion } from "motion/react"
+import PriceUnit from '@/components/Settings/PriceUnit';
 
 export default function Settings() {
     const { t } = useTranslation();
 
-    const loadVisibilityPreferences = () => { const savedVisibility = localStorage.getItem('visibilityPreferences'); return savedVisibility ? JSON.parse(savedVisibility) : { companyName: true, authorAddress: false, authorPhone: false, authorEmail: false, siret: false }; };
+    const loadVisibilityPreferences = () => {
+        const defaultVisibility = {
+            authorCompanyName: true,
+            authorAddress: false,
+            authorPhone: false,
+            authorEmail: false,
+            siret: false
+        };
+
+        const savedVisibility = localStorage.getItem('visibilityPreferences');
+        if (!savedVisibility) {
+            localStorage.setItem('visibilityPreferences', JSON.stringify(defaultVisibility));
+            return defaultVisibility;
+        }
+
+        return { ...defaultVisibility, ...JSON.parse(savedVisibility) };
+    };
+
     const [visibility, setVisibility] = useState(loadVisibilityPreferences);
     const { toggleTheme, accentColor, setAccentColor } = useTheme();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -29,6 +48,7 @@ export default function Settings() {
     const colorHexTheme = getAccentColorHex();
     const gradientBackground = isDarkMode ? `linear-gradient(180deg, ${colorHexTheme}, transparent 92%)` : `linear-gradient(180deg, ${colorHexTheme}, transparent)`;
     const [priceUnit, setPriceUnit] = useState(localStorage.getItem('priceUnit') || 'euro');
+    const [tva, setTva] = useState(localStorage.getItem('tva') || '0');
     const [clients, setClients] = useState<Client[]>(() => {
         const storedClients = localStorage.getItem('clients');
         return storedClients ? JSON.parse(storedClients) : [];
@@ -163,31 +183,40 @@ export default function Settings() {
         }
     };
 
-
-    const saveVisibilityPreferences = (newVisibility: typeof visibility) => {
+    const toggleVisibility = (field: string) => {
+        const newVisibility = {
+            ...visibility,
+            [field]: !visibility[field]
+        };
+        setVisibility(newVisibility);
         localStorage.setItem('visibilityPreferences', JSON.stringify(newVisibility));
     };
 
-    const toggleVisibility = (field: keyof typeof visibility) => {
-        setVisibility((prev: any) => {
-            const newVisibility = { ...prev, [field]: !prev[field] };
-            saveVisibilityPreferences(newVisibility);
-            return newVisibility;
-        });
-    };
-
     const maskEmail = (email: string) => {
+        if (!email) return '••••••••••';
         const [localPart, domain] = email.split('@');
-        const maskedLocalPart = localPart.replace(/./g, '*');
+        if (!domain) return '••••••••••';
+        const maskedLocalPart = '•'.repeat(Math.min(localPart.length, 6));
         return `${maskedLocalPart}@${domain}`;
     };
 
     const maskPhone = (phone: string) => {
-        const phoneNumber = phone.replace(/\D/g, '');
-        const visiblePart = phoneNumber.slice(-4);
-        const maskedPart = phoneNumber.slice(0, -4).replace(/\d/g, '*');
+        if (!phone) return '••••••••••';
+        const cleaned = phone.replace(/\D/g, '');
+        if (cleaned.length < 4) return '••••••••••';
+        return '•'.repeat(cleaned.length - 4) + cleaned.slice(-4);
+    };
 
-        return `${maskedPart}${visiblePart}`;
+    const maskSiret = (siret: string) => {
+        if (!siret) return '••••••••••';
+        const cleaned = siret.replace(/\D/g, '');
+        if (cleaned.length < 5) return '••••••••••';
+        return '•'.repeat(cleaned.length - 4) + cleaned.slice(-4);
+    };
+
+    const maskCompanyName = (name: string) => {
+        if (!name || name.trim().length === 0) return '••••••••••';
+        return '•'.repeat(10);
     };
 
     const handlePriceUnitChange = (unit: string) => {
@@ -197,92 +226,166 @@ export default function Settings() {
     };
 
 
+    useEffect(() => {
+        const savedVisibility = localStorage.getItem('visibilityPreferences');
+        if (savedVisibility) {
+            setVisibility(JSON.parse(savedVisibility));
+        }
+    }, []);
+
+    const containerLeftVariants = {
+        hidden: {
+            x: -500,
+            opacity: 0,
+            scale: 0.95,
+            skew: 2
+        },
+        visible: {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            skew: 0,
+            transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+                duration: 0.3,
+                when: "beforeChildren",
+                staggerChildren: 0.05,
+                delayChildren: 0.1
+            }
+        }
+    };
+
+    const featureVariants = {
+        hidden: {
+            x: -30,
+            opacity: 0,
+            scale: 0.95
+        },
+        visible: {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 20,
+                mass: 0.8
+            }
+        }
+    };
+
     return (
-        <Flex width={'100%'} className='test2' height={'100%'}>
-            <Box className='scrolbar' width={'100%'} height={'100%'} overflow={'auto'}  >
-
-
-                <Heading mb={'9'} >{t('settings.title')}</Heading>
+        <Flex width={'100%'} className='test2' height={'100%'} style={{ overflow: 'hidden' }}>
+            <Box width={'100%'} height={'100%'} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+                <Heading mb={'9'} className="sticky-title">{t('settings.title')}</Heading>
                 <Flex direction={'row'} className='test'>
-                    <Flex direction={'column'} gap={'9'} ml={'2'}>
+                    <motion.div
+                        variants={containerLeftVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        <Flex direction={'column'} gap={'9'} ml={'2'}>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.informationUser.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.informationUser.subtitle')}</Text>
+                                    </Flex>
+                                    <ProfileImage imageSrc={imageSrc} handleImageChange={handleImageChange} />
+                                </Flex>
+                            </motion.div>
 
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('settings.informationUser.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('settings.informationUser.subtitle')}</Text>
-                            </Flex>
-                            <ProfileImage imageSrc={imageSrc} handleImageChange={handleImageChange} />
-                        </Flex>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.informationUser.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.informationUser.subtitle')}</Text>
+                                    </Flex>
+                                    <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} buttonSize='140px' visibility={visibility} onToggleVisibility={toggleVisibility} />
+                                </Flex>
+                            </motion.div>
 
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('settings.informationUser.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('settings.informationUser.subtitle')}</Text>
-                            </Flex>
-                            <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} />
-                        </Flex>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.accentColor.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.accentColor.subtitle')}</Text>
+                                    </Flex>
+                                    <Flex direction={'row'} gap={'4'} minWidth={'20%'} maxWidth={'50%'} height={'fit-content'} wrap={'wrap'}>
+                                        {Object.entries(colorMap).map(([name, colorCode]) => (
+                                            <Tooltip content={t(`utils.tooltips.colors.${name}`)} key={name}>
+                                                <Box height={'32px'} width={'32px'} key={name} onClick={() => setAccentColor(name as AccentColor)} className={`${'accentColor__btn'} ${accentColor === name ? 'selected' : ''}`} style={{ '--color-bg': '#' + colorCode, } as React.CSSProperties} aria-label={name} />
+                                            </Tooltip>
+                                        ))}
+                                    </Flex>
+                                </Flex>
+                            </motion.div>
 
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('settings.accentColor.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('settings.accentColor.subtitle')}</Text>
-                            </Flex>
-                            <Flex direction={'row'} gap={'4'} minWidth={'20%'} maxWidth={'50%'} height={'fit-content'} wrap={'wrap'}>
-                                {Object.entries(colorMap).map(([name, colorCode]) => (
-                                    <Tooltip content={t(`utils.tooltips.colors.${name}`)} key={name}>
-                                        <Box height={'32px'} width={'32px'} key={name} onClick={() => setAccentColor(name as AccentColor)} className={`${'accentColor__btn'} ${accentColor === name ? 'selected' : ''}`} style={{ '--color-bg': '#' + colorCode, } as React.CSSProperties} aria-label={name} />
-                                    </Tooltip>
-                                ))}
-                            </Flex>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.themeColor.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.themeColor.subtitle')}</Text>
+                                    </Flex>
+                                    <ThemeSettings isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+                                </Flex>
+                            </motion.div>
 
-                        </Flex>
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('settings.themeColor.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('settings.themeColor.subtitle')}</Text>
-                            </Flex>
-                            <ThemeSettings isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-                        </Flex>
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('settings.language.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('settings.language.subtitle')}</Text>
-                            </Flex>
-                            {/*  */}
-                            <LanguageSettings currentLanguage={i18n.language} handleChangeLanguage={handleChangeLanguage} />
-                        </Flex>
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('settings.priceUnit.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('settings.priceUnit.subtitle')}</Text>
-                            </Flex>
-                            <Flex direction={'row'} gap={'4'} minWidth={'20%'} maxWidth={'50%'} height={'fit-content'} wrap={'wrap'}>
-                                <Button variant={priceUnit === '€' ? 'solid' : 'soft'} onClick={() => handlePriceUnitChange('euro')}>{t('settings.priceUnit.euro')} (€)</Button>
-                                <Button variant={priceUnit === '$' ? 'solid' : 'soft'} onClick={() => handlePriceUnitChange('dollar')}>{t('settings.priceUnit.dollar')} ($)</Button>
-                                <Button variant={priceUnit === '£' ? 'solid' : 'soft'} onClick={() => handlePriceUnitChange('pound')}>{t('settings.priceUnit.pound')} (£)</Button>
-                            </Flex>
-                        </Flex>
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('settings.hephai.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('settings.hephai.subtitle')}</Text>
-                            </Flex>
-                            <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
-                                <Tooltip content={t('utils.tooltips.exportjson')}>
-                                    <Button color={AccentColor as any} variant="soft" size={'3'} className='btncursor' onClick={handleExportJson}>
-                                        <Text size="2" weight={'regular'}>{t('buttons.export.json')}</Text>
-                                    </Button>
-                                </Tooltip>
-                                <Tooltip content={t('utils.tooltips.importjson')}>
-                                    <Button color={'green'} variant="soft" size={'3'} className='btncursor' onClick={() => fileInputRef.current?.click()}>
-                                        <input key="inputForFile" ref={fileInputRef} type="file" accept=".json" onChange={handleImportSettings} style={{ display: 'none' }} />
-                                        <Text size="2" weight={'regular'}>{t('buttons.import.json')}</Text>
-                                    </Button>
-                                </Tooltip>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.language.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.language.subtitle')}</Text>
+                                    </Flex>
+                                    <LanguageSettings currentLanguage={i18n.language} handleChangeLanguage={handleChangeLanguage} />
+                                </Flex>
+                            </motion.div>
 
-                            </Flex>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.priceUnit.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.priceUnit.subtitle')}</Text>
+                                    </Flex>
+                                    <PriceUnit />
+                                </Flex>
+                            </motion.div>
+
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"}>
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.tva.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.tva.subtitle')}</Text>
+                                    </Flex>
+                                    <Tva valueTva={tva} />
+                                </Flex>
+                            </motion.div>
+
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.hephai.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.hephai.subtitle')}</Text>
+                                    </Flex>
+                                    <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
+                                        <Tooltip content={t('utils.tooltips.exportjson')}>
+                                            <Button color={AccentColor as any} variant="soft" size={'3'} className='btncursor' onClick={handleExportJson}>
+                                                <Text size="2" weight={'regular'}>{t('buttons.export.json')}</Text>
+                                            </Button>
+                                        </Tooltip>
+                                        <Tooltip content={t('utils.tooltips.importjson')}>
+                                            <Button color={'green'} variant="soft" size={'3'} className='btncursor' onClick={() => fileInputRef.current?.click()}>
+                                                <input key="inputForFile" ref={fileInputRef} type="file" accept=".json" onChange={handleImportSettings} style={{ display: 'none' }} />
+                                                <Text size="2" weight={'regular'}>{t('buttons.import.json')}</Text>
+                                            </Button>
+                                        </Tooltip>
+                                    </Flex>
+                                </Flex>
+                            </motion.div>
                         </Flex>
-                    </Flex>
+                    </motion.div>
                 </Flex>
             </Box >
             <ToastContainer position="bottom-right" />
@@ -293,11 +396,21 @@ export default function Settings() {
                     </Skeleton>
                 </Flex>
                 <Flex direction={'column'} className='effect__color' style={{ color: colorHexTheme }}>
-                    <Text size={'8'} weight={'bold'} className={visibility.companyName ? 'visible-field' : 'password-field'}>{companyInfo.authorCompanyName}</Text>
-                    <Text size={'5'} className={visibility.authorAddress ? 'visible-field' : 'password-field'}>{companyInfo.authorAddress}</Text>
-                    <Text size={'5'} className={visibility.authorPhone ? 'visible-field' : 'password-field'}>{companyInfo.authorPhone}</Text>
-                    <Text size={'5'} className={visibility.authorEmail ? 'visible-field' : 'password-field'}>{companyInfo.authorEmail}</Text>
-                    <Text size={'5'} highContrast className={visibility.siret ? 'visible-field' : 'password-field'}>{companyInfo.siret}</Text>
+                    <Text size={'8'} weight={'bold'}>
+                        {companyInfo.authorCompanyName && (visibility.authorCompanyName ? companyInfo.authorCompanyName : maskCompanyName(companyInfo.authorCompanyName))}
+                    </Text>
+                    <Text size={'5'}>
+                        {visibility.authorAddress ? companyInfo.authorAddress : '••••••••••'}
+                    </Text>
+                    <Text size={'5'}>
+                        {visibility.authorPhone ? companyInfo.authorPhone : maskPhone(companyInfo.authorPhone)}
+                    </Text>
+                    <Text size={'5'}>
+                        {visibility.authorEmail ? companyInfo.authorEmail : maskEmail(companyInfo.authorEmail)}
+                    </Text>
+                    <Text size={'5'} highContrast>
+                        {visibility.siret ? companyInfo.siret : maskSiret(companyInfo.siret)}
+                    </Text>
                 </Flex>
                 <Flex className='effect__color footer__container' justify={'between'} style={{ color: colorHexTheme }} width={"100%"} align={'center'}>
                     <Flex gap={"2"} style={{ border: `2px solid ${colorHexTheme}` }} height={'fit-content'} className='footer__container' >
@@ -306,11 +419,9 @@ export default function Settings() {
                         <Text size={'2'} mr={'2'} weight={"bold"} >{firstJoinDate}</Text>
                     </Flex>
                     <Box width={'20%'}>
-
                         <Text size={'4'} weight={"bold"} >{t('utils.hephai1')}</Text>
                     </Box>
                 </Flex>
-
             </Flex>
         </Flex >
     )

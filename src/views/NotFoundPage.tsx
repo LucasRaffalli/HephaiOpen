@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import React from 'react'
 
 export default function NotFoundPage() {
@@ -5,6 +6,6 @@ export default function NotFoundPage() {
     window.location.href = '/'
   }, 1000)
   return (
-    <div>NotFoundPage</div>
+    <div>{t('text.notFound')}</div>
   )
 }

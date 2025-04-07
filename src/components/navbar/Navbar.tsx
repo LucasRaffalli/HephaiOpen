@@ -1,12 +1,14 @@
-import { Avatar, Box, Card, Flex, ScrollArea, TabNav, Tabs, Text } from '@radix-ui/themes';
+import { Avatar, Box, Card, Flex, Text, Tooltip } from '@radix-ui/themes';
 import "../../css/navbar.css";
 import Clients from './nav_content/Clients';
 import Features from '@/components/navbar/nav_content/Features';
-import { useEffect, useState } from 'react';
-import { getAccentColorHex } from '../../utils/getAccentColorHex';
+import { useState } from 'react';
 import { SettingsGearIcon } from '../design/IconsAnimate';
 import { NavLink } from 'react-router-dom';
 import { version, name, } from '../../../package.json';
+import { motion } from "framer-motion";
+import { t } from 'i18next';
+import HephaiIcon from '../design/icons/hephai';
 
 
 export default function Navbar() {
@@ -34,7 +36,7 @@ export default function Navbar() {
                         </Flex>
                     </Flex>
 
-                    <Flex className="tab__content" height="100%" pt={'4'} pb="4" pl="4" style={{ borderRadius }}>
+                    <Flex className="tab__content" height="100%" pt={'4'} pb="4" pl="4" pr="4" style={{ borderRadius }}>
                         {mainTab === 'navigation' &&
                             <Features />
                         }
@@ -44,24 +46,26 @@ export default function Navbar() {
                     </Flex>
                 </Flex>
             </Box >
-            <Box maxWidth="100%">
-                <NavLink to="/settings" >
-                    <Card className='card_hephai'>
-                        <Flex gap="3" align="center">
-                            <Avatar size="3" src="/favicon.ico" radius="small" fallback="heph" />
-                            <Flex direction="row" gap="2" align="center" justify="between" width="100%">
-                                <Box>
-                                    <Text as="div" size="2" weight="bold">{name}</Text>
-                                    <Text as="div" size="1" weight="light">Version {version}</Text>
-                                </Box>
-                                <SettingsGearIcon size={20} />
-                            </Flex>
-                        </Flex>
-                    </Card>
-                </NavLink>
-            </Box>
-
-
+            <motion.div initial={{ y: 20, opacity: 0, scale: 0.95 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ duration: 0.2, delay: 0.2, type: "spring", stiffness: 400, damping: 20 }}>
+                <Tooltip content={t('utils.tooltips.settings')}>
+                    <Box maxWidth="100%">
+                        <NavLink to="/settings" >
+                            <Card className='card_hephai'>
+                                <Flex gap="3" align="center">
+                                    <Flex direction="row" gap="2" align="center" justify="start" width="100%">
+                                        <HephaiIcon size={40} />
+                                        <Box>
+                                            <Text as="div" size="2" weight="bold">HephaiOpen</Text>
+                                            <Text as="div" size="1" weight="light">{t('text.version')} {version}</Text>
+                                        </Box>
+                                    </Flex>
+                                    <SettingsGearIcon size={20} />
+                                </Flex>
+                            </Card>
+                        </NavLink>
+                    </Box>
+                </Tooltip>
+            </motion.div>
         </Flex >
     );
 }

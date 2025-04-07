@@ -1,0 +1,82 @@
+* {
+    --color-line: var(--gray-a7);
+    ;
+}
+
+.cardStylized__base {
+    border-radius: var(--radius-4);
+    background-color: var(--gray-1);
+    position: relative;
+    overflow: hidden;
+}
+
+.cardStylized__base::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-4);
+    padding: 1.5px;
+    background: linear-gradient(180deg, var(--gray-8), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.cardStylized__base::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    width: 18vw;
+    height: 31vh;
+    border-radius: 100%;
+    background: radial-gradient(circle, var(--accent-11) 0%, var(--accent-9) 48%, var(--gray-1) 100%);
+    filter: blur(50px);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    animation: glowAppear 0.8s ease-out forwards 10ms;
+}
+
+@keyframes glowAppear {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-60%, -60%) scale(1);
+    }
+}
+
+.cardStylized__content {
+    z-index: 3;
+    position: relative;
+    border-radius: var(--radius-2);
+    border: 0.3vh solid var(--color-line);
+}
+
+.cardStylized__content__bottom {
+    border-top: 0.3vh solid var(--color-line);
+}
+
+
+.starsEffect {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    background-image: url('/img/starsHephai.svg');
+    background-size: 110%;
+    background-position: 200% 100% !important;
+    background-repeat: no-repeat;
+    opacity: 1;
+}

@@ -1,76 +1,72 @@
-import { app, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createRequire } from 'node:module'
-import type {
-  ProgressInfo,
-  UpdateDownloadedEvent,
-  UpdateInfo,
-} from 'electron-updater'
+import type { ProgressInfo, UpdateDownloadedEvent, UpdateInfo } from 'electron-updater'
 
-const { autoUpdater } = createRequire(import.meta.url)('electron-updater');
+const { autoUpdater } = createRequire(import.meta.url)('electron-updater')
 
-export function update(win: Electron.BrowserWindow) {
+let isDownloading = false
 
-  // When set to false, the update download will be triggered through the API
+export function update(win: BrowserWindow) {
   autoUpdater.autoDownload = false
   autoUpdater.disableWebInstaller = false
   autoUpdater.allowDowngrade = false
 
-  // start check
-  autoUpdater.on('checking-for-update', function () { })
-  // update available
-  autoUpdater.on('update-available', (arg: UpdateInfo) => {
-    win.webContents.send('update-can-available', { update: true, version: app.getVersion(), newVersion: arg?.version })
-  })
-  // update not available
-  autoUpdater.on('update-not-available', (arg: UpdateInfo) => {
-    win.webContents.send('update-can-available', { update: false, version: app.getVersion(), newVersion: arg?.version })
-  })
-
-  // Checking for updates
+  // 🔎 Vérification des mises à jour
   ipcMain.handle('check-update', async () => {
     if (!app.isPackaged) {
-      const error = new Error('The update feature is only available after the package.')
-      return { message: error.message, error }
+      console.warn("Mise à jour non disponible en mode dev.")
+      return { update: false, message: 'L’update fonctionne seulement en version packagée.' }
     }
 
     try {
-      return await autoUpdater.checkForUpdatesAndNotify()
+      console.log("🔎 Vérification des mises à jour...")
+      const updateCheck = await autoUpdater.checkForUpdates()
+      if (updateCheck?.updateInfo) {
+        win.webContents.send('update-can-available', {
+          update: true,
+          version: app.getVersion(),
+          newVersion: updateCheck.updateInfo.version
+        })
+      } else {
+        win.webContents.send('update-can-available', { update: false })
+      }
+      return updateCheck
     } catch (error) {
-      return { message: 'Network error', error }
+      console.error("❌ Erreur lors de la vérification des mises à jour :", error)
+      return { update: false, message: 'Erreur réseau', error }
     }
   })
 
-  // Start downloading and feedback on progress
-  ipcMain.handle('start-download', (event: Electron.IpcMainInvokeEvent) => {
-    startDownload(
-      (error, progressInfo) => {
-        if (error) {
-          // feedback download error message
-          event.sender.send('update-error', { message: error.message, error })
-        } else {
-          // feedback update progress message
-          event.sender.send('download-progress', progressInfo)
-        }
-      },
-      () => {
-        // feedback update downloaded message
-        event.sender.send('update-downloaded')
-      }
-    )
+  // 📥 Lancement du téléchargement
+  ipcMain.handle('start-download', (event) => {
+    if (isDownloading) {
+      console.warn("⚠️ Téléchargement déjà en cours...")
+      return
+    }
+    isDownloading = true
+
+    autoUpdater.downloadUpdate()
+    autoUpdater.on('download-progress', (progress: ProgressInfo) => {
+      console.log(`📊 Progression du téléchargement : ${progress.percent.toFixed(2)}%`)
+      event.sender.send('download-progress', progress)
+    })
+
+    autoUpdater.on('error', (error: any) => {
+      console.error("❌ Erreur lors du téléchargement :", error)
+      event.sender.send('update-error', { message: error.message, error })
+      isDownloading = false
+    })
+
+    autoUpdater.on('update-downloaded', (event: UpdateDownloadedEvent) => {
+      console.log("✅ Mise à jour téléchargée.")
+      win.webContents.send('update-downloaded')
+      isDownloading = false
+    })
   })
 
-  // Install now
+  // ⚡ Installation de la mise à jour
   ipcMain.handle('quit-and-install', () => {
+    console.log("🚀 Installation de la mise à jour...")
     autoUpdater.quitAndInstall(false, true)
   })
-}
-
-function startDownload(
-  callback: (error: Error | null, info: ProgressInfo | null) => void,
-  complete: (event: UpdateDownloadedEvent) => void,
-) {
-  autoUpdater.on('download-progress', (info: ProgressInfo) => callback(null, info))
-  autoUpdater.on('error', (error: Error) => callback(error, null))
-  autoUpdater.on('update-downloaded', complete)
-  autoUpdater.downloadUpdate()
 }

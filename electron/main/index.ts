@@ -5,7 +5,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { update } from './update'
 import Store from 'electron-store';
-import { SettingsSchema } from '@/type/hephai';
+import { SettingsSchema } from '@/types/hephai';
 import { session } from 'electron/main'
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))

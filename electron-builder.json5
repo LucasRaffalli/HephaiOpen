@@ -35,6 +35,6 @@
   "publish": {
     "provider": "generic",
     "channel": "latest",
-    "url": "https://github.com/ton-utilisateur/hephai/releases/download/${version}/"
+    "url": "https://github.com/lucasraffalli/hephai/releases/download/${version}/"
   }
 }

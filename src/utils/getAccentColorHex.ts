@@ -1,10 +1,9 @@
-import { AccentColor } from '@/type/hephai';
+import { AccentColor } from '@/types/hephai';
 
 export const colorMap: Record<AccentColor, string> = {
     [AccentColor.Tomato]: 'E54D2E',
     [AccentColor.Red]: 'E5484D',
     [AccentColor.Ruby]: 'E54666',
-    // [AccentColor.Crimson]: 'E93D82',
     [AccentColor.Pink]: 'D6409F',
     [AccentColor.Plum]: 'AB4ABA',
     [AccentColor.Purple]: '8E4EC6',

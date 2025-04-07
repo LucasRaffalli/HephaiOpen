@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AlertDialog, Avatar, Box, Button, Callout, Card, ContextMenu, Dialog, DropdownMenu, Flex, Heading, HoverCard, IconButton, Inset, Link, Progress, ScrollArea, Separator, Skeleton, Strong, Switch, Text, TextField, Tooltip } from '@radix-ui/themes';
-import { Client } from '@/type/hephai';
+import { Client } from '@/types/hephai';
 import { AvatarIcon, InfoCircledIcon } from '@radix-ui/react-icons';
 import { BookAIcon, BookUser, EllipsisVertical, FileInput, IdCard } from 'lucide-react';
-import { DeleteIcon, SparklesIcon, SquarePenIcon } from './design/IconsAnimate';
+import { DeleteIcon, SparklesIcon, SquarePenIcon } from '@/components/design/IconsAnimate';
 import { truncateText } from '@/utils/TruncateText';
 import AnimatedText from '@/utils/AnimatedText';
 import { t } from 'i18next';
@@ -22,7 +22,6 @@ const ClientsList: React.FC<ClientsListProps> = ({ clients, onInsertClient, onDe
     const [, setClients] = useState<Client[]>([]);
 
     const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.name, e.target.value);
         if (!editingClient) return;
 
         const { name, value } = e.target;

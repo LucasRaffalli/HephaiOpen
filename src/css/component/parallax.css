@@ -1,0 +1,12 @@
+.parallax-wrapper {
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.parallax-container {
+    position: relative;
+    will-change: transform;
+    transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+    transform-style: preserve-3d;
+    overflow: hidden;
+}

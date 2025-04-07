@@ -1,4 +1,4 @@
-import { AccentColor, ThemeContextType } from '@/type/hephai';
+import { AccentColor, ThemeContextType } from '@/types/hephai';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);

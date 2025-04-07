@@ -1,4 +1,4 @@
-import { Client } from '@/type/hephai';
+import { Client } from '@/types/hephai';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface ClientContextProps {

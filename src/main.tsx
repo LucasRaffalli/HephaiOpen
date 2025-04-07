@@ -10,7 +10,6 @@ import './demos/ipc'
 import { BrowserRouter } from 'react-router-dom';
 import { Theme, ThemePanel } from '@radix-ui/themes';
 import { ThemeProvider, useTheme } from './utils/ThemeContext';
-import { AccentColor, SettingsSchema,ThemeContextType } from './type/hephai';
 import './i18n';
 
 const Root = () => {

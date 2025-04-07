@@ -14,30 +14,51 @@
         },
         "saveInfo": {
             "success": "Information saved successfully!",
-            "error": "Information failed. Please try again."
+            "error": "Information saving failed. Please try again."
         },
         "clientInfo": {
             "success": "Client information saved successfully!",
-            "error": "Client information failed. Please try again."
+            "error": "Client information saving failed. Please try again."
         }
     },
+    "text": {
+        "version": "Version",
+        "error": "Invalid",
+        "notFound": "Not found"
+    },
+    "download": {
+        "title": "Downloading PDF",
+        "message": "Please wait while your document is being prepared...",
+        "complete": "Download complete!",
+        "size": "Size"
+    },
     "buttons": {
+        "update": "Update",
         "popup": "Open popup",
         "bookmark": {
             "add": "Add bookmark",
             "remove": "Remove bookmark",
             "base": "Bookmarks"
         },
-        "addProduct": "Add a product",
-        "addColumns": "Add columns",
-        "addCustomer": "Add a customer",
+        "close": "Close",
+        "clearAll": "Clear All",
+        "addClient": "Add Client",
+        "addProduct": "Add a Product",
+        "addColumns": "Add Columns",
+        "addCustomer": "Add a Customer",
         "delete": "Delete",
         "insert": "Insert",
         "edit": "Edit",
         "save": "Save",
         "cancel": "Cancel",
+        "confirm": "Confirm",
+        "yes": "Yes",
+        "no": "No",
+        "print": "Print",
+        "metadata": "Metadata",
+        "properties": "Properties",
         "upload": {
-            "image": "Upload image"
+            "image": "Upload Image"
         },
         "export": {
             "csv": "Export as CSV",
@@ -54,105 +75,198 @@
             "download": "Download"
         },
         "data": {
-            "save": "Save data"
+            "save": "Save Data"
         }
     },
     "popup": {
         "edit": {
             "client": {
-                "title": "Edit client",
+                "title": "Edit Client",
                 "description": "Modify customer information below"
             }
         },
         "remove": {
             "client": {
-                "title": "Delete client",
+                "title": "Delete Client",
                 "description": "Are you sure you want to delete this customer?"
             }
         }
     },
     "informations": {
         "client": {
-            "nocustomer": "No customers have registered"
+            "nocustomer": "No customers have been registered"
         }
     },
     "features": {
         "invoice": {
             "title": "Invoice",
+            "warning": "The data is censored in the document for privacy reasons, but will be visible once exported.",
             "date": {
                 "title": "Date",
                 "today": "Today",
-                "otherDay": "Other day"
+                "otherDay": "Other Day"
             },
             "tableItem": {
                 "product": "Product",
                 "total": "Total"
             },
+            "number": "Invoice Number",
+            "notProduct": "Select product...",
+            "noProducts": "No product available",
+            "paymentMode": "Payment Method",
+            "paymentMethods": {
+                "iban": "Bank Transfer",
+                "paypal": "Paypal",
+                "cash": "Cash",
+                "cheque": "Check",
+                "other": "Other",
+                "error": {
+                    "ibanLengthError": "The IBAN cannot exceed 30 characters (excluding spaces).",
+                    "ibanError": "The IBAN you entered is invalid. Please check the format.",
+                    "paypalError": "The PayPal email you entered is invalid. Please check the format."
+                },
+                "paypalPlaceholder": "Enter your PayPal email address",
+                "ibanPlaceholder": "Enter your IBAN",
+                "otherPlaceholder": "Enter your payment details"
+            },
+            "notProvided": "Payment method not provided",
+            "productName": "Product Name",
+            "dated": "Dated",
+            "subtotalHT": "Subtotal (Excl. Tax)",
+            "vat": "VAT",
+            "vatAmount": "VAT Amount",
+            "totalTTC": "Total (Incl. Tax)",
+            "balanceDue": "Balance Due",
+            "titleModality": "Terms & Conditions",
+            "billedTo": "Billed To",
+            "invoicedBy": "Invoiced By",
             "logo": "Logo",
+            "siret": "SIRET",
             "payment": "Payment",
             "author": "Author",
             "customer": "Customer",
-            "table": "Table management",
-            "product": "Products management",
-            "": ""
+            "table": "Table Management",
+            "product": "Product Management",
+            "selectorProduct": "Product Selector",
+            "modalitiesAndConditions": "Modalities & Conditions",
+            "additionalComments": "Additional Comments"
         },
-        "chart": "Chart"
+        "chart": "Chart",
+        "premium": {
+            "title": "Premium",
+            "description": "Unlock additional features and capabilities for your Hephai Invoice application."
+        }
     },
     "date": {
         "months_short": [
-            "jan",
-            "feb",
-            "mar",
-            "apr",
-            "may",
-            "jun",
-            "jul",
-            "aug",
-            "sep",
-            "oct",
-            "nov",
-            "dec"
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec"
         ]
     },
     "utils": {
         "hephai1": "Hephai Invoice",
         "tooltips": {
+            "settings": "Settings",
+            "bookmarks": "Add a client to your bookmarked list.",
+            "metadata": "Document properties",
+            "download": {
+                "pdf": "Download your document as a PDF file.",
+                "download": "Download your document."
+            },
+            "comment": "Add a comment to your document.",
+            "modalities": "Enter your terms and conditions here.",
+            "author": {
+                "authorCompanyName": "Enter your company name.",
+                "authorAddress": "Enter your company address.",
+                "authorPhone": "Enter your company phone number.",
+                "authorEmail": "Enter your company email address.",
+                "siret": "Enter your company SIRET number.",
+                "logo": "Upload your company logo."
+            },
+            "customer": {
+                "companyName": "Enter the customer's name.",
+                "address": "Enter the customer's address.",
+                "phone": "Enter the customer's phone number.",
+                "email": "Enter the customer's email address."
+            },
+            "vat": "Enter your VAT number.",
+            "language": "Choose your language.",
             "savedata": "Save your current data to ensure no progress is lost.",
             "btnimg": "Click here to upload an image for your document or profile.",
             "importjson": "Import data from a JSON file to restore or update your settings.",
             "exportjson": "Export your current settings and data as a JSON file.",
             "lang": "Select your preferred language for the application interface.",
-            "themeL": "Choose the color theme for the application: light.",
-            "themeD": "Choose the color theme for the application: dark.",
+            "themeL": "Choose the application color theme: Light.",
+            "themeD": "Choose the application color theme: Dark.",
+            "date": {
+                "today": "Select today's date.",
+                "other": "Select another date."
+            },
+            "payment": {
+                "iban": "Enter your IBAN",
+                "paypal": "Enter your PayPal email address",
+                "other": "Enter your payment details",
+                "error": {
+                    "ibanLengthError": "The IBAN cannot exceed 30 characters (excluding spaces).",
+                    "ibanError": "The IBAN you entered is invalid. Please check the format.",
+                    "paypalError": "The PayPal email you entered is invalid. Please check the format."
+                }
+            },
+            "addClient": "Add a new customer to your list.",
+            "addProduct": "Add a new product to your list.",
+            "addColumns": "Add new columns to your table.",
+            "addCustomer": "Add a new customer to your list.",
+            "delete": "Delete the selected item.",
+            "insert": "Insert a new item before the selected one.",
+            "edit": "Edit the selected item.",
+            "save": "Save your changes.",
+            "deleteAll": "Delete all items.",
+            "update": "Update your changes.",
+            "cancel": "Cancel your changes.",
             "colors": {
-                "tomato": "tomato",
-                "red": "red",
-                "ruby": "ruby",
+                "tomato": "Tomato",
+                "red": "Red",
+                "ruby": "Ruby",
                 "Crimson": "Crimson",
-                "pink": "pink",
-                "plum": "plum",
-                "purple": "purple",
-                "violet": "violet",
-                "iris": "iris",
-                "indigo": "indigo",
-                "blue": "blue",
-                "cyan": "cyan",
-                "teal": "teal",
-                "jade": "jade",
-                "green": "green",
-                "grass": "grass",
-                "orange": "orange",
-                "brown": "brown",
-                "gold": "gold",
-                "bronze": "bronze",
-                "gray": "gray",
-                "sky": "sky",
-                "mint": "mint",
-                "lime": "lime",
-                "yellow": "yellow",
-                "amber": "amber"
+                "pink": "Pink",
+                "plum": "Plum",
+                "purple": "Purple",
+                "violet": "Violet",
+                "iris": "Iris",
+                "indigo": "Indigo",
+                "blue": "Blue",
+                "cyan": "Cyan",
+                "teal": "Teal",
+                "jade": "Jade",
+                "green": "Green",
+                "grass": "Grass",
+                "orange": "Orange",
+                "brown": "Brown",
+                "gold": "Gold",
+                "bronze": "Bronze",
+                "gray": "Gray",
+                "sky": "Sky",
+                "mint": "Mint",
+                "lime": "Lime",
+                "yellow": "Yellow",
+                "amber": "Amber"
             }
         }
+    },
+    "metadata": {
+        "title": "PDF metadata",
+        "title2": "Document properties",
+        "title3": "Technical information"
     },
     "settings": {
         "title": "Appearance / Information",
@@ -160,27 +274,31 @@
             "title": "Company Logo",
             "subtitle": "Update your company logo."
         },
+        "tva": {
+            "title": "VAT Number",
+            "subtitle": "Update your VAT number."
+        },
         "informationUser": {
-            "title": "Company Informations",
-            "subtitle": "Update your company information.",
+            "title": "Company Information",
+            "subtitle": "Update your company details.",
             "utils": {
                 "company": "Your Company",
-                "adress": "Adress",
+                "address": "Address",
                 "phone": "Phone",
                 "email": "Email",
-                "siret": "Siret"
+                "siret": "SIRET"
             }
         },
         "accentColor": {
-            "title": "Brand color",
+            "title": "Brand Color",
             "subtitle": "Select or customize your brand color."
         },
         "themeColor": {
-            "title": "Interface theme",
-            "subtitle": "Select your interface color.",
+            "title": "Interface Theme",
+            "subtitle": "Select your interface color theme.",
             "light": "Light",
             "dark": "Dark",
-            "system": "Systeme preference"
+            "system": "System Preference"
         },
         "language": {
             "title": "Language",
@@ -191,15 +309,30 @@
             }
         },
         "hephai": {
-            "title": "Utils hephai",
+            "title": "Hephai Tools",
             "subtitle": "Export your data."
         },
         "priceUnit": {
             "title": "Price Unit",
-            "subtitle": "Select the unit for the price.",
-            "euro": "Euro",
-            "dollar": "Dollar",
-            "pound": "Pound"
+            "subtitle": "Select the currency unit for prices.",
+            "usd": "Dollar",
+            "eur": "Euro",
+            "gbp": "Pound",
+            "jpy": "Yen",
+            "cad": "Canadian Dollar",
+            "aud": "Australian Dollar",
+            "chf": "Swiss Franc",
+            "cny": "Chinese Yuan",
+            "sek": "Swedish Krona",
+            "nok": "Norwegian Krone",
+            "rub": "Russian Ruble",
+            "hkd": "Hong Kong Dollar",
+            "sgd": "Singapore Dollar",
+            "myr": "Malaysian Ringgit",
+            "krw": "South Korean Won",
+            "thb": "Thai Baht",
+            "brl": "Brazilian Real",
+            "pln": "Polish Zloty"
         }
     }
 }

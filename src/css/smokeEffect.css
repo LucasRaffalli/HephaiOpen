@@ -1,0 +1,41 @@
+.smoke span:nth-child(n) {
+    --d: calc(var(--index) / 20s);
+}
+
+.smoke {
+    --move: 24px;
+    --move-y: -16px;
+    --blur: 6px;
+}
+
+.smoke.active span {
+    --duration: 1s;
+    animation: smoke var(--duration) linear var(--d);
+}
+
+@keyframes smoke {
+
+    45%,
+    55% {
+        filter: blur(var(--blur));
+    }
+
+    50%,
+    50.1% {
+        opacity: 0;
+    }
+
+    25%,
+    75% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(var(--move)) translateY(var(--move-y));
+    }
+
+    50.1% {
+        transform: translateX(calc(var(--move) * -1));
+    }
+}
+
