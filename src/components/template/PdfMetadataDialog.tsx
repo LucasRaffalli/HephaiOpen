@@ -63,6 +63,8 @@ interface PdfMetadataDialogProps {
 }
 
 const PdfMetadataDialog: React.FC<PdfMetadataDialogProps> = ({ pdfDoc, onMetadataChange }) => {
+    const [dialogMetadataOpen, setDialogMetadataOpen] = useState(false);
+
     const [metadata, setMetadata] = useState<PdfMetadata>({
         Title: '',
         Author: '',
@@ -104,18 +106,19 @@ const PdfMetadataDialog: React.FC<PdfMetadataDialogProps> = ({ pdfDoc, onMetadat
         loadMetadata();
     }, [pdfDoc]);
 
+
     return (
-        <Dialog.Root>
-            <Dialog.Trigger>
-                <Tooltip content={t('utils.tooltips.metadata')} side="bottom">
+        <Dialog.Root open={dialogMetadataOpen} onOpenChange={setDialogMetadataOpen}>
+            <Tooltip content={t('utils.tooltips.metadata')} side="bottom">
+                <Dialog.Trigger>
                     <Button variant="soft" className='btnCursor' >
                         <FileText size={18} />
                         <Text>{t('buttons.metadata')}</Text>
                     </Button>
-                </Tooltip>
-            </Dialog.Trigger>
+                </Dialog.Trigger>
+            </Tooltip>
 
-            <Dialog.Content style={{ maxWidth: 450 }}>
+            <Dialog.Content >
                 <Dialog.Title>{t('metadata.title')}</Dialog.Title>
 
                 <Box p="3">
@@ -125,7 +128,6 @@ const PdfMetadataDialog: React.FC<PdfMetadataDialogProps> = ({ pdfDoc, onMetadat
                             <strong>{key}:</strong>{" "}
                             <Text color={"gray"}>
                                 <span>{metadata[key as keyof PdfMetadata] || '—'}</span>
-
                             </Text>
                         </Text>
                     ))}
@@ -144,7 +146,6 @@ const PdfMetadataDialog: React.FC<PdfMetadataDialogProps> = ({ pdfDoc, onMetadat
 
                     <Dialog.Close>
                         <Flex width={"100%"} justify={"end"}>
-
                             <Button variant="soft" color="red" className='btnCursor' style={{ marginTop: '1rem' }}>
                                 {t('buttons.close')}
                             </Button>

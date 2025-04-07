@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Progress } from '@radix-ui/themes';
 import { DownloadIcon } from '@/components/design/IconsAnimate';
 import { motion } from "framer-motion";
+import InputFileName from "./InputFileName";
 
 const DOWNLOAD_INTERVAL = 50;
 
@@ -18,7 +19,7 @@ interface InvoicePdfViewerProps {
 
 }
 
-const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF, isLoading }) => {
+const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF, isLoading, }) => {
   const { t } = useTranslation();
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
@@ -261,6 +262,12 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
             <PdfMetadataDialog pdfDoc={pdfDoc} />
 
           </motion.div>
+
+
+          <motion.div variants={buttonVariants}>
+            <InputFileName/>
+          </motion.div>
+
 
           {downloadPDF && (
             <motion.div variants={buttonVariants}>

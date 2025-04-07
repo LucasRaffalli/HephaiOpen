@@ -148,11 +148,13 @@ export const useInvoicePDF = (options: OptionPdf) => {
             const url = URL.createObjectURL(blob);
 
             const invoiceNumber = getNextInvoiceNumber();
+            const savedPrefix = localStorage.getItem('customFileNamePrefix');
+            const prefix = savedPrefix || options.customFileNamePrefix || "Invoice";
             await new Promise(resolve => setTimeout(resolve, 1500));
 
             const link = document.createElement("a");
             link.href = url;
-            link.download = `facture_${invoiceNumber}.pdf`;
+            link.download = `${prefix}_${invoiceNumber}.pdf`;
             document.body.appendChild(link);
 
             await new Promise(resolve => setTimeout(resolve, 500));
