@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Update from './components/update'
 import Premium from './views/premium'
+import ShortcutsPanel from './components/shortcut/ShortcutsPanel'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -32,6 +33,7 @@ function App() {
         toastClassName="toast-custom"
         style={{ zIndex: 9999 }}
       />
+      <ShortcutsPanel />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

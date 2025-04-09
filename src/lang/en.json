@@ -150,7 +150,7 @@
             "selectorProduct": "Product Selector",
             "modalitiesAndConditions": "Modalities & Conditions",
             "additionalComments": "Additional Comments",
-            "filenamePrefix":"Invoice"
+            "filenamePrefix": "Invoice"
         },
         "chart": "Chart",
         "premium": {
@@ -176,6 +176,7 @@
     },
     "utils": {
         "hephai1": "Hephai Invoice",
+        "credit":"Made by Hephai Open",
         "tooltips": {
             "settings": "Settings",
             "bookmarks": "Add a client to your bookmarked list.",
@@ -334,6 +335,50 @@
             "thb": "Thai Baht",
             "brl": "Brazilian Real",
             "pln": "Polish Zloty"
+        }
+    },
+    "shortcutsPanel": {
+        "title": "Shortcuts Panel",
+        "action":"Actions",
+        "shortcut":"Shortcuts",
+        "description": "Keyboard shortcuts for quick access to features.",
+        "close": "Close the shortcuts panel.",
+        "save": "Save your current data.",
+        "export": "Export your data.",
+        "import": "Import your data.",
+        "download": "Download your document.",
+        "print": "Print your document.",
+        "settings": "Open settings.",
+        "fullscreen": "Toggle fullscreen mode.",
+        "devTools": "Open developer tools."
+    },
+    "menu": {
+        "file": {
+            "title": "File",
+            "exit": "Exit"
+        },
+        "view": {
+            "title": "View",
+            "reload": "Reload",
+            "devTools": "Developer Tools",
+            "showNavbar": "Show Navbar",
+            "actualSize": "Actual Size",
+            "zoomIn": "Zoom In",
+            "zoomOut": "Zoom Out",
+            "fullscreen": "Toggle Fullscreen"
+        },
+        "window": {
+            "title": "Window",
+            "shortcutsPanel": "Shortcuts Panel",
+            "darkMode": "Dark Mode",
+            "lightMode": "Light Mode",
+            "shortcuts": "Shortcuts",
+            "maximize": "Maximize",
+            "minimize": "Minimize",
+            "close": "Close"
+        },
+        "credits": {
+            "title": "Credits"
         }
     }
 }

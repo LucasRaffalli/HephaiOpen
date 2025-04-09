@@ -56,6 +56,7 @@ export interface OptionPdf {
     commentsText: string;
     isCommentsEnabled: boolean;
     isModalitiesEnabled: boolean;
+    isFooterEnabled: boolean;
     customFileNamePrefix?: string
 }
 export interface PdfMetadata {

@@ -1,4 +1,3 @@
-
 import { PaymentInfo } from "@/types/hephai";
 import { t } from "i18next";
 import { jsPDF } from "jspdf";
@@ -128,34 +127,7 @@ export const setupPDFTable = (doc: jsPDF, rows: any[], options: any) => {
 
 };
 
-export const setupPDFSections = (doc: jsPDF, options: any, text1: string, text2: string, comText: string, isModalityEnabled: boolean, isCommentsEnabled: boolean) => {
-    const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
-    const tableFinalY = (doc as any).lastAutoTable.finalY || 110;
-    let startY = tableFinalY + 20;
-    const marginBottom = 20;
 
-    const priceHeight = 4 * 8 + 10; 
-    const modalityHeight = isModalityEnabled ? ((doc.splitTextToSize(text1 || "", pageWidth - 110).length + doc.splitTextToSize(text2 || "", pageWidth - 110).length) * 5 + 10) : 0;
-    const commentsHeight = isCommentsEnabled ? (doc.splitTextToSize(comText || "", pageWidth - 20).length * 4 + 10) : 0;
-
-    const totalHeight = priceHeight + modalityHeight + commentsHeight + 10;
-
-    if (startY + totalHeight > pageHeight - marginBottom) {
-        doc.addPage();
-        startY = 10;
-    }
-
-    startY = setupPDFPrice(doc, options, startY);
-
-    if (isModalityEnabled) {
-        startY = setupPDFModality(doc, options, text1, text2, true, startY);
-    }
-
-    if (isCommentsEnabled) {
-        setupPDFComments(doc, options, comText, startY, true);
-    }
-};
 const formatPrice = (value: number | string, currency: string) => {
     const numericValue = typeof value === 'string' ? parseFloat(value) : value;
 
@@ -192,53 +164,120 @@ export const setupPDFPrice = (doc: jsPDF, options: any, startY: number) => {
 };
 
 export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2: string, isEnabled: boolean, startY: number) => {
-    if (!isEnabled) return startY;
+    if (!isEnabled) return { endY: startY };
 
     const pageWidth = doc.internal.pageSize.width;
-    const startX = 10;
-    const lineHeight = 5;
-    const boxPadding = 4;
+    const pageHeight = doc.internal.pageSize.height;
+    const marginX = 10;
+    const marginBottom = 20;
     const boxWidth = pageWidth - 100;
+    const lineHeight = 4;
+    const boxPadding = 5;
 
-    const textLines1 = doc.splitTextToSize(text1 || "", boxWidth - 2 * boxPadding);
-    const textLines2 = doc.splitTextToSize(text2 || "", boxWidth - 2 * boxPadding);
-    const boxHeight = (textLines1.length + textLines2.length) * lineHeight + boxPadding + 3.2;
+    let currentY = startY;
 
+    // Combine les deux textes avec un séparateur
+    const fullText = text1 + (text1 && text2 ? '\n\n' : '') + text2;
+    const modalityLines = doc.splitTextToSize(fullText, boxWidth - (boxPadding * 2));
+    let currentLine = 0;
+
+    // Titre initial
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.text(`${t('features.invoice.modalitiesAndConditions')}:`, startX, startY);
+    doc.text(t('features.invoice.modalitiesAndConditions'), marginX, currentY);
+    currentY += 3;
 
-    doc.rect(startX, startY + lineHeight, boxWidth, boxHeight);
+    let finalY = currentY;
+    while (currentLine < modalityLines.length) {
+        const availableHeight = pageHeight - marginBottom - currentY;
+        const remainingLines = Math.floor((availableHeight - (boxPadding * 2)) / lineHeight);
+        const linesToDraw = Math.min(remainingLines, modalityLines.length - currentLine);
+        const boxHeight = (linesToDraw * lineHeight) + (boxPadding * 2);
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
+        // Dessiner l'encadré
+        doc.setFont("helvetica", "normal");
+        doc.rect(marginX, currentY, boxWidth, boxHeight);
 
-    doc.text(textLines1, startX + boxPadding, startY + lineHeight * 3);
-    const text2StartY = startY + lineHeight * 3 + textLines1.length * lineHeight;
-    doc.text(textLines2, startX + boxPadding, text2StartY);
+        // Ajouter le texte avec padding
+        doc.setFontSize(10);
+        const partialModality = modalityLines.slice(currentLine, currentLine + linesToDraw).join('\n');
+        doc.text(partialModality, marginX + boxPadding, currentY + boxPadding + 2);
 
-    return startY + boxHeight + 10;
+        currentLine += linesToDraw;
+
+        if (currentLine < modalityLines.length) {
+            doc.addPage();
+            currentY = 20;
+            // Ajouter le titre avec "(suite)" sur la nouvelle page
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text(`${t('features.invoice.modalitiesAndConditions')} (${t('features.invoice.continued')})`, marginX, currentY - 2);
+            currentY += 3;
+        } else {
+            finalY = currentY + boxHeight;
+        }
+    }
+
+    return { endY: finalY };
 };
 
 export const setupPDFComments = (doc: jsPDF, options: any, comText: string, startY: number, isEnabled: boolean) => {
-    if (!isEnabled) return;
+    if (!isEnabled || comText) return;
 
     const pageWidth = doc.internal.pageSize.width;
-    const startX = 10;
-    const lineHeight = 2.2;
-    const boxPadding = 4;
-    const boxWidth = pageWidth - 20;
+    const pageHeight = doc.internal.pageSize.height;
+    const marginX = 10;
+    const marginBottom = 20;
+    const boxWidth = pageWidth - (marginX * 2);
+    const lineHeight = 4;
+    const boxPadding = 5;
 
-    const text = comText || "";
-    const textLines = doc.splitTextToSize(text, boxWidth - 2 * boxPadding);
-    const boxHeight = textLines.length * 4 + boxPadding + 3.2;
+    let currentY = startY;
+    const commentLines = doc.splitTextToSize(comText, boxWidth - (boxPadding * 2));
+    let currentLine = 0;
 
+    // Titre initial "Commentaires"
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.text(`${t('features.invoice.additionalComments')}:`, startX, startY);
+    doc.text(t('features.invoice.additionalComments'), marginX, currentY);
+    currentY += 3;
 
-    doc.rect(startX, startY + lineHeight, boxWidth, boxHeight);
+    while (currentLine < commentLines.length) {
+        const availableHeight = pageHeight - marginBottom - currentY;
+        const remainingLines = Math.floor((availableHeight - (boxPadding * 2)) / lineHeight);
+        const linesToDraw = Math.min(remainingLines, commentLines.length - currentLine);
+        const boxHeight = (linesToDraw * lineHeight) + (boxPadding * 2);
+
+        // Dessiner l'encadré
+        doc.setFont("helvetica", "normal");
+        doc.rect(marginX, currentY, boxWidth, boxHeight);
+
+        // Ajouter le texte avec padding
+        doc.setFontSize(10);
+        const partialComments = commentLines.slice(currentLine, currentLine + linesToDraw).join('\n');
+        doc.text(partialComments, marginX + boxPadding, currentY + boxPadding + 2);
+
+        currentLine += linesToDraw;
+
+        if (currentLine < commentLines.length) {
+            doc.addPage();
+            currentY = 20;
+            // Ajouter le titre avec "(suite)" sur la nouvelle page
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text(`${t('features.invoice.additionalComments')} (${t('features.invoice.continued')})`, marginX, currentY - 2);
+            currentY += 3;
+        }
+    }
+};
+
+export const setupPDFFooter = (doc: jsPDF, isEnabled: boolean, startY: number) => {
+    if (!isEnabled) return startY;
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text(textLines, startX + boxPadding, startY + lineHeight * 4);
+    doc.setTextColor("#808080");
+    doc.text(`${t('utils.credit')}`, pageWidth / 2, pageHeight - 10, { align: "center" });
 };

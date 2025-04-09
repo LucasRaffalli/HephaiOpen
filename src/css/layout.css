@@ -1,7 +1,13 @@
+:root {
+    --titlebar-height: 32px;
+}
+
+
+
 .layout-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 .main-nav {
@@ -73,13 +79,15 @@
 
 .layout {
     width: 100%;
-    height: 100vh;
+    /* height: 100vh; */
     position: relative;
+    margin-top: var(--titlebar-height);
+    flex: 1;
+    min-height: 0;
 }
 
 .navbar-normal {
-    margin: 1rem;
-    margin-right: 0.5rem;
+    margin: 0rem .5rem 1rem 1rem;
 }
 
 .navbar-absolute {
@@ -91,10 +99,23 @@
     border-radius: var(--radius-4);
     height: 90vh;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    top: 5%;
+    top: 2.35%;
+    left: -0.5%;
 }
 
 .no-hover {
     position: relative !important;
     z-index: auto !important;
+}
+
+.radix-container {
+    --radix-scroll-strut: 0px;
+}
+
+[data-radix-scroll-area-viewport] {
+    height: 100% !important;
+}
+
+:where(.rt-PopperContent) {
+    max-height: none !important;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, forwardRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTheme } from '@/utils/ThemeContext';
 import { AspectRatio, Avatar, Box, Button, Flex, Heading, IconButton, Select, Separator, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
 import { AccentColor, CompanyInfo, Client } from '@/types/hephai'

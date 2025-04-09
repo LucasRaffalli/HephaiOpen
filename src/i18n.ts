@@ -18,4 +18,8 @@ i18n
         interpolation: { escapeValue: false },
     });
 
+export const t = (key: string) => {
+    return i18n.t(key) || key;
+};
+
 export default i18n;

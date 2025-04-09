@@ -72,9 +72,6 @@ const penVariants: Variants = {
     },
 };
 
-
-
-
 const SettingsGearIcon = ({ size = 20 }: IconProperties) => {
     const controls = useAnimation();
 
@@ -270,13 +267,8 @@ const SquarePenIcon = ({ size = 20 }: IconProperties) => {
     );
 };
 
-
-
-
-
-
-const ExpandIcon = forwardRef<ExpandIconHandle, HTMLAttributes<HTMLDivElement>>(
-    ({ onMouseEnter, onMouseLeave, ...props }, ref, size = 20) => {
+const ExpandIcon = forwardRef<ExpandIconHandle, HTMLAttributes<HTMLDivElement> & { size?: number }>(
+    ({ onMouseEnter, onMouseLeave, size = 20, ...props }, ref) => {
         const controls = useAnimation();
         const isControlledRef = useRef(false);
 
@@ -373,7 +365,6 @@ const ExpandIcon = forwardRef<ExpandIconHandle, HTMLAttributes<HTMLDivElement>>(
 
 ExpandIcon.displayName = 'ExpandIcon';
 
-
 export interface DownloadIconHandle {
     startAnimation: () => void;
     stopAnimation: () => void;
@@ -459,8 +450,5 @@ const DownloadIcon = forwardRef<
 });
 
 DownloadIcon.displayName = 'DownloadIcon';
-
-
-
 
 export { SettingsGearIcon, DeleteIcon, SparklesIcon, SquarePenIcon, ExpandIcon, DownloadIcon };

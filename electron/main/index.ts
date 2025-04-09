@@ -7,6 +7,7 @@ import { update } from './update'
 import Store from 'electron-store';
 import { SettingsSchema } from '@/types/hephai';
 import { session } from 'electron/main'
+import { registerWindowIPC } from '../win/ipcEvents'
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -46,14 +47,29 @@ const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
 async function createWindow() {
+  const icon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'favicon.ico'))
+  icon.setTemplateImage(true)
+  
+  // Redimensionner l'icône à 16x16 pixels
+  const resizedIcon = icon.resize({
+    width: 16,
+    height: 16,
+    quality: 'best'
+  })
+
   win = new BrowserWindow({
     title: 'Main window',
     height: 860,
+    backgroundColor: '#1c1c1c',
+    frame: false,
+    titleBarStyle: 'hiddenInset',
+    maximizable: true,
+    resizable: true,
     width: 1260,
     minHeight: 860,
     minWidth: 1260,
-    icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
-    webPreferences: { preload, nodeIntegration: true, contextIsolation: true, },
+    icon: resizedIcon,
+    webPreferences: { preload, nodeIntegration: false, contextIsolation: true, },
   })
   // win.setOverlayIcon(nativeImage.createFromPath('path/to/overlay.png'), 'Description de la superposition')
   if (VITE_DEV_SERVER_URL) { // #298
@@ -73,8 +89,20 @@ async function createWindow() {
   //   if (url.startsWith('https:')) shell.openExternal(url)
   //   return { action: 'deny' }
   // })
+
+  // Register all window IPC handlers
+  registerWindowIPC(win)
+
   // Auto update
   update(win)
+
+  win.on('maximize', () => {
+    win?.webContents.send('window-maximized-change', true)
+  })
+
+  win.on('unmaximize', () => {
+    win?.webContents.send('window-maximized-change', false)
+  })
 }
 
 app.whenReady().then(async () => {
@@ -118,8 +146,8 @@ ipcMain.handle('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload,
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
     },
   })
 

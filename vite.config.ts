@@ -17,6 +17,7 @@ export default defineConfig(({ command }) => {
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src'),
+        '@electron': path.resolve(__dirname, './electron'),
         events: 'events/',
       },
     },

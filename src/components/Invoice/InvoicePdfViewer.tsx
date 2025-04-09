@@ -231,11 +231,13 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
         <Dialog.Content style={{ maxWidth: 450 }}>
           <Flex direction="column" gap="3">
             <Dialog.Title>{t('download.title')}</Dialog.Title>
-            <Text size="2">
-              {downloadState.progress < 100
-                ? t('download.message')
-                : t('download.complete')}
-            </Text>
+            <Dialog.Description>
+              <Text size="2">
+                {downloadState.progress < 100
+                  ? t('download.message')
+                  : t('download.complete')}
+              </Text>
+            </Dialog.Description>
             <Flex justify="between" align="center">
               <Progress value={downloadState.progress} style={{ flex: 1 }} />
               <Text size="2" style={{ marginLeft: '12px', minWidth: '100px', textAlign: 'right' }}>

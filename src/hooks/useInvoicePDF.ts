@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
-import { OptionPdf, PdfMetadata } from "@/types/hephai";
-import { addLogoToPDF, setupPDFAuthor, setupPDFClient, setupPDFComments, setupPDFHeader, setupPDFModality, setupPDFPrice, setupPDFTable } from "@/utils/pdfUtils";
+import { Client, CompanyInfo, OptionPdf, PaymentInfo, PdfMetadata } from "@/types/hephai";
+import { addLogoToPDF, setupPDFAuthor, setupPDFClient, setupPDFComments, setupPDFFooter, setupPDFHeader, setupPDFModality, setupPDFPrice, setupPDFTable } from "@/utils/pdfUtils";
 import { getNextInvoiceNumber } from "@/utils/InvoiceCounter";
 
 export const useInvoicePDF = (options: OptionPdf) => {
@@ -37,7 +37,7 @@ export const useInvoicePDF = (options: OptionPdf) => {
     };
 
     const generatePDF = async (isPreview: boolean = true): Promise<Uint8Array> => {
-        const { clientInfo, companyInfo, paymentInfo, rows, selectedDate, imageSrc, columns, priceUnit, modalitiesText1, modalitiesText2, commentsText, isCommentsEnabled, isModalitiesEnabled } = options;
+        const { clientInfo, companyInfo, paymentInfo, rows, selectedDate, imageSrc, columns, priceUnit, modalitiesText1, modalitiesText2, commentsText, isCommentsEnabled, isModalitiesEnabled, isFooterEnabled } = options;
         const invoiceNumber = getNextInvoiceNumber();
         const storedTva = localStorage.getItem('tva');
         const vatRate = storedTva ? parseFloat(storedTva) : 0;
@@ -77,10 +77,12 @@ export const useInvoicePDF = (options: OptionPdf) => {
         const priceHeight = 4 * 8 + 10;
         const modalityHeight = isModalitiesEnabled ? ((doc.splitTextToSize(modalitiesText1 || "", pageWidth - 110).length + doc.splitTextToSize(modalitiesText2 || "", pageWidth - 110).length) * 5 + 10) : 0;
         const commentsHeight = isCommentsEnabled ? (doc.splitTextToSize(commentsText || "", pageWidth - 20).length * 4 + 10) : 0;
+        const footerHeight = isFooterEnabled ? (doc.splitTextToSize(commentsText || "", pageWidth - 20).length * 4 + 10) : 0;
 
         const maxHeight = Math.max(priceHeight, modalityHeight);
 
-        if (startY + maxHeight + commentsHeight > pageHeight - marginBottom) {
+        // Vérifier si les prix et modalités nécessitent une nouvelle page
+        if (startY + maxHeight > pageHeight - marginBottom) {
             doc.addPage();
             startY = 10;
         }
@@ -91,8 +93,21 @@ export const useInvoicePDF = (options: OptionPdf) => {
         const modalityY = startY;
         setupPDFModality(doc, options, modalitiesText1, modalitiesText2, isModalitiesEnabled, modalityY);
 
-        const commentsY = startY + maxHeight + 5;
+        // Gérer les commentaires avec saut de page si nécessaire
+        let commentsY = startY + maxHeight + -5;
+        if (commentsY + commentsHeight > pageHeight - marginBottom) {
+            doc.addPage();
+            commentsY = 10;
+        }
         setupPDFComments(doc, options, commentsText, commentsY, isCommentsEnabled);
+
+        // Gérer le footer avec saut de page si nécessaire
+        let footerY = commentsY + commentsHeight + 10;
+        if (footerY + footerHeight > pageHeight - marginBottom) {
+            doc.addPage();
+            footerY = 10;
+        }
+        setupPDFFooter(doc, isFooterEnabled, footerY);
 
         const pdfBytes = doc.output("arraybuffer");
         return new Uint8Array(pdfBytes);

@@ -41,10 +41,11 @@ export const Invoice = () => {
     const [commentsText, setCommentsText] = useState<string>("");
     const [isCommentsEnabled, setIsCommentsEnabled] = useState(true);
     const [isModalitiesEnabled, setIsModalitiesEnabled] = useState(true);
+    const [isFooterEnabled, setIsFooterEnabled] = useState(true);
     const { generatePDF, downloadPDF, isLoading, printPDF, togglePreviewMode, isPreviewMode, showFinalVersion } = useInvoicePDF({
         clientInfo, companyInfo, paymentInfo, rows,
         columns: dynamicColumns, selectedDate, imageSrc, priceUnit,
-        modalitiesText1, modalitiesText2, commentsText, isCommentsEnabled, isModalitiesEnabled
+        modalitiesText1, modalitiesText2, commentsText, isCommentsEnabled, isModalitiesEnabled, isFooterEnabled
     });
     useEffect(() => {
         const storedInfo = localStorage.getItem('companyInfos');
@@ -304,12 +305,6 @@ export const Invoice = () => {
                                         <InvoiceModality text1={modalitiesText1} text2={modalitiesText2} updateText={handleModalitiesText} onClick={toggleModalities} />
                                     </ContainerFeature>
                                 </motion.div>
-
-                                {/* <motion.div variants={featureVariants}>
-                                    <ContainerFeature title="features.invoice.author">
-                                        <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} flexJustify='center' buttonSize='100%' />
-                                    </ContainerFeature>
-                                </motion.div> */}
                             </Flex>
                         </motion.div>
                     </Flex>
@@ -344,13 +339,6 @@ export const Invoice = () => {
                                     </ContainerFeature>
                                 </motion.div>
 
-                                {/* <motion.div variants={featureVariants}>
-                                    <ContainerFeature title="features.invoice.modalitiesAndConditions">
-                                        <InvoiceModality text1={modalitiesText1} text2={modalitiesText2} updateText={handleModalitiesText} onClick={toggleModalities} />
-                                    </ContainerFeature>
-                                </motion.div>
-
-                                */}
                                 <motion.div variants={featureVariants}>
                                     <ContainerFeature title="features.invoice.additionalComments">
                                         <InvoiceComments commentsText={commentsText} onClick={toggleComments} updateText={handleCommentsText} />
