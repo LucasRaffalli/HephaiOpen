@@ -49,6 +49,7 @@ export default function Settings() {
     const gradientBackground = isDarkMode ? `linear-gradient(180deg, ${colorHexTheme}, transparent 92%)` : `linear-gradient(180deg, ${colorHexTheme}, transparent)`;
     const [priceUnit, setPriceUnit] = useState(localStorage.getItem('priceUnit') || 'euro');
     const [tva, setTva] = useState(localStorage.getItem('tva') || '0');
+    const [customFileNamePrefix, setCustomFileNamePrefix] = useState(localStorage.getItem('customFileNamePrefix') || '');
     const [clients, setClients] = useState<Client[]>(() => {
         const storedClients = localStorage.getItem('clients');
         return storedClients ? JSON.parse(storedClients) : [];
@@ -57,6 +58,7 @@ export default function Settings() {
     const [settingsData, setSettingsData] = useState(() => ({
         theme: isDarkMode ? 'true' : 'false',
         accentColor: accentColor,
+        customFileNamePrefix: customFileNamePrefix,
         companyInfo: companyInfo,
         language: localStorage.getItem('language') || 'en',
         dateJoins: localStorage.getItem('dateJoins'),
@@ -69,6 +71,7 @@ export default function Settings() {
         setSettingsData({
             theme: isDarkMode ? 'true' : 'false',
             accentColor: accentColor,
+            customFileNamePrefix: customFileNamePrefix,
             companyInfo: companyInfo,
             language: localStorage.getItem('language') || 'en',
             dateJoins: localStorage.getItem('dateJoins'),
@@ -76,7 +79,7 @@ export default function Settings() {
             clients: clients,
             profileImage: localStorage.getItem('profileImage')
         });
-    }, [isDarkMode, accentColor, companyInfo, visibility, clients]);
+    }, [isDarkMode, accentColor, companyInfo, visibility, clients, customFileNamePrefix]);
 
     const handleExportJson = () => {
         try {
@@ -117,6 +120,10 @@ export default function Settings() {
                     if (settings.clients) {
                         setClients(settings.clients);
                         localStorage.setItem('clients', JSON.stringify(settings.clients));
+                    }
+                    if (settings.customFileNamePrefix) {
+                        setCustomFileNamePrefix(settings.customFileNamePrefix);
+                        localStorage.setItem('customFileNamePrefix', settings.customFileNamePrefix);
                     }
                     localStorage.setItem('isDarkMode', settings.theme === 'dark' ? 'true' : 'false');
                     localStorage.setItem('accentColor', settings.accentColor);

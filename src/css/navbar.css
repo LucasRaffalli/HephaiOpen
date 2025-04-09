@@ -1,6 +1,6 @@
 .navbar {
-    background-color: var(--gray-1);
     /* background-color: var(--color-panel); */
+    background-color: var(--gray-1);
 
     border: 1px solid var(--gray-6);
     border-radius: var(--radius-4);

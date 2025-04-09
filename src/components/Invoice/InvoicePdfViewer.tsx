@@ -126,10 +126,10 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
     if (renderTask.current) {
       try {
         await renderTask.current.cancel();
-        renderTask.current = null;
       } catch (error) {
         console.warn('Error cancelling previous render task:', error);
       }
+      renderTask.current = null;
     }
 
     updateLoadingState({ isCanvasLoading: true });
@@ -146,13 +146,15 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
 
       context.clearRect(0, 0, canvas.width, canvas.height);
 
-      renderTask.current = page.render({
+      const newRenderTask = page.render({
         canvasContext: context,
         viewport: viewport
       });
 
+      renderTask.current = newRenderTask;
+
       try {
-        await renderTask.current.promise;
+        await newRenderTask.promise;
       } catch (error: unknown) {
         if (error instanceof Error && error.name !== 'RenderingCancelled') {
           console.error('Error rendering page:', error);
@@ -274,7 +276,7 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
               <Tooltip content={t('utils.tooltips.download.pdf')} side="bottom">
                 <Button variant="soft" className='btncursor' onClick={handleDownload} disabled={isLoading}>
                   <Flex align={"center"} gap={"3"}>
-                    {t('buttons.download.pdf')}
+                    {t('buttons.download.download')}
                     <DownloadIcon />
                   </Flex>
                 </Button>

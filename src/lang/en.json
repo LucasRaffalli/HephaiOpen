@@ -149,7 +149,8 @@
             "product": "Product Management",
             "selectorProduct": "Product Selector",
             "modalitiesAndConditions": "Modalities & Conditions",
-            "additionalComments": "Additional Comments"
+            "additionalComments": "Additional Comments",
+            "filenamePrefix":"Invoice"
         },
         "chart": "Chart",
         "premium": {

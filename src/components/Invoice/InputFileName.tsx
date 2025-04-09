@@ -1,4 +1,3 @@
-import { useInvoicePDF } from '@/hooks/useInvoicePDF';
 import { FileTextIcon } from '@radix-ui/react-icons';
 import { TextField } from '@radix-ui/themes';
 import React, { useState, useEffect } from 'react';
@@ -9,15 +8,17 @@ export default function InputFileName() {
     const [customPrefix, setCustomPrefix] = useState<string>('');
 
     useEffect(() => {
-        // Load saved prefix from localStorage if exists
         const savedPrefix = localStorage.getItem('customFileNamePrefix');
         if (savedPrefix) {
             setCustomPrefix(savedPrefix);
+        } else {
+            const defaultPrefix = t('features.invoice.filenamePrefix');
+            setCustomPrefix(defaultPrefix);
+            localStorage.setItem('customFileNamePrefix', defaultPrefix);
         }
-    }, []);
+    }, [t]);
 
     const handlePrefixChange = (value: string) => {
-        // Nettoyer le préfixe pour éviter les caractères spéciaux
         const cleanedValue = value.replace(/[^a-zA-Z0-9-_]/g, '');
         setCustomPrefix(cleanedValue);
         localStorage.setItem('customFileNamePrefix', cleanedValue);
