@@ -9,11 +9,11 @@
 
 }
 
-.btncursor {
+.btnCursor {
   cursor: pointer;
 }
 
-.btncursor:disabled {
+.btnCursor:disabled {
   cursor: not-allowed !important;
 }
 
@@ -155,4 +155,187 @@ a {
   border-radius: var(--radius-4);
   border: 1px solid var(--gray-6);
   background-color: var(--gray-1);
+}
+
+
+.toolbar-popup-dynamic {
+  position: fixed;
+  width: 20rem;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--gray-1);
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-4);
+  padding: 0.75rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+  transition: opacity 0.2s ease;
+}
+
+.small-toolbar__all {
+  overflow: hidden;
+  position: fixed;
+  height: fit-content;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: fit-content;
+  z-index: 9999;
+  display: block;
+  border-radius: var(--radius-4);
+  border: 1.5px solid var(--gray-6);
+  background-color: var(--gray-2);
+  /* padding: 0 0.5rem; */
+
+}
+
+/* .chevrontL{
+  width: 5px;
+}
+.chevrontR{
+  display: flex;
+  width: 5px;
+} */
+.inputFileName {
+  width: 100%;
+  /* height: 100%; */
+}
+
+.small-toolbar__2 {
+  /* padding: 0.5rem; */
+
+  z-index: 2;
+  border-left: 1.5px solid var(--gray-6);
+  background-color: var(--gray-2);
+}
+
+.btnCustom1 {
+  width: 100%;
+}
+
+@media screen and (max-width: 1300px) {
+
+  .actionBarFalse,
+  .InvoicePdfViewerButtons {
+    display: none;
+  }
+
+  .InvoicePdfViewerContent {
+    scale: 0.86;
+  }
+
+  .small-toolbar__all.visible {
+    display: flex;
+
+  }
+}
+
+
+@media screen and (max-width: 1910px) {
+
+
+  .InvoicePdfViewerContent {
+    scale: 0.86;
+  }
+}
+
+.app-loading-wrap {
+  background-color: #111113;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  gap: 2rem;
+  flex-direction: column;
+}
+
+@keyframes exitLoading {
+  0% {
+    opacity: 1;
+
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+
+.loaders__hephai {
+  font-size: 28px;
+  font-weight: 700;
+  position: relative;
+  color: white;
+}
+
+.load__bar {
+  height: 4px;
+  width: 256px;
+  border-radius: 50px;
+  position: relative;
+  background-color: #212225;
+}
+
+.load__bar::after {
+  content: "";
+  height: 5px;
+  width: 0;
+  background-color: white;
+  border-radius: 50px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  animation: load 2.5s forwards;
+}
+
+@keyframes load {
+  0% {
+    width: 0;
+  }
+
+
+  50% {
+    width: 65%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+.bottom__load {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #43484E;
+  gap: 1rem;
+  font-size: 14px;
+
+}
+
+.all__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: exitLoading 1s linear 3.5s forwards;
+}
+
+@keyframes exitLoading {
+  0% {
+    opacity: 1;
+
+  }
+
+  100% {
+    opacity: 0;
+  }
 }

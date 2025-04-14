@@ -9,11 +9,12 @@ import '../electron/win/window.css'
 import 'react-toastify/dist/ReactToastify.css';
 import './demos/ipc'
 import { BrowserRouter } from 'react-router-dom';
-import { Theme, ThemePanel } from '@radix-ui/themes';
+import { Theme } from '@radix-ui/themes';
 import { ThemeProvider, useTheme } from './utils/ThemeContext';
 import './i18n';
 import { WindowContextProvider } from '../electron/win/components/WindowContext';
 import { menuItems } from '../electron/win';
+import { HephaiProvider } from './context/HephaiContext';
 
 const Root = () => {
   const { isDarkMode, accentColor } = useTheme();
@@ -21,7 +22,9 @@ const Root = () => {
   return (
     <Theme appearance={isDarkMode ? "dark" : "light"} accentColor={accentColor as any} radius="small" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <WindowContextProvider titlebar={{ title: 'Hephai Open', menuItems, icon: '/favicon.ico' }}>
-        <App />
+        <HephaiProvider>
+          <App />
+        </HephaiProvider>
       </WindowContextProvider>
     </Theme>
   );

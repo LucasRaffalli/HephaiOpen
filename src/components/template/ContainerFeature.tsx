@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { t } from 'i18next';
 
 interface ContainerFeatures {
-    title: string;
+    title?: string;
     children?: React.ReactNode;
     widthSize?: string;
 }
@@ -24,7 +24,7 @@ const ContainerFeature: React.FC<ContainerFeatures> = ({ children, title, widthS
     return (
         <Flex direction="column" align={'center'} gap={'4'} width={widthSize} style={{ padding: "0.5rem" }}>
             <motion.div variants={titleVariants} initial="hidden" animate="visible">
-                <Text size={"2"} weight="bold">{t(title)}</Text>
+                <Text size={"2"} weight="bold">{title ? t(title) : ''}</Text>
             </motion.div>
             <Flex direction="column" justify={'center'} align={'center'} width={"100%"}>
                 {children}

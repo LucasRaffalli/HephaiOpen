@@ -44,7 +44,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ imageSrc, handleImageChange
             <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} align={'center'}>
                 <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || 'placeholder.png'} alt="Profile" style={{ background: "var(--gray-a8)", padding: "0.25rem" }} />
                 <Tooltip content={t('utils.tooltips.btnimg')}>
-                    <Button variant="soft" className='btncursor' size={'3'} onClick={handleButtonClick}>
+                    <Button variant="soft" className='btnCursor' size={'3'} onClick={handleButtonClick}>
                         <Text size="2" weight={'regular'}>{t('buttons.upload.image')}</Text>
                         <input ref={fileInputRef} type="file" accept="image/png" onChange={validateAndHandleChange} style={{ display: 'none' }} />
                     </Button>

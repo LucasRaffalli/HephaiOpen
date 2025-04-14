@@ -50,8 +50,12 @@
 }
 
 .window-titlebar-controls {
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-4);
   display: flex;
-  gap: 0rem;
 }
 
 .window-titlebar-title[data-centered] {

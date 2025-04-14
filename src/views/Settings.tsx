@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTheme } from '@/utils/ThemeContext';
-import { AspectRatio, Avatar, Box, Button, Flex, Heading, IconButton, Select, Separator, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
+import { AspectRatio, Avatar, Box, Button, Flex, Heading, IconButton, Kbd, Select, Separator, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
 import { AccentColor, CompanyInfo, Client } from '@/types/hephai'
 import { useTranslation } from 'react-i18next';
 import '@/css/setting.css'
@@ -282,7 +282,11 @@ export default function Settings() {
             }
         }
     };
-
+    const handleAccentColorChange = (color: string) => {
+        setAccentColor(color);
+        localStorage.setItem('accentColor', color);
+        window.location.reload();
+    };
     return (
         <Flex width={'100%'} className='test2' height={'100%'} style={{ overflow: 'hidden' }}>
             <Box width={'100%'} height={'100%'} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
@@ -323,7 +327,7 @@ export default function Settings() {
                                     <Flex direction={'row'} gap={'4'} minWidth={'20%'} maxWidth={'50%'} height={'fit-content'} wrap={'wrap'}>
                                         {Object.entries(colorMap).map(([name, colorCode]) => (
                                             <Tooltip content={t(`utils.tooltips.colors.${name}`)} key={name}>
-                                                <Box height={'32px'} width={'32px'} key={name} onClick={() => setAccentColor(name as AccentColor)} className={`${'accentColor__btn'} ${accentColor === name ? 'selected' : ''}`} style={{ '--color-bg': '#' + colorCode, } as React.CSSProperties} aria-label={name} />
+                                                <Box height={'32px'} width={'32px'} key={name} onClick={() => handleAccentColorChange(name as AccentColor)} className={`${'accentColor__btn'} ${accentColor === name ? 'selected' : ''}`} style={{ '--color-bg': '#' + colorCode, } as React.CSSProperties} aria-label={name} />
                                             </Tooltip>
                                         ))}
                                     </Flex>
@@ -369,25 +373,38 @@ export default function Settings() {
                                     <Tva valueTva={tva} />
                                 </Flex>
                             </motion.div>
-
                             <motion.div variants={featureVariants}>
                                 <Flex direction={'row'} gap={"9"} >
                                     <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
                                         <Text size={'5'} weight={'medium'}>{t('settings.hephai.title')}</Text>
                                         <Text color="gray" size="2" weight={'regular'}>{t('settings.hephai.subtitle')}</Text>
                                     </Flex>
-                                    <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
-                                        <Tooltip content={t('utils.tooltips.exportjson')}>
-                                            <Button color={AccentColor as any} variant="soft" size={'3'} className='btncursor' onClick={handleExportJson}>
-                                                <Text size="2" weight={'regular'}>{t('buttons.export.json')}</Text>
-                                            </Button>
-                                        </Tooltip>
-                                        <Tooltip content={t('utils.tooltips.importjson')}>
-                                            <Button color={'green'} variant="soft" size={'3'} className='btncursor' onClick={() => fileInputRef.current?.click()}>
-                                                <input key="inputForFile" ref={fileInputRef} type="file" accept=".json" onChange={handleImportSettings} style={{ display: 'none' }} />
-                                                <Text size="2" weight={'regular'}>{t('buttons.import.json')}</Text>
-                                            </Button>
-                                        </Tooltip>
+                                    <Flex direction={'column'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
+                                        <Flex gap={"4"}>
+
+                                            <Tooltip content={t('utils.tooltips.exportjson')}>
+                                                <Button color={AccentColor as any} variant="soft" size={'3'} className='btnCursor' onClick={handleExportJson}>
+                                                    <Text size="2" weight={'regular'}>{t('buttons.export.json')}</Text>
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip content={t('utils.tooltips.importjson')}>
+                                                <Button color={'green'} variant="soft" size={'3'} className='btnCursor' onClick={() => fileInputRef.current?.click()}>
+                                                    <input key="inputForFile" ref={fileInputRef} type="file" accept=".json" onChange={handleImportSettings} style={{ display: 'none' }} />
+                                                    <Text size="2" weight={'regular'}>{t('buttons.import.json')}</Text>
+                                                </Button>
+                                            </Tooltip>
+
+                                        </Flex>
+                                        <Flex align={"center"} gap={"4"}>
+                                            <Text size={'2'} weight={'medium'}>{t('menu.window.toolbar')}</Text>
+                                            <Kbd>alt + ctrl </Kbd>
+
+                                        </Flex>
+                                        <Flex align={"center"} gap={"4"}>
+                                            <Text size={'2'} weight={'medium'}>{t('shortcutsPanel.title')}</Text>
+                                            <Kbd>alt + s </Kbd>
+
+                                        </Flex>
                                     </Flex>
                                 </Flex>
                             </motion.div>

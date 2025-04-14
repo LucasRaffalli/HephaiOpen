@@ -9,8 +9,30 @@ import { Progress } from '@radix-ui/themes';
 import { DownloadIcon } from '@/components/design/IconsAnimate';
 import { motion } from "framer-motion";
 import InputFileName from "./InputFileName";
+import { usePDF } from '@/context/PDFContext';
 
 const DOWNLOAD_INTERVAL = 50;
+
+const containerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const buttonVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 }
+  }
+};
 
 interface InvoicePdfViewerProps {
   pdfUrl: string;
@@ -21,9 +43,7 @@ interface InvoicePdfViewerProps {
 
 const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF, isLoading, }) => {
   const { t } = useTranslation();
-  const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | undefined>(undefined);
-  const [currentPage, setCurrentPage] = useState(1);
-
+  const { currentPage, setCurrentPage, pdfDoc, setPdfDoc } = usePDF();
   const [warningInvoice, setWarningInvoice] = useState(true);
   const [loadingState, setLoadingState] = useState({
     isCanvasLoading: true,
@@ -50,7 +70,7 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
       setLoadingState({ ...loadingState, isPdfLoading: false });
     };
     loadPdf();
-  }, [pdfUrl]);
+  }, [pdfUrl, setPdfDoc]);
 
   useEffect(() => {
     const getFileSize = async () => {
@@ -123,95 +143,83 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
     const context = canvas.getContext('2d');
     if (!context) return;
 
+    // Annuler la tâche de rendu précédente
     if (renderTask.current) {
-      try {
-        await renderTask.current.cancel();
-      } catch (error) {
-        console.warn('Error cancelling previous render task:', error);
-      }
-      renderTask.current = null;
+        try {
+            await renderTask.current.cancel();
+            renderTask.current = null;
+            // Attendre que le canvas soit libéré
+            await new Promise(resolve => setTimeout(resolve, 150));
+        } catch (error) {
+            console.warn('Erreur lors de l\'annulation de la tâche de rendu précédente:', error);
+        }
     }
 
     updateLoadingState({ isCanvasLoading: true });
 
     try {
-      const dpiScale = window.devicePixelRatio || 1;
-      const page = await pdfDoc.getPage(currentPage);
-      const viewport = page.getViewport({ scale: dpiScale });
+        const dpiScale = window.devicePixelRatio || 1;
+        const page = await pdfDoc.getPage(currentPage);
+        const viewport = page.getViewport({ scale: dpiScale });
 
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      canvas.style.width = `${viewport.width / dpiScale}px`;
-      canvas.style.height = `${viewport.height / dpiScale}px`;
+        // Nettoyer complètement le canvas avant chaque rendu
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.style.width = `${viewport.width / dpiScale}px`;
+        canvas.style.height = `${viewport.height / dpiScale}px`;
 
-      context.clearRect(0, 0, canvas.width, canvas.height);
+        // S'assurer que le contexte est propre
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
-      const newRenderTask = page.render({
-        canvasContext: context,
-        viewport: viewport
-      });
+        const newRenderTask = page.render({
+            canvasContext: context,
+            viewport: viewport,
+            intent: 'display',
+            // enableWebGL: false // Désactiver WebGL pour éviter des conflits
+        });
 
-      renderTask.current = newRenderTask;
+        renderTask.current = newRenderTask;
 
-      try {
-        await newRenderTask.promise;
-      } catch (error: unknown) {
-        if (error instanceof Error && error.name !== 'RenderingCancelled') {
-          console.error('Error rendering page:', error);
+        try {
+            await newRenderTask.promise;
+        } catch (error: any) {
+            if (error.name !== 'RenderingCancelledException') {
+                console.error('Erreur de rendu:', error);
+            }
+        } finally {
+            if (renderTask.current === newRenderTask) {
+                renderTask.current = null;
+            }
         }
-        return;
-      }
     } catch (error) {
-      console.error('Error in renderPage:', error);
+        console.error('Erreur lors du rendu de la page:', error);
     } finally {
-      renderTask.current = null;
-      updateLoadingState({ isCanvasLoading: false });
+        updateLoadingState({ isCanvasLoading: false });
     }
-  }, [pdfDoc, currentPage]);
+}, [pdfDoc, currentPage]);
 
-  useEffect(() => {
+// Cleanup effect
+useEffect(() => {
     return () => {
-      if (renderTask.current) {
-        renderTask.current.cancel();
-      }
+        if (renderTask.current) {
+            renderTask.current.cancel();
+            renderTask.current = null;
+        }
     };
-  }, []);
+}, []);
 
-  useEffect(() => {
-    renderPage();
-  }, [renderPage]);
-
-
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 1
-      }
-    }
-  };
-
-  const buttonVariants = {
-    hidden: {
-      y: 50,
-      opacity: 0,
-    },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 20,
-        mass: 0.4
-      }
-    }
-  };
-
+// Single render effect
+useEffect(() => {
+    const timeout = setTimeout(() => {
+        renderPage();
+    }, 100);
+    return () => clearTimeout(timeout);
+}, [renderPage]);
 
   return (
-    <Flex direction="column" align="center" justify="center" gap="4">
+    <Flex direction="column" align="center" justify="center" gap="4" className="InvoicePdfViewerContent">
       {warningInvoice && (
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }} onAnimationComplete={() => { setTimeout(() => setWarningInvoice(false), 3000); }}>
           <Callout.Root color="orange" role="alert" size={"1"}>
@@ -225,7 +233,7 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
         </motion.div>
       )}
 
-      <motion.canvas ref={canvasRef} initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: loadingState.isCanvasLoading ? 0 : 1, scale: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", opacity: { duration: 0.4 } }} style={{ borderRadius: "0.3rem", }} />
+      <motion.canvas ref={canvasRef} initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: loadingState.isCanvasLoading ? 0 : 1, scale: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", opacity: { duration: 0.4 } }} className="canvaPdf" />
 
       <Dialog.Root open={downloadState.showDialog}>
         <Dialog.Content style={{ maxWidth: 450 }}>
@@ -248,35 +256,32 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
         </Dialog.Content>
       </Dialog.Root>
 
-      <motion.div initial="hidden" animate="visible" variants={containerVariants}>
+      <motion.div initial="hidden" animate="visible" variants={containerVariants} className="InvoicePdfViewerButtons">
         <Flex align="center" justify="center" gap="4">
           <motion.div variants={buttonVariants}>
             <Flex align="center" gap="3">
-              <Button className='btncursor' variant="soft" onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
+              <Button className='btnCursor' variant="soft" onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))} disabled={currentPage === 1}>
                 <ChevronLeft size={18} />
               </Button>
               <Text size="2">{currentPage} / {pdfDoc?.numPages}</Text>
-              <Button className='btncursor' variant="soft" onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pdfDoc?.numPages ?? 1))} disabled={currentPage === pdfDoc?.numPages}>
+              <Button className='btnCursor' variant="soft" onClick={() => setCurrentPage(Math.min(currentPage + 1, pdfDoc?.numPages ?? 1))} disabled={currentPage === pdfDoc?.numPages}>
                 <ChevronRight size={18} />
               </Button>
             </Flex>
           </motion.div>
 
           <motion.div variants={buttonVariants}>
-            <PdfMetadataDialog pdfDoc={pdfDoc} />
-
+            <PdfMetadataDialog pdfDoc={pdfDoc || undefined} />
           </motion.div>
-
 
           <motion.div variants={buttonVariants}>
-            <InputFileName/>
+            <InputFileName />
           </motion.div>
-
 
           {downloadPDF && (
             <motion.div variants={buttonVariants}>
               <Tooltip content={t('utils.tooltips.download.pdf')} side="bottom">
-                <Button variant="soft" className='btncursor' onClick={handleDownload} disabled={isLoading}>
+                <Button variant="soft" className='btnCursor' onClick={handleDownload} disabled={isLoading}>
                   <Flex align={"center"} gap={"3"}>
                     {t('buttons.download.download')}
                     <DownloadIcon />

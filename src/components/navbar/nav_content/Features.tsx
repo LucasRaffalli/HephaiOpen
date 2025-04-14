@@ -44,7 +44,7 @@ export default function Features() {
             <motion.div variants={cardVariants}>
                 <Box className="invoice">
                     <Link to="/navigation/factures" style={{ textDecoration: 'none' }}>
-                        <Card className={`glow ${isActive('/navigation/factures') ? 'active' : ''}`} style={{ cursor: 'pointer' }}>
+                        <Card className={`glow ${isActive('/navigation/factures') ? 'active' : ''} btnCursor`}>
                             <Flex gap="3" justify={'between'} align="center" height={'5vh'} className=''>
                                 <Box>
                                     <Text size="2" weight="bold">

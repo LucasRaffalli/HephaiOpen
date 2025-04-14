@@ -41,7 +41,7 @@ const UserInformation: React.FC<UserInformationProps> = ({
                 </Box>
             ))}
             <Tooltip content={t('utils.tooltips.savedata')}>
-                <Button variant="soft" className='btncursor' size={'3'} onClick={handleSave} style={{ 'width': buttonSize }}>
+                <Button variant="soft" className='btnCursor' size={'3'} onClick={handleSave} style={{ 'width': buttonSize }}>
                     <Text size="2" weight={'regular'}>{t('buttons.data.save')}</Text>
                 </Button>
             </Tooltip>

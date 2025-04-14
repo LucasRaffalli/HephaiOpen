@@ -7,6 +7,7 @@ import { DeleteIcon, SparklesIcon, SquarePenIcon } from '@/components/design/Ico
 import { truncateText } from '@/utils/TruncateText';
 import AnimatedText from '@/utils/AnimatedText';
 import { t } from 'i18next';
+import { useClientContext } from './ClientContext';
 
 
 interface ClientsListProps {
@@ -16,7 +17,14 @@ interface ClientsListProps {
     onEditClient: (updatedClient: Client) => void;
 }
 
-const ClientsList: React.FC<ClientsListProps> = ({ clients, onInsertClient, onDeleteClient, onEditClient }) => {
+const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
+    const {
+        clients,
+        handleDeleteClient,
+        handleEditClient,
+        handleAddClient, // si t’en as besoin
+        setSelectedClient,
+    } = useClientContext();
     const [editingClient, setEditingClient] = useState<Client | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [, setClients] = useState<Client[]>([]);
@@ -33,7 +41,7 @@ const ClientsList: React.FC<ClientsListProps> = ({ clients, onInsertClient, onDe
 
     const handleEditSave = () => {
         if (editingClient) {
-            onEditClient(editingClient);
+            handleEditClient(editingClient);
             setEditingClient(null);
             setDialogOpen(false);
         }
@@ -173,7 +181,7 @@ const ClientsList: React.FC<ClientsListProps> = ({ clients, onInsertClient, onDe
                                                                 <Button variant="soft" color="gray">{t('buttons.cancel')}</Button>
                                                             </AlertDialog.Cancel>
                                                             <AlertDialog.Action>
-                                                                <Button variant="solid" color="red" onClick={() => onDeleteClient(client.email)}>
+                                                                <Button variant="solid" color="red" onClick={() => handleDeleteClient(client.email)}>
                                                                     {t('buttons.delete')}
                                                                 </Button>
                                                             </AlertDialog.Action>

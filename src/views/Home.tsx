@@ -2,9 +2,12 @@ import { Flex, Button, Text, Box, Container, Heading } from '@radix-ui/themes'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { version, name, author, description, license, type } from '../../package.json';
+import HephaiLoader from '@/components/design/HephaiLoader';
 
 export default function Home() {
-
+setTimeout(() => {
+  
+}, 20);
 
   return (
     <>
@@ -14,6 +17,7 @@ export default function Home() {
           <Text color="gray" size="4">{description}</Text>
         </Flex>
       </Flex>
+
     </>
   );
 }

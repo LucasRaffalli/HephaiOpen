@@ -1,6 +1,7 @@
 import { Flex, Box, Button, Text, Tooltip } from "@radix-ui/themes";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { t } from "i18next";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface DateSelectorProps {
@@ -12,13 +13,17 @@ interface DateSelectorProps {
 }
 
 const DateSelector: React.FC<DateSelectorProps> = ({ selectedDate, handleCustomDate, isAutoDate, setIsAutoDate, setSelectedDate }) => {
-    const { t } = useTranslation();
-
+    const [lang, setLang] = useState<string>('en');
     const handleAutoDate = () => {
         setIsAutoDate(true);
         setSelectedDate(new Date().toISOString().split('T')[0]);
     };
-
+    useEffect(() => {
+        const storedLang = localStorage.getItem('language');
+        if (storedLang) {
+            setLang(storedLang);  // Si une langue est définie dans localStorage, on l'utilise
+        }
+    }, []);
     useEffect(() => {
         if (isAutoDate) {
             const updateDate = () => {
@@ -56,7 +61,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({ selectedDate, handleCustomD
                         <Button disabled style={{ width: "100%" }}>{selectedDate}</Button>
                     </motion.div>
                 ) : (
-                    <motion.input type="date" value={selectedDate} onChange={handleCustomDate} className="datepicker" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }} />
+                    <motion.input type="date" value={selectedDate} onChange={handleCustomDate} className="datepicker" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.2 }} lang={lang} />
                 )}
             </Box>
         </Flex>

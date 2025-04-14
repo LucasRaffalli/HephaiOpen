@@ -3,6 +3,7 @@ import { useWindowContext } from './WindowContext'
 import { useTitlebarContext } from './TitlebarContext'
 import type { TitlebarMenu, TitlebarMenuItem } from '../titlebarMenus'
 import { Box, Flex } from '@radix-ui/themes'
+import HephaiIcon from '@/components/design/icons/hephai'
 
 export const Titlebar = () => {
   const { title, icon, titleCentered, menuItems } = useWindowContext().titlebar
@@ -11,7 +12,7 @@ export const Titlebar = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey && menuItems?.length) {
+      if (e.ctrlKey && e.altKey && menuItems?.length) {
         // Ignore repeated keydown events
         if (e.repeat) return
         // Close active menu if it's open
@@ -20,7 +21,7 @@ export const Titlebar = () => {
       }
     }
 
-    // Add event listener for Alt key
+    // Add event listener for Ctrl+Alt keys
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
@@ -34,7 +35,8 @@ export const Titlebar = () => {
         <div className="window-titlebar-icon">
           {typeof icon === 'string' ? (
             // <img src={icon} alt="Icon" />
-            <Flex align={"center"} justify={"center"} ><img src="/img/premium.svg" alt="" /> </Flex>
+            // <Flex align={"center"} justify={"center"} ><img src="/img/premium.svg" alt="" /> </Flex>
+            <Flex align={"center"} justify={"center"} > <HephaiIcon size={24} /> </Flex>
           ) : (
             icon
           )}
@@ -195,10 +197,7 @@ const TitlebarControls = () => {
     <div className="window-titlebar-controls">
       {wcontext?.minimizable && <TitlebarControlButton label="minimize" svgPath={minimizePath} />}
       {wcontext?.maximizable && (
-        <TitlebarControlButton
-          label="maximize"
-          svgPath={isMaximized ? restorePath : maximizePath}
-        />
+        <TitlebarControlButton label="maximize" svgPath={isMaximized ? restorePath : maximizePath} />
       )}
       <TitlebarControlButton label="close" svgPath={closePath} />
     </div>

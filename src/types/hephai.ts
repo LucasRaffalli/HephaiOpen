@@ -169,3 +169,8 @@ export enum PriceUnit {
     KRW = '₩',
     THB = '฿',
 }
+
+export interface ToolBar {
+
+
+}

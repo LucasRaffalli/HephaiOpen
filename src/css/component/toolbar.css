@@ -1,0 +1,69 @@
+/* background-color: var(--accent-a3); */
+/* color: var(--accent-a11); */
+/* background-color: var(--accent-a4); */
+/* .rt-BaseButton:where(.rt-variant-soft):where(:focus-visible) {
+    outline: 2px solid var(--accent-8);
+    outline-offset: -1px;
+} */
+.toolbar-button-container {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .75rem;
+    border-radius: var(--radius-2);
+}
+
+.btnToolBar {
+    color: var(--gray-8);
+    height: 20px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toolbar-button-container.active {
+    background-color: var(--accent-a3);
+}
+
+.toolbar-button-container.active .btnToolBar {
+    color: var(--accent-a11);
+}
+
+.toolbar-button-container:hover {
+    background-color: var(--accent-a3);
+}
+
+.toolbar-button-container:hover .btnToolBar {
+    color: var(--accent-a11);
+
+}
+.toolbar-button-container:hover .btnToolBar {
+    fill: var(--accent-a11);
+
+}
+
+.toolbar-button-container:focus-visible {
+    background-color: var(--accent-a4);
+    outline: 2px solid var(--accent-8);
+    outline-offset: -1px;
+}
+
+.small-toolbar__2.loading {
+    width: 25rem;
+
+    .toolbar-button-container {
+        width: 100%;
+    }
+
+    .toolbar-button-container:hover {
+        cursor: default;
+        background-color: transparent !important;
+    }
+
+}
+
+/* .small-toolbar__1.loading {
+   display: none;
+} */

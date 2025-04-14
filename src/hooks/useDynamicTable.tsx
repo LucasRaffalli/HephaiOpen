@@ -1,27 +1,57 @@
 import { useEffect, useState } from "react";
+import { generateUniqueId } from "@/utils/generateId";
+
+interface Column {
+    dataKey: string;
+    header: string;
+}
 
 export const useDynamicTable = () => {
-    const [columns, setColumns] = useState(() => {
+    const [columns, setColumns] = useState<Column[]>(() => {
         const savedData = localStorage.getItem("invoiceData");
-        return savedData ? JSON.parse(savedData).dynamicColumns || [] : [];
+        const savedColumns = savedData ? JSON.parse(savedData).columns || [] : [];
+        // Nettoyage des colonnes au chargement
+        return savedColumns.filter((col: Column) => col.header.trim() !== "");
     });
 
     const [rows, setRows] = useState(() => {
         const savedData = localStorage.getItem("invoiceData");
-        return savedData ? JSON.parse(savedData).rows : [];
+        return savedData ? JSON.parse(savedData).rows || [] : [];
     });
 
     useEffect(() => {
-        localStorage.setItem("invoiceData", JSON.stringify({ columns, rows }));
+        // Nettoyer les données des colonnes supprimées dans les lignes
+        const cleanedRows = rows.map((row: Record<string, any>) => {
+            const cleanedRow: Record<string, any> = {
+                product: row.product,
+                total: row.total
+            };
+
+            columns.forEach((col) => {
+                if (row[col.dataKey] !== undefined) {
+                    cleanedRow[col.dataKey] = row[col.dataKey];
+                }
+            });
+
+            return cleanedRow;
+        });
+
+        localStorage.setItem("invoiceData", JSON.stringify({
+            columns,
+            rows: cleanedRows
+        }));
     }, [columns, rows]);
 
     const addColumn = () => {
         const newColumn = {
             header: `Colonne ${columns.length + 1}`,
-            dataKey: `col${columns.length + 1}`,
+            dataKey: `col-${generateUniqueId()}`,
         };
         setColumns([...columns, newColumn]);
-        setRows(rows.map((row: { [x: string]: any; }) => ({ ...row, [newColumn.dataKey]: "" })));
+        setRows(rows.map((row: Record<string, any>) => ({
+            ...row,
+            [newColumn.dataKey]: ""
+        })));
     };
 
     const removeColumn = (index: number) => {
@@ -32,11 +62,29 @@ export const useDynamicTable = () => {
 
         const columnToRemove = columns[index].dataKey;
         setColumns(columns.filter((_, i) => i !== index));
-        setRows(rows.map((row: { [x: string]: any; }) => {
+
+        // Nettoyer la colonne supprimée des données
+        setRows(rows.map((row: Record<string, any>) => {
             const { [columnToRemove]: _, ...rest } = row;
             return rest;
         }));
     };
 
-    return { columns, rows, setRows, addColumn, removeColumn };
+    const handleEditColumn = (index: number, value: string) => {
+        const updatedColumns = [...columns];
+        if (updatedColumns[index]) {
+            updatedColumns[index].header = value;
+            setColumns(updatedColumns);
+        }
+    };
+
+    return {
+        columns,
+        setColumns,
+        rows,
+        setRows,
+        addColumn,
+        removeColumn,
+        handleEditColumn
+    };
 };

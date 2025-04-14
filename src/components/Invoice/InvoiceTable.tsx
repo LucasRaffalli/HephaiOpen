@@ -8,14 +8,16 @@ interface Column {
     header: string;
 }
 
-
 const InvoiceTable: React.FC = () => {
     const { t } = useTranslation();
-
     const [dynamicColumns, setDynamicColumns] = useState<Column[]>([]);
 
     const addDynamicColumn = () => {
-        setDynamicColumns([...dynamicColumns, { dataKey: `col-${dynamicColumns.length + 1}`, header: '' }]);
+        // Utiliser Date.now() pour générer un identifiant unique
+        setDynamicColumns([...dynamicColumns, { 
+            dataKey: `col-${Date.now()}`, 
+            header: '' 
+        }]);
     };
 
     const handleEditColumn = (index: number, value: string) => {
@@ -61,7 +63,7 @@ const InvoiceTable: React.FC = () => {
                     </TextField.Slot>
                 </TextField.Root>
 
-                <Button className='btncursor' variant="soft" onClick={addDynamicColumn}>
+                <Button className='btnCursor' variant="soft" onClick={addDynamicColumn}>
                     <PlusIcon size={16} />
                     <Text size="2" weight="regular">{t('buttons.addColumns')}2</Text>
                 </Button>

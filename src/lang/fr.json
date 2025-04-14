@@ -1,3 +1,385 @@
 {
-  
+    "toast": {
+        "export": {
+            "success": "Exportation réussie !",
+            "error": "Échec de l’exportation. Veuillez réessayer.",
+            "info": "",
+            "warning": ""
+        },
+        "import": {
+            "success": "Importation réussie !",
+            "error": "Échec de l’importation. Veuillez réessayer.",
+            "info": "",
+            "warning": ""
+        },
+        "saveInfo": {
+            "success": "Informations enregistrées avec succès !",
+            "error": "Échec de l’enregistrement des informations. Veuillez réessayer."
+        },
+        "clientInfo": {
+            "success": "Informations du client enregistrées avec succès !",
+            "error": "Échec de l’enregistrement des informations du client. Veuillez réessayer."
+        }
+    },
+    "text": {
+        "version": "Version",
+        "error": "Invalide",
+        "notFound": "Non trouvé"
+    },
+    "download": {
+        "title": "Téléchargement du PDF",
+        "message": "Veuillez patienter pendant la préparation de votre document...",
+        "complete": "Téléchargement terminé !",
+        "size": "Taille"
+    },
+    "buttons": {
+        "update": "Mettre à jour",
+        "popup": "Ouvrir la popup",
+        "bookmark": {
+            "add": "Ajouter un favori",
+            "remove": "Retirer le favori",
+            "base": "Favoris"
+        },
+        "close": "Fermer",
+        "clearAll": "Tout effacer",
+        "addClient": "Ajouter un client",
+        "addProduct": "Ajouter un produit",
+        "addColumns": "Ajouter des colonnes",
+        "addCustomer": "Ajouter un client",
+        "delete": "Supprimer",
+        "insert": "Insérer",
+        "edit": "Modifier",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "yes": "Oui",
+        "no": "Non",
+        "print": "Imprimer",
+        "metadata": "Métadonnées",
+        "properties": "Propriétés",
+        "upload": {
+            "image": "Téléverser une image"
+        },
+        "export": {
+            "csv": "Exporter en CSV",
+            "excel": "Exporter en Excel",
+            "json": "Exporter en JSON"
+        },
+        "import": {
+            "csv": "Importer un CSV",
+            "excel": "Importer un Excel",
+            "json": "Importer un JSON"
+        },
+        "download": {
+            "pdf": "Télécharger le PDF",
+            "download": "Télécharger"
+        },
+        "data": {
+            "save": "Enregistrer les données"
+        }
+    },
+    "popup": {
+        "edit": {
+            "client": {
+                "title": "Modifier le client",
+                "description": "Modifiez les informations du client ci-dessous"
+            }
+        },
+        "remove": {
+            "client": {
+                "title": "Supprimer le client",
+                "description": "Es-tu sûr de vouloir supprimer ce client ?"
+            }
+        }
+    },
+    "informations": {
+        "client": {
+            "nocustomer": "Aucun client enregistré"
+        }
+    },
+    "features": {
+        "invoice": {
+            "title": "Facture",
+            "warning": "Les données sont censurées dans le document pour des raisons de confidentialité, mais seront visibles une fois exportées.",
+            "date": {
+                "title": "Date",
+                "today": "Aujourd'hui",
+                "otherDay": "Autre jour"
+            },
+            "tableItem": {
+                "product": "Produit",
+                "total": "Total"
+            },
+            "number": "Numéro de facture",
+            "notProduct": "Sélectionner un produit...",
+            "noProducts": "Aucun produit disponible",
+            "paymentMode": "Mode de paiement",
+            "paymentMethods": {
+                "iban": "Virement bancaire",
+                "paypal": "Paypal",
+                "cash": "Espèces",
+                "cheque": "Chèque",
+                "other": "Autre",
+                "error": {
+                    "ibanLengthError": "L'IBAN ne peut pas dépasser 30 caractères (hors espaces).",
+                    "ibanError": "L'IBAN saisi est invalide. Vérifiez le format.",
+                    "paypalError": "L'adresse PayPal saisie est invalide. Vérifiez le format."
+                },
+                "paypalPlaceholder": "Saisis ton adresse email PayPal",
+                "ibanPlaceholder": "Saisis ton IBAN",
+                "otherPlaceholder": "Saisis tes informations de paiement"
+            },
+            "notProvided": "Mode de paiement non fourni",
+            "productName": "Nom du produit",
+            "dated": "Datée du",
+            "subtotalHT": "Sous-total (HT)",
+            "vat": "TVA",
+            "vatAmount": "Montant de la TVA",
+            "totalTTC": "Total (TTC)",
+            "balanceDue": "Solde dû",
+            "titleModality": "Modalités & Conditions",
+            "billedTo": "Facturé à",
+            "invoicedBy": "Émis par",
+            "logo": "Logo",
+            "siret": "SIRET",
+            "payment": "Paiement",
+            "author": "Auteur",
+            "customer": "Client",
+            "table": "Gestion des tables",
+            "product": "Gestion des produits",
+            "selectorProduct": "Sélecteur de produit",
+            "modalitiesAndConditions": "Modalités & conditions",
+            "additionalComments": "Commentaires additionnels",
+            "filenamePrefix": "Facture"
+        },
+        "chart": "Graphique",
+        "premium": {
+            "title": "Premium",
+            "description": "Débloque des fonctionnalités supplémentaires pour ton application Hephai Invoice."
+        }
+    },
+    "date": {
+        "months_short": [
+            "Jan",
+            "Fév",
+            "Mar",
+            "Avr",
+            "Mai",
+            "Juin",
+            "Juil",
+            "Aoû",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Déc"
+        ]
+    },
+    "utils": {
+        "hephai1": "Hephai Facture",
+        "credit": "Fait avec Hephai Open",
+        "tooltips": {
+            "settings": "Paramètres",
+            "bookmarks": "Ajoute un client à ta liste de favoris.",
+            "metadata": "Propriétés du document",
+            "download": {
+                "pdf": "Télécharge ton document en PDF.",
+                "download": "Télécharge ton document."
+            },
+            "comment": "Ajoute un commentaire à ton document.",
+            "modalities": "Entre ici tes modalités et conditions.",
+            "author": {
+                "authorCompanyName": "Saisis le nom de ton entreprise.",
+                "authorAddress": "Saisis l'adresse de ton entreprise.",
+                "authorPhone": "Saisis le téléphone de ton entreprise.",
+                "authorEmail": "Saisis l'email de ton entreprise.",
+                "siret": "Saisis le numéro SIRET.",
+                "logo": "Téléverse ton logo d’entreprise."
+            },
+            "customer": {
+                "companyName": "Saisis le nom du client.",
+                "address": "Saisis l'adresse du client.",
+                "phone": "Saisis le téléphone du client.",
+                "email": "Saisis l'email du client."
+            },
+            "vat": "Saisis ton numéro de TVA.",
+            "language": "Choisis ta langue.",
+            "savedata": "Sauvegarde tes données actuelles pour ne rien perdre.",
+            "btnimg": "Clique ici pour téléverser une image pour ton document ou profil.",
+            "importjson": "Importe des données à partir d’un fichier JSON.",
+            "exportjson": "Exporte tes données et paramètres actuels au format JSON.",
+            "lang": "Sélectionne la langue de l’interface.",
+            "themeL": "Choisir le thème clair.",
+            "themeD": "Choisir le thème sombre.",
+            "date": {
+                "today": "Sélectionner la date d’aujourd’hui.",
+                "other": "Sélectionner une autre date."
+            },
+            "payment": {
+                "iban": "Saisis ton IBAN",
+                "paypal": "Saisis ton email PayPal",
+                "other": "Saisis les infos de paiement",
+                "error": {
+                    "ibanLengthError": "L’IBAN ne peut pas dépasser 30 caractères (hors espaces).",
+                    "ibanError": "L’IBAN saisi est invalide.",
+                    "paypalError": "L’email PayPal saisi est invalide."
+                }
+            },
+            "addClient": "Ajoute un nouveau client à ta liste.",
+            "addProduct": "Ajoute un nouveau produit à ta liste.",
+            "addColumns": "Ajoute de nouvelles colonnes à ton tableau.",
+            "addCustomer": "Ajoute un nouveau client à ta liste.",
+            "delete": "Supprime l’élément sélectionné.",
+            "insert": "Insère un nouvel élément avant celui sélectionné.",
+            "edit": "Modifie l’élément sélectionné.",
+            "save": "Enregistre tes modifications.",
+            "deleteAll": "Tout supprimer.",
+            "update": "Mettre à jour.",
+            "cancel": "Annuler les modifications.",
+            "colors": {
+                "tomato": "Tomato",
+                "red": "Red",
+                "ruby": "Ruby",
+                "Crimson": "Crimson",
+                "pink": "Pink",
+                "plum": "Plum",
+                "purple": "Purple",
+                "violet": "Violet",
+                "iris": "Iris",
+                "indigo": "Indigo",
+                "blue": "Blue",
+                "cyan": "Cyan",
+                "teal": "Teal",
+                "jade": "Jade",
+                "green": "Green",
+                "grass": "Grass",
+                "orange": "Orange",
+                "brown": "Brown",
+                "gold": "Gold",
+                "bronze": "Bronze",
+                "gray": "Gray",
+                "sky": "Sky",
+                "mint": "Mint",
+                "lime": "Lime",
+                "yellow": "Yellow",
+                "amber": "Amber"
+            }
+        }
+    },
+    "metadata": {
+        "title": "Métadonnées PDF",
+        "title2": "Propriétés du document",
+        "title3": "Informations techniques"
+    },
+    "settings": {
+        "title": "Apparence / Informations",
+        "companyIcon": {
+            "title": "Logo de l’entreprise",
+            "subtitle": "Met à jour ton logo d’entreprise."
+        },
+        "tva": {
+            "title": "Numéro de TVA",
+            "subtitle": "Mets à jour ton numéro de TVA."
+        },
+        "informationUser": {
+            "title": "Informations sur l’entreprise",
+            "subtitle": "Modifie les détails de ton entreprise.",
+            "utils": {
+                "company": "Ton entreprise",
+                "address": "Adresse",
+                "phone": "Téléphone",
+                "email": "Email",
+                "siret": "SIRET"
+            }
+        },
+        "accentColor": {
+            "title": "Couleur de la marque",
+            "subtitle": "Sélectionne ou personnalise la couleur de ta marque."
+        },
+        "themeColor": {
+            "title": "Thème de l’interface",
+            "subtitle": "Choisis ton thème d’interface.",
+            "light": "Clair",
+            "dark": "Sombre",
+            "system": "Préférence système"
+        },
+        "language": {
+            "title": "Langue",
+            "subtitle": "Choisis ta langue préférée.",
+            "lang": {
+                "fr": "Français",
+                "en": "Anglais"
+            }
+        },
+        "hephai": {
+            "title": "Outils Hephai",
+            "subtitle": "Exporte tes données."
+        },
+        "priceUnit": {
+            "title": "Unité monétaire",
+            "subtitle": "Choisis la devise pour les prix.",
+            "usd": "Dollar",
+            "eur": "Euro",
+            "gbp": "Livre",
+            "jpy": "Yen",
+            "cad": "Dollar canadien",
+            "aud": "Dollar australien",
+            "chf": "Franc suisse",
+            "cny": "Yuan chinois",
+            "sek": "Couronne suédoise",
+            "nok": "Couronne norvégienne",
+            "rub": "Rouble russe",
+            "hkd": "Dollar hongkongais",
+            "sgd": "Dollar de Singapour",
+            "myr": "Ringgit malaisien",
+            "krw": "Won sud-coréen",
+            "thb": "Baht thaïlandais",
+            "brl": "Réel brésilien",
+            "pln": "Zloty polonais"
+        }
+    },
+    "shortcutsPanel": {
+        "title": "Panneau de raccourcis",
+        "action": "Actions",
+        "shortcut": "Raccourcis",
+        "description": "Raccourcis clavier pour accéder rapidement aux fonctionnalités.",
+        "close": "Fermer le panneau de raccourcis.",
+        "save": "Enregistrer tes données actuelles.",
+        "export": "Exporter tes données.",
+        "import": "Importer tes données.",
+        "download": "Télécharger ton document.",
+        "print": "Imprimer ton document.",
+        "settings": "Ouvrir les paramètres.",
+        "fullscreen": "Basculer en plein écran.",
+        "devTools": "Ouvrir les outils développeur."
+    },
+    "menu": {
+        "file": {
+            "title": "Fichier",
+            "exit": "Quitter"
+        },
+        "view": {
+            "title": "Affichage",
+            "reload": "Recharger",
+            "devTools": "Outils développeur",
+            "showNavbar": "Afficher la barre de navigation",
+            "actualSize": "Taille réelle",
+            "zoomIn": "Zoom avant",
+            "zoomOut": "Zoom arrière",
+            "fullscreen": "Plein écran"
+        },
+        "window": {
+            "title": "Fenêtre",
+            "toolbar": "Affiche la barre d'outils",
+            "shortcutsPanel": "Panneau de raccourcis",
+            "darkMode": "Mode sombre",
+            "lightMode": "Mode clair",
+            "shortcuts": "Raccourcis",
+            "maximize": "Maximiser",
+            "minimize": "Minimiser",
+            "close": "Fermer"
+        },
+        "credits": {
+            "title": "Crédits"
+        }
+    }
 }

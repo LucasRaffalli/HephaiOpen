@@ -1,24 +1,24 @@
 {
     "toast": {
         "export": {
-            "success": "Export successful!",
+            "success": "Export completed successfully!",
             "error": "Export failed. Please try again.",
             "info": "",
             "warning": ""
         },
         "import": {
-            "success": "Import successful!",
+            "success": "Import completed successfully!",
             "error": "Import failed. Please try again.",
             "info": "",
             "warning": ""
         },
         "saveInfo": {
             "success": "Information saved successfully!",
-            "error": "Information saving failed. Please try again."
+            "error": "Failed to save information. Please try again."
         },
         "clientInfo": {
             "success": "Client information saved successfully!",
-            "error": "Client information saving failed. Please try again."
+            "error": "Failed to save client information. Please try again."
         }
     },
     "text": {
@@ -41,11 +41,11 @@
             "base": "Bookmarks"
         },
         "close": "Close",
-        "clearAll": "Clear All",
-        "addClient": "Add Client",
-        "addProduct": "Add a Product",
-        "addColumns": "Add Columns",
-        "addCustomer": "Add a Customer",
+        "clearAll": "Clear all",
+        "addClient": "Add client",
+        "addProduct": "Add a product",
+        "addColumns": "Add columns",
+        "addCustomer": "Add a customer",
         "delete": "Delete",
         "insert": "Insert",
         "edit": "Edit",
@@ -58,7 +58,7 @@
         "metadata": "Metadata",
         "properties": "Properties",
         "upload": {
-            "image": "Upload Image"
+            "image": "Upload image"
         },
         "export": {
             "csv": "Export as CSV",
@@ -75,81 +75,81 @@
             "download": "Download"
         },
         "data": {
-            "save": "Save Data"
+            "save": "Save data"
         }
     },
     "popup": {
         "edit": {
             "client": {
                 "title": "Edit Client",
-                "description": "Modify customer information below"
+                "description": "Modify client information below"
             }
         },
         "remove": {
             "client": {
                 "title": "Delete Client",
-                "description": "Are you sure you want to delete this customer?"
+                "description": "Are you sure you want to delete this client?"
             }
         }
     },
     "informations": {
         "client": {
-            "nocustomer": "No customers have been registered"
+            "nocustomer": "No clients have been registered"
         }
     },
     "features": {
         "invoice": {
             "title": "Invoice",
-            "warning": "The data is censored in the document for privacy reasons, but will be visible once exported.",
+            "warning": "The data is hidden in the document for privacy reasons but will be visible once exported.",
             "date": {
                 "title": "Date",
                 "today": "Today",
-                "otherDay": "Other Day"
+                "otherDay": "Other date"
             },
             "tableItem": {
                 "product": "Product",
                 "total": "Total"
             },
-            "number": "Invoice Number",
+            "number": "Invoice number",
             "notProduct": "Select product...",
             "noProducts": "No product available",
-            "paymentMode": "Payment Method",
+            "paymentMode": "Payment method",
             "paymentMethods": {
-                "iban": "Bank Transfer",
-                "paypal": "Paypal",
+                "iban": "Bank transfer",
+                "paypal": "PayPal",
                 "cash": "Cash",
-                "cheque": "Check",
+                "cheque": "Cheque",
                 "other": "Other",
                 "error": {
-                    "ibanLengthError": "The IBAN cannot exceed 30 characters (excluding spaces).",
-                    "ibanError": "The IBAN you entered is invalid. Please check the format.",
-                    "paypalError": "The PayPal email you entered is invalid. Please check the format."
+                    "ibanLengthError": "The IBAN must not exceed 30 characters (excluding spaces).",
+                    "ibanError": "The IBAN entered is invalid. Please check the format.",
+                    "paypalError": "The PayPal email entered is invalid. Please check the format."
                 },
                 "paypalPlaceholder": "Enter your PayPal email address",
                 "ibanPlaceholder": "Enter your IBAN",
                 "otherPlaceholder": "Enter your payment details"
             },
             "notProvided": "Payment method not provided",
-            "productName": "Product Name",
+            "productName": "Product name",
             "dated": "Dated",
-            "subtotalHT": "Subtotal (Excl. Tax)",
+            "subtotalHT": "Subtotal (excl. tax)",
             "vat": "VAT",
-            "vatAmount": "VAT Amount",
-            "totalTTC": "Total (Incl. Tax)",
-            "balanceDue": "Balance Due",
-            "titleModality": "Terms & Conditions",
-            "billedTo": "Billed To",
-            "invoicedBy": "Invoiced By",
+            "vatAmount": "VAT amount",
+            "totalTTC": "Total (incl. tax)",
+            "balanceDue": "Balance due",
+            "titleModality": "Terms & conditions",
+            "billedTo": "Billed to",
+            "invoicedBy": "Invoiced by",
             "logo": "Logo",
             "siret": "SIRET",
             "payment": "Payment",
             "author": "Author",
             "customer": "Customer",
-            "table": "Table Management",
-            "product": "Product Management",
-            "selectorProduct": "Product Selector",
-            "modalitiesAndConditions": "Modalities & Conditions",
-            "additionalComments": "Additional Comments",
+            "table": "Table management",
+            "product": "Product management",
+            "selectorProduct": "Product selector",
+            "modalitiesAndConditions": "Terms & conditions",
+            "additionalComments": "Additional comments",
             "filenamePrefix": "Invoice"
         },
         "chart": "Chart",
@@ -176,10 +176,10 @@
     },
     "utils": {
         "hephai1": "Hephai Invoice",
-        "credit":"Made by Hephai Open",
+        "credit": "Made with Hephai Open",
         "tooltips": {
             "settings": "Settings",
-            "bookmarks": "Add a client to your bookmarked list.",
+            "bookmarks": "Add a client to your bookmarks.",
             "metadata": "Document properties",
             "download": {
                 "pdf": "Download your document as a PDF file.",
@@ -196,18 +196,18 @@
                 "logo": "Upload your company logo."
             },
             "customer": {
-                "companyName": "Enter the customer's name.",
-                "address": "Enter the customer's address.",
-                "phone": "Enter the customer's phone number.",
-                "email": "Enter the customer's email address."
+                "companyName": "Enter the client's name.",
+                "address": "Enter the client's address.",
+                "phone": "Enter the client's phone number.",
+                "email": "Enter the client's email address."
             },
             "vat": "Enter your VAT number.",
             "language": "Choose your language.",
-            "savedata": "Save your current data to ensure no progress is lost.",
+            "savedata": "Save your current data to avoid losing progress.",
             "btnimg": "Click here to upload an image for your document or profile.",
             "importjson": "Import data from a JSON file to restore or update your settings.",
             "exportjson": "Export your current settings and data as a JSON file.",
-            "lang": "Select your preferred language for the application interface.",
+            "lang": "Select your preferred application language.",
             "themeL": "Choose the application color theme: Light.",
             "themeD": "Choose the application color theme: Dark.",
             "date": {
@@ -219,12 +219,12 @@
                 "paypal": "Enter your PayPal email address",
                 "other": "Enter your payment details",
                 "error": {
-                    "ibanLengthError": "The IBAN cannot exceed 30 characters (excluding spaces).",
-                    "ibanError": "The IBAN you entered is invalid. Please check the format.",
-                    "paypalError": "The PayPal email you entered is invalid. Please check the format."
+                    "ibanLengthError": "The IBAN must not exceed 30 characters (excluding spaces).",
+                    "ibanError": "The IBAN entered is invalid. Please check the format.",
+                    "paypalError": "The PayPal email entered is invalid. Please check the format."
                 }
             },
-            "addClient": "Add a new customer to your list.",
+            "addClient": "Add a new client to your list.",
             "addProduct": "Add a new product to your list.",
             "addColumns": "Add new columns to your table.",
             "addCustomer": "Add a new customer to your list.",
@@ -277,14 +277,14 @@
             "subtitle": "Update your company logo."
         },
         "tva": {
-            "title": "VAT Number",
+            "title": "VAT number",
             "subtitle": "Update your VAT number."
         },
         "informationUser": {
             "title": "Company Information",
             "subtitle": "Update your company details.",
             "utils": {
-                "company": "Your Company",
+                "company": "Your company",
                 "address": "Address",
                 "phone": "Phone",
                 "email": "Email",
@@ -292,15 +292,15 @@
             }
         },
         "accentColor": {
-            "title": "Brand Color",
+            "title": "Brand color",
             "subtitle": "Select or customize your brand color."
         },
         "themeColor": {
-            "title": "Interface Theme",
+            "title": "Interface theme",
             "subtitle": "Select your interface color theme.",
             "light": "Light",
             "dark": "Dark",
-            "system": "System Preference"
+            "system": "System preference"
         },
         "language": {
             "title": "Language",
@@ -311,11 +311,11 @@
             }
         },
         "hephai": {
-            "title": "Hephai Tools",
+            "title": "Hephai tools",
             "subtitle": "Export your data."
         },
         "priceUnit": {
-            "title": "Price Unit",
+            "title": "Price unit",
             "subtitle": "Select the currency unit for prices.",
             "usd": "Dollar",
             "eur": "Euro",
@@ -339,8 +339,8 @@
     },
     "shortcutsPanel": {
         "title": "Shortcuts Panel",
-        "action":"Actions",
-        "shortcut":"Shortcuts",
+        "action": "Actions",
+        "shortcut": "Shortcuts",
         "description": "Keyboard shortcuts for quick access to features.",
         "close": "Close the shortcuts panel.",
         "save": "Save your current data.",
@@ -360,18 +360,19 @@
         "view": {
             "title": "View",
             "reload": "Reload",
-            "devTools": "Developer Tools",
-            "showNavbar": "Show Navbar",
-            "actualSize": "Actual Size",
-            "zoomIn": "Zoom In",
-            "zoomOut": "Zoom Out",
-            "fullscreen": "Toggle Fullscreen"
+            "devTools": "Developer tools",
+            "showNavbar": "Show navbar",
+            "actualSize": "Actual size",
+            "zoomIn": "Zoom in",
+            "zoomOut": "Zoom out",
+            "fullscreen": "Toggle fullscreen"
         },
         "window": {
             "title": "Window",
-            "shortcutsPanel": "Shortcuts Panel",
-            "darkMode": "Dark Mode",
-            "lightMode": "Light Mode",
+            "toolbar":"Show tools bar",
+            "shortcutsPanel": "Shortcuts panel",
+            "darkMode": "Dark mode",
+            "lightMode": "Light mode",
             "shortcuts": "Shortcuts",
             "maximize": "Maximize",
             "minimize": "Minimize",

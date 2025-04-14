@@ -222,7 +222,7 @@ export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2:
 };
 
 export const setupPDFComments = (doc: jsPDF, options: any, comText: string, startY: number, isEnabled: boolean) => {
-    if (!isEnabled || comText) return;
+    if (!isEnabled) return;
 
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;

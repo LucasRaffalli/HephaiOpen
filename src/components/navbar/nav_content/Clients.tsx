@@ -83,7 +83,7 @@ export default function Clients() {
     >
       <Flex direction="column" gap="2">
         <motion.div variants={elementVariants}>
-          <Button className='btncursor' variant="soft" onClick={() => setIsFormOpen(true)} style={{ width: '100%' }}>
+          <Button className='btnCursor' variant="soft" onClick={() => setIsFormOpen(true)} style={{ width: '100%' }}>
             <PlusIcon size={16} />
             <Text size="2" weight="regular">{t('buttons.addClient')}</Text>
           </Button>

@@ -15,8 +15,8 @@ const LanguageSettings: React.FC<LanguageSettingsProps> = ({ currentLanguage, ha
                     <Select.Root value={currentLanguage} onValueChange={handleChangeLanguage} size={"2"}>
                         <Select.Trigger />
                         <Select.Content position="popper">
-                            <Select.Item className='btncursor' value="en">{t('settings.language.lang.en')}</Select.Item>
-                            <Select.Item className='btncursor' value="fr">{t('settings.language.lang.fr')}</Select.Item>
+                            <Select.Item className='btnCursor' value="en">{t('settings.language.lang.en')}</Select.Item>
+                            <Select.Item className='btnCursor' value="fr">{t('settings.language.lang.fr')}</Select.Item>
                         </Select.Content>
                     </Select.Root>
                 </>
