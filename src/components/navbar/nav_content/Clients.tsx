@@ -90,7 +90,7 @@ export default function Clients() {
 
           <Dialog.Root open={isFormOpen} onOpenChange={setIsFormOpen}>
             <Dialog.Content style={{ width: '285px' }}>
-              <ClientForm clientInfo={null} />
+              <ClientForm />
             </Dialog.Content>
           </Dialog.Root>
         </motion.div>
