@@ -12,6 +12,26 @@
     }
   },
   "build": {
+    "appId": "net.protocol.hephaiopen",
+    "productName": "HephaiOpen",
+    "files": [
+      "dist",
+      "dist-electron",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/favicon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "public/installerIcon.ico",
+      "uninstallerIcon": "public/uninstallerIcon.ico",
+      "include": "public/installer.nsh"
+    },
     "publish": [
       {
         "provider": "github",

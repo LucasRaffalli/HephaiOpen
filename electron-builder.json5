@@ -1,13 +1,22 @@
 {
-  "appId": "com.hephai.app",
-  "asar": true,
+  "appId": "net.protocol.hephai",
+  "asar": false,
   "directories": {
     "output": "release/${version}"
   },
-  "files": [
-    "dist-electron",
-    "dist"
-  ],
+  "asarUnpack": [],
+"files": [
+  "dist-electron",
+  {
+    "from": "dist",
+    "filter": [
+      "**/*",
+      "!**/*.map",
+      "!**/unused/**",
+      "!**/tests/**"
+    ]
+  }
+],
   "mac": {
     "artifactName": "${productName}_${version}.${ext}",
     "target": [

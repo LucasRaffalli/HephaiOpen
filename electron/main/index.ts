@@ -45,16 +45,16 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null
 const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
-
+console.log('Loading file:', indexHtml)
 async function createWindow() {
   const icon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'favicon.ico'))
   icon.setTemplateImage(true)
-  
+
   // Redimensionner l'icône à 16x16 pixels
   const resizedIcon = icon.resize({
-    width: 16,
-    height: 16,
-    quality: 'best'
+    width: 256,
+    height: 256,
+    quality: 'better'
   })
 
   win = new BrowserWindow({
@@ -69,13 +69,14 @@ async function createWindow() {
     minHeight: 860,
     minWidth: 1260,
     icon: resizedIcon,
-    webPreferences: { preload, nodeIntegration: false, contextIsolation: true, },
+    webPreferences: { preload, nodeIntegration: false, contextIsolation: true, webSecurity: false },
   })
   // win.setOverlayIcon(nativeImage.createFromPath('path/to/overlay.png'), 'Description de la superposition')
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)
     // Open devTool if the app is not packaged
   } else {
+
     win.loadFile(indexHtml)
   }
 
@@ -148,6 +149,7 @@ ipcMain.handle('open-win', (_, arg) => {
       preload,
       nodeIntegration: false,
       contextIsolation: true,
+      webSecurity: false
     },
   })
 
