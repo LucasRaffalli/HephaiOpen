@@ -1,9 +1,7 @@
 import '../css/invoice.css';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Box, Button, DropdownMenu, Flex, Heading, IconButton, Progress, ScrollArea, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
+import React, { useEffect, useState } from 'react';
+import { Flex } from '@radix-ui/themes';
 import { Client, CompanyInfo } from '@/types/hephai';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { motion } from "motion/react"
 import PaymentSelection from '@/components/Invoice/PaymentSelection';
 import { useClientContext } from '@/components/Clients/ClientContext';
@@ -43,11 +41,8 @@ export const Invoice = () => {
     const [modalitiesText2, setModalitiesText2] = useState<string>("");
     const [isModalitiesEnabled, setIsModalitiesEnabled] = useState(true);
     const { isFooterEnabled, setIsFooterEnabled } = useFooter();
-    const { generatePDF, downloadPDF, isLoading, printPDF, togglePreviewMode, isPreviewMode, showFinalVersion } = useInvoicePDF({
-        clientInfo, companyInfo, paymentInfo, rows,
-        columns: dynamicColumns, selectedDate, imageSrc, priceUnit,
-        modalitiesText1, modalitiesText2, commentsText, isCommentsEnabled, isModalitiesEnabled, isFooterEnabled
-    });
+    const { generatePDF, downloadPDF, isLoading } = useInvoicePDF({ clientInfo, companyInfo, paymentInfo, rows, columns: dynamicColumns, selectedDate, imageSrc, priceUnit, modalitiesText1, modalitiesText2, commentsText, isCommentsEnabled, isModalitiesEnabled, isFooterEnabled });
+
     useEffect(() => {
         const storedInfo = localStorage.getItem('companyInfos');
         if (storedInfo) {
@@ -149,7 +144,7 @@ export const Invoice = () => {
 
     const containerRightVariants = {
         hidden: {
-            x: 500,  // Changé pour partir de la droite
+            x: 500,
             opacity: 0,
             scale: 0.95,
             skew: -2
@@ -189,37 +184,12 @@ export const Invoice = () => {
         }
     };
 
-    const featureRightVariants = {
-        hidden: {
-            x: -20,
-            opacity: 0,
-            scale: 0.95
-        },
-        visible: {
-            x: 0,
-            opacity: 1,
-            scale: 1,
-            transition: {
-                type: "spring",
-                stiffness: 400,
-                damping: 20,
-                mass: 0.8
-            }
-        }
-    };
-
     return (
         <Flex direction={'column'} height={"100%"}>
             <ContainerInterface height='100%' padding='4' justify='between'>
                 <Flex height={"100%"} direction="column" align={'center'} gap={'2'} className='' >
-                    <motion.div
-                        variants={containerLeftVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className='scrollMbox actionbar actionBarFalse full-height'
-                    >
+                    <motion.div variants={containerLeftVariants} initial="hidden" animate="visible" className='scrollMbox actionbar actionBarFalse full-height'>
                         <Flex direction="column" align={'center'} gap={'4'} >
-
 
                             <motion.div variants={featureVariants}>
                                 <ContainerFeature title="features.invoice.date.title">
@@ -247,9 +217,7 @@ export const Invoice = () => {
                     </motion.div>
                 </Flex>
 
-                {pdfPreviewUrl &&
-                    <InvoicePdfViewer pdfUrl={pdfPreviewUrl} downloadPDF={downloadPDF} isLoading={isLoading} />
-                }
+                {pdfPreviewUrl && <InvoicePdfViewer pdfUrl={pdfPreviewUrl} downloadPDF={downloadPDF} isLoading={isLoading} />}
 
                 <Flex height={"100%"} direction="column" align={'center'} gap={'4'} className='actionBar' >
                     <motion.div variants={containerRightVariants} initial="hidden" animate="visible" className='scrollMbox actionbar actionBarFalse full-height'>

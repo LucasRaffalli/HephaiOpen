@@ -1,5 +1,5 @@
-import { Box, Button, Flex, TextField, Text, Tooltip, Select, Separator, IconButton } from "@radix-ui/themes";
-import { Delete, DeleteIcon, PlusIcon, Trash2 } from "lucide-react";
+import { Box, Button, Flex, TextField, Text, Tooltip, Select, Separator, HoverCard } from "@radix-ui/themes";
+import { PlusIcon, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDynamicTableContext } from "@/context/DynamicTableContext";
@@ -27,6 +27,7 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
     const handleChange = (key: string, value: string) => {
         if (selectedProductIndex !== null) {
             editRow(selectedProductIndex, key, value);
+            setFormData(prev => ({ ...prev, [key]: value }));
         } else {
             setFormData(prev => ({ ...prev, [key]: value }));
         }
@@ -104,11 +105,25 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
             <Flex direction="column" gap="2" width="100%">
                 <Select.Root value={selectedProductIndex !== null ? String(selectedProductIndex) : ""} onValueChange={handleProductSelect}>
                     <Select.Trigger placeholder={t('features.invoice.notProduct')} className="btnCursor" />
-                    <Select.Content position="popper" style={{ height: "10.5rem" }}>
+                    <Select.Content position="popper" style={{ height: "fit-content", maxHeight: "10.5rem" }}>
                         {rows.length > 0 ? (
                             rows.map((row, index) => (
                                 <Select.Item key={index} value={String(index)} className="btnCursor">
-                                    {row.product}
+                                    <Flex direction={"row"}>
+                                        <HoverCard.Root>
+                                            <HoverCard.Trigger>
+                                                <Text>{row.product}</Text>
+                                            </HoverCard.Trigger>
+                                            <HoverCard.Content sideOffset={0} style={{ display: "flex", flexDirection: "column" }}>
+                                                <Text>{t('features.invoice.tableItem.product')}: {row.product} </Text>
+                                                {dynamicColumns.map((col) => (
+                                                    <Text key={col.dataKey}>{col.header}: {row[col.dataKey]}</Text>
+
+                                                ))}
+                                                <Text>{t('features.invoice.tableItem.total')}: {row.total} {priceUnit}</Text>
+                                            </HoverCard.Content>
+                                        </HoverCard.Root>
+                                    </Flex>
                                 </Select.Item>
                             ))
                         ) : (

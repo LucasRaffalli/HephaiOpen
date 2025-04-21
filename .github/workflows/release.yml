@@ -1,4 +1,4 @@
-name: Release Hephai Open
+name: Release HephaiOpen
 
 on:
   push:

@@ -20,6 +20,7 @@
         background-position: -200% center;
     }
 }
+
 .shineEffect {
     position: relative;
     background: linear-gradient(135deg, #ffffff 20%, var(--accent-8) 35%, var(--accent-9) 50%, var(--accent-10) 45%);
@@ -68,37 +69,3 @@
     filter: blur(10px);
     background: radial-gradient(circle at center, rgba(0, 0, 0, 0.6) 0%, transparent 90%);
 }
-
-
-/* .textGradient {
-    color: white;
-    position: relative;
-}
-
-
-.textGradient::after {
-    content: "";
-    position: absolute;
-    z-index: 2;
-    width: 100%;
-    background-image: linear-gradient(315deg, var(--accent-8) 12%, transparent 40%);
-    background-size: 200% 100%;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: gradient 4s linear forwards;
-}
-
-@keyframes gradient {
-    0% {
-        background-position: 0% 0%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 50% 50%;
-    }
-} */

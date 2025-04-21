@@ -9,7 +9,6 @@
     height: 800px !important;
     padding: 1.5rem;
     scrollbar-width: none;
-    /* Pour Firefox */
     -ms-overflow-style: none;
 }
 

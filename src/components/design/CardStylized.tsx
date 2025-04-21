@@ -19,12 +19,7 @@ interface CardStylized {
     isItalicTopSmall?: boolean;
 }
 
-export default function CardStylized({
-    contentTop, topSmallText, bottomTitle, bottomDescription,
-    sizeText, sizeTextSmall, weight, isGrayTop, isGrayBottom
-}: CardStylized) {
-
-    // Animation d'apparition de la carte
+export default function CardStylized({ contentTop, topSmallText, bottomTitle, bottomDescription, sizeText, sizeTextSmall, weight, isGrayTop, isGrayBottom }: CardStylized) {
     const cardAnimation = {
         hidden: { opacity: 0, y: 20, scale: 0.9 },
         visible: {
@@ -35,7 +30,6 @@ export default function CardStylized({
         }
     };
 
-    // Animation d'apparition du texte (lignes progressives)
     const textAnimation = {
         hidden: { opacity: 0, y: 10 },
         visible: (i: number) => ({
@@ -67,7 +61,7 @@ export default function CardStylized({
                     </Flex>
                     <Flex direction="column" p="2" height="20%" width="100%" className='cardStylized__content__bottom'>
                         <motion.div variants={textAnimation} initial="hidden" animate="visible" custom={4}>
-                            <Text  size={sizeText} weight={weight} color={isGrayBottom ? "gray" : undefined} className="textGradient " data-text={bottomTitle}>
+                            <Text size={sizeText} weight={weight} color={isGrayBottom ? "gray" : undefined} className="textGradient " data-text={bottomTitle}>
                                 {bottomTitle}
                             </Text>
                         </motion.div>

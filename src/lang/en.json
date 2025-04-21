@@ -117,7 +117,7 @@
             },
             "tableItem": {
                 "product": "Product",
-                "total": "Total"
+                "total": "Amount"
             },
             "number": "Invoice number",
             "notProduct": "Select product...",
@@ -138,9 +138,9 @@
                 "ibanPlaceholder": "Enter your IBAN",
                 "otherPlaceholder": "Enter your payment details"
             },
-            "totalError":"Total amount must be a number",
-            "notProvided": "Payment method not provided",
-            "productName": "Product name",
+            "totalError":"Please enter a valid number for the total amount.",
+            "notProvided": "Payment method not provided.",
+            "productName": "Product name.",
             "dated": "Dated",
             "subtotalHT": "Subtotal (excl. tax)",
             "vat": "VAT",
@@ -160,7 +160,8 @@
             "selectorProduct": "Product selector",
             "modalitiesAndConditions": "Terms & conditions",
             "additionalComments": "Additional comments",
-            "filenamePrefix": "Invoice"
+            "filenamePrefix": "Invoice",
+            "continued": "Continued"
         },
         "chart": "Chart",
         "premium": {
@@ -186,7 +187,7 @@
     },
     "utils": {
         "hephai1": "Hephai Invoice",
-        "credit": "Made with Hephai Open",
+        "credit": "Made with HephaiOpen",
         "tooltips": {
             "settings": "Settings",
             "bookmarks": "Add a client to your bookmarks.",

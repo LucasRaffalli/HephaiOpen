@@ -1,7 +1,7 @@
+import "../css/layout.css";
 import Navbar from '@/components/navbar/Navbar';
 import { Box, Flex } from '@radix-ui/themes';
 import { Outlet, useLocation } from 'react-router-dom';
-import "../css/layout.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { ClientProvider } from '@/components/Clients/ClientContext';
 import { useState, useEffect, useRef } from 'react';
@@ -10,8 +10,6 @@ import { PDFProvider } from '@/context/PDFContext';
 import { ToolbarProvider } from '@/components/navbar/toolbar/ToolbarContext';
 
 function Layout() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pdfDoc, setPdfDoc] = useState<any>(null);
     const location = useLocation();
 
     const [isNavbarVisible, setIsNavbarVisible] = useState(() => {
@@ -23,7 +21,6 @@ function Layout() {
         localStorage.setItem('isNavbarVisible', JSON.stringify(isNavbarVisible));
     }, [isNavbarVisible]);
 
-    // Ne montrer la toolbar que si largeur < 1300px ET si on est sur la page factures
     const [showToolbar, setShowToolbar] = useState(window.innerWidth < 1300 && location.pathname === '/navigation/factures');
 
     useEffect(() => {
@@ -70,7 +67,6 @@ function Layout() {
                 setIsHoverMode(true);
                 setIsNavbarVisible(true);
             } else if (isHoverMode && !isMouseOverNavbar.current && e.clientX >= 100) {
-                // Ne ferme que si la souris s'éloigne vraiment
                 if (!hoverTimeoutRef.current) {
                     hoverTimeoutRef.current = setTimeout(() => {
                         setIsNavbarVisible(false);
@@ -150,7 +146,6 @@ function Layout() {
                         </AnimatePresence>
 
                         <motion.div initial={{ x: -20, opacity: 0, scale: 0.95, skew: -2 }} animate={{ x: 0, opacity: 1, scale: 1, skew: 0 }} transition={{ duration: 0.3, delay: 0.1, type: "spring", stiffness: 300, damping: 20 }} style={{ width: '100%', margin: "0rem 1rem 1rem 1rem", overflow: "hidden" }}>
-
                             <Outlet />
                         </motion.div>
                     </PDFProvider>

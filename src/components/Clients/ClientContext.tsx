@@ -110,7 +110,7 @@ export const ClientProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
     const handleToggleBookmark = (email: string) => {
         const updatedClients = clients.map(client =>
-            client.email === email 
+            client.email === email
                 ? { ...client, bookmarks: !client.bookmarks }
                 : client
         );
@@ -119,19 +119,7 @@ export const ClientProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     };
 
     return (
-        <ClientContext.Provider value={{
-            selectedClient,
-            clients,
-            setSelectedClient,
-            handleChange,
-            handleAddClient,
-            handleEditClient,
-            handleDeleteClient,
-            handleToggleBookmark,
-            visibility,
-            handleToggleVisibility,
-            isDarkMode
-        }}>
+        <ClientContext.Provider value={{ selectedClient, clients, setSelectedClient, handleChange, handleAddClient, handleEditClient, handleDeleteClient, handleToggleBookmark, visibility, handleToggleVisibility, isDarkMode }}>
             {children}
         </ClientContext.Provider>
     );

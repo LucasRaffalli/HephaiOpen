@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AlertDialog, Avatar, Box, Button, Callout, Card, ContextMenu, Dialog, DropdownMenu, Flex, Heading, HoverCard, IconButton, Inset, Link, Progress, ScrollArea, Separator, Skeleton, Strong, Switch, Text, TextField, Tooltip } from '@radix-ui/themes';
+import React, { useEffect, useState } from 'react';
+import { AlertDialog, Avatar, Box, Button, Callout, Card, Dialog, DropdownMenu, Flex, HoverCard, Separator, Switch, Text, TextField } from '@radix-ui/themes';
 import { Client } from '@/types/hephai';
-import { AvatarIcon, InfoCircledIcon } from '@radix-ui/react-icons';
-import { BookAIcon, BookUser, EllipsisVertical, FileInput, IdCard } from 'lucide-react';
+import { InfoCircledIcon } from '@radix-ui/react-icons';
+import { BookUser, EllipsisVertical, FileInput, IdCard } from 'lucide-react';
 import { DeleteIcon, SparklesIcon, SquarePenIcon } from '@/components/design/IconsAnimate';
 import { truncateText } from '@/utils/TruncateText';
 import AnimatedText from '@/utils/AnimatedText';
@@ -18,13 +18,7 @@ interface ClientsListProps {
 }
 
 const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
-    const {
-        clients,
-        handleDeleteClient,
-        handleEditClient,
-        handleToggleBookmark,
-        setSelectedClient,
-    } = useClientContext();
+    const { clients, handleDeleteClient, handleEditClient, handleToggleBookmark, } = useClientContext();
     const [editingClient, setEditingClient] = useState<Client | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [, setClients] = useState<Client[]>([]);
@@ -108,7 +102,6 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
                                     <Text size={"2"} color={'gray'}>{truncateText(client.email, 8)}</Text>
                                 </Flex>
                                 <Flex direction={"column"} justify={"between"} >
-                                    {/*  */}
                                     <DropdownMenu.Root>
                                         <DropdownMenu.Trigger>
                                             <EllipsisVertical size={"20"} color='gray' />
@@ -121,26 +114,13 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
                                                     }
                                                     setDialogOpen(open);
                                                 }}>
-                                                    <Dialog.Trigger onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setEditingClient(client);
-                                                    }}>
+                                                    <Dialog.Trigger onClick={(e) => { e.stopPropagation(); setEditingClient(client); }}>
                                                         <Flex align={"center"} gap={"2"} justify={"between"} width={"100%"} >
                                                             <Text>{t('buttons.edit')}</Text>
                                                             <SquarePenIcon size={16} />
                                                         </Flex>
                                                     </Dialog.Trigger>
-                                                    <Dialog.Content maxWidth="450px" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}
-                                                        onKeyDown={handleDialogKeyDown}
-                                                        onInteractOutside={(e) => {
-                                                            e.preventDefault();
-                                                            setDialogOpen(false);
-                                                            setEditingClient(null);
-                                                        }}
-                                                        onEscapeKeyDown={() => {
-                                                            setDialogOpen(false);
-                                                            setEditingClient(null);
-                                                        }}>
+                                                    <Dialog.Content maxWidth="450px" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()} onKeyDown={handleDialogKeyDown} onInteractOutside={(e) => { e.preventDefault(); setDialogOpen(false); setEditingClient(null); }} onEscapeKeyDown={() => { setDialogOpen(false); setEditingClient(null); }}>
                                                         <Dialog.Title>{t('popup.edit.client.title')}</Dialog.Title>
                                                         <Dialog.Description size="2" mb="4">{t('popup.edit.client.description')}</Dialog.Description>
                                                         <Flex direction="column" gap="3" onPointerDown={(e) => e.stopPropagation()}>

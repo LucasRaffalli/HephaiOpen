@@ -1,13 +1,10 @@
-import { Flex, Button, Text, Box, Container, Heading } from '@radix-ui/themes'
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { version, name, author, description, license, type } from '../../package.json';
-import HephaiLoader from '@/components/design/HephaiLoader';
+import { Flex, Text, Heading } from '@radix-ui/themes'
+import { version, description, } from '../../package.json';
 
 export default function Home() {
-setTimeout(() => {
-  
-}, 20);
+  setTimeout(() => {
+
+  }, 20);
 
   return (
     <>

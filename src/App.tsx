@@ -1,4 +1,4 @@
-import {Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Home from './views/Home'
 import NotFoundPage from './views/NotFoundPage'
 import Layout from './layout/Layout'
@@ -17,21 +17,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 function App() {
   return (
     <>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        className="toast-container-custom"
-        toastClassName="toast-custom"
-        style={{ zIndex: 9999 }}
-      />
+      <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" className="toast-container-custom" toastClassName="toast-custom" style={{ zIndex: 9999 }} />
       <ShortcutsPanel />
       <Routes>
         <Route path="/" element={<Layout />}>

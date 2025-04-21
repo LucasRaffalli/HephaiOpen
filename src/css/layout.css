@@ -2,8 +2,6 @@
     --titlebar-height: 32px;
 }
 
-
-
 .content {
     flex: 1;
     padding: 20px;
@@ -16,7 +14,6 @@
 
 .layout {
     width: 100%;
-    /* height: 100vh; */
     position: relative;
     margin-top: var(--titlebar-height);
     flex: 1;

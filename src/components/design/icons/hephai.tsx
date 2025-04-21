@@ -9,12 +9,7 @@ interface HephaiIconProps {
 
 }
 
-export const HephaiIcon: React.FC<HephaiIconProps> = ({
-    color1 = 'var(--accent-8)',
-    color2 = 'var(--accent-2)',
-    size = '24px'
-}) => {
-
+export const HephaiIcon: React.FC<HephaiIconProps> = ({ color1 = 'var(--accent-8)', color2 = 'var(--accent-2)', size = '24px' }) => {
     return (
         <>
             <svg width={size} height={size} viewBox={`0 0 240 240`} fill="none" xmlns="http://www.w3.org/2000/svg">

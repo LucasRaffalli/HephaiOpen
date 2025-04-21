@@ -1,11 +1,10 @@
+import '@/css/setting.css'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTheme } from '@/utils/ThemeContext';
-import { AspectRatio, Avatar, Box, Button, Flex, Heading, IconButton, Kbd, Select, Separator, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
+import { Avatar, Box, Button, Flex, Heading, Kbd, Skeleton, Text, Tooltip } from '@radix-ui/themes';
 import { AccentColor, CompanyInfo, Client } from '@/types/hephai'
-import { useTranslation } from 'react-i18next';
-import '@/css/setting.css'
 import { exportData } from '@/utils/exportData';
-import i18n from '@/i18n';
+import i18n, { t } from '@/i18n';
 import { ToastContainer, toast } from 'react-toastify';
 import { getAccentColorHex, colorMap } from '@/utils/getAccentColorHex';
 import LanguageSettings from '@/components/Settings/LanguageSettings';
@@ -18,16 +17,9 @@ import { motion } from "motion/react"
 import PriceUnit from '@/components/Settings/PriceUnit';
 
 export default function Settings() {
-    const { t } = useTranslation();
 
     const loadVisibilityPreferences = () => {
-        const defaultVisibility = {
-            authorCompanyName: true,
-            authorAddress: false,
-            authorPhone: false,
-            authorEmail: false,
-            siret: false
-        };
+        const defaultVisibility = { authorCompanyName: true, authorAddress: false, authorPhone: false, authorEmail: false, siret: false };
 
         const savedVisibility = localStorage.getItem('visibilityPreferences');
         if (!savedVisibility) {
@@ -47,25 +39,11 @@ export default function Settings() {
     const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({ authorCompanyName: '', authorAddress: '', authorPhone: '', authorEmail: '', siret: '', });
     const colorHexTheme = getAccentColorHex();
     const gradientBackground = isDarkMode ? `linear-gradient(180deg, ${colorHexTheme}, transparent 92%)` : `linear-gradient(180deg, ${colorHexTheme}, transparent)`;
-    const [priceUnit, setPriceUnit] = useState(localStorage.getItem('priceUnit') || 'euro');
     const [tva, setTva] = useState(localStorage.getItem('tva') || '0');
     const [customFileNamePrefix, setCustomFileNamePrefix] = useState(localStorage.getItem('customFileNamePrefix') || '');
-    const [clients, setClients] = useState<Client[]>(() => {
-        const storedClients = localStorage.getItem('clients');
-        return storedClients ? JSON.parse(storedClients) : [];
-    });
+    const [clients, setClients] = useState<Client[]>(() => { const storedClients = localStorage.getItem('clients'); return storedClients ? JSON.parse(storedClients) : []; });
+    const [settingsData, setSettingsData] = useState(() => ({ theme: isDarkMode ? 'true' : 'false', accentColor: accentColor, customFileNamePrefix: customFileNamePrefix, companyInfo: companyInfo, language: localStorage.getItem('language') || 'en', dateJoins: localStorage.getItem('dateJoins'), visibilityPreferences: visibility, clients: clients, profileImage: localStorage.getItem('profileImage') }));
 
-    const [settingsData, setSettingsData] = useState(() => ({
-        theme: isDarkMode ? 'true' : 'false',
-        accentColor: accentColor,
-        customFileNamePrefix: customFileNamePrefix,
-        companyInfo: companyInfo,
-        language: localStorage.getItem('language') || 'en',
-        dateJoins: localStorage.getItem('dateJoins'),
-        visibilityPreferences: visibility,
-        clients: clients,
-        profileImage: localStorage.getItem('profileImage')
-    }));
 
     useEffect(() => {
         setSettingsData({
@@ -160,11 +138,6 @@ export default function Settings() {
         toast.success(t('toast.saveInfo.success'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
     };
 
-    const handleSaveVisibility = (newVisibility: typeof visibility) => {
-        setVisibility(newVisibility);
-        localStorage.setItem('visibilityPreferences', JSON.stringify(newVisibility));
-    };
-
     if (!localStorage.getItem("dateJoins")) {
         if (!localStorage.getItem("dateJoins")) {
             const today = new Date();
@@ -193,7 +166,6 @@ export default function Settings() {
     const handleImageDelete = () => {
         setImageSrc(null);
         localStorage.removeItem('profileImage');
-        // Réinitialiser le champ de fichier pour permettre la sélection du même fichier
         const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         if (fileInput) {
             fileInput.value = '';
@@ -235,13 +207,6 @@ export default function Settings() {
         if (!name || name.trim().length === 0) return '••••••••••';
         return '•'.repeat(10);
     };
-
-    const handlePriceUnitChange = (unit: string) => {
-        const symbol = unit === 'euro' ? '€' : unit === 'dollar' ? '$' : '£';
-        setPriceUnit(symbol);
-        localStorage.setItem('priceUnit', symbol);
-    };
-
 
     useEffect(() => {
         const savedVisibility = localStorage.getItem('visibilityPreferences');
@@ -302,11 +267,7 @@ export default function Settings() {
             <Box width={'100%'} height={'100%'} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
                 <Heading mb={'9'} className="sticky-title">{t('settings.title')}</Heading>
                 <Flex direction={'row'} className='test'>
-                    <motion.div
-                        variants={containerLeftVariants}
-                        initial="hidden"
-                        animate="visible"
-                    >
+                    <motion.div variants={containerLeftVariants} initial="hidden" animate="visible">
                         <Flex direction={'column'} gap={'9'} ml={'2'}>
                             <motion.div variants={featureVariants}>
                                 <Flex direction={'row'} gap={"9"} >

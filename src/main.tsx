@@ -29,7 +29,7 @@ const Root = () => {
 
   return (
     <Theme appearance={isDarkMode ? "dark" : "light"} accentColor={accentColor as any} radius="small" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <WindowContextProvider titlebar={{ title: 'Hephai Open', menuItems, icon: '/favicon.ico' }}>
+      <WindowContextProvider titlebar={{ title: 'HephaiOpen', menuItems, icon: '/favicon.ico' }}>
         <HephaiProvider>
           <App />
         </HephaiProvider>

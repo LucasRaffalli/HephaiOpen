@@ -184,7 +184,7 @@
     },
     "utils": {
         "hephai1": "Hephai Facture",
-        "credit": "Fait avec Hephai Open",
+        "credit": "Fait avec HephaiOpen",
         "tooltips": {
             "settings": "Paramètres",
             "bookmarks": "Ajoute un client à ta liste de favoris.",

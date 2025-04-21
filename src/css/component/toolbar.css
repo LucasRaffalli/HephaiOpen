@@ -1,10 +1,3 @@
-/* background-color: var(--accent-a3); */
-/* color: var(--accent-a11); */
-/* background-color: var(--accent-a4); */
-/* .rt-BaseButton:where(.rt-variant-soft):where(:focus-visible) {
-    outline: 2px solid var(--accent-8);
-    outline-offset: -1px;
-} */
 .toolbar-button-container {
     cursor: pointer;
     display: flex;
@@ -39,6 +32,7 @@
     color: var(--accent-a11);
 
 }
+
 .toolbar-button-container:hover .btnToolBar {
     fill: var(--accent-a11);
 
@@ -63,7 +57,3 @@
     }
 
 }
-
-/* .small-toolbar__1.loading {
-   display: none;
-} */

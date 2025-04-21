@@ -63,11 +63,7 @@ export const setupPDFClient = (doc: jsPDF, clientInfo: any, shouldMask = false) 
         phone: shouldMask ? maskSensitiveInfo(clientInfo.phone) : clientInfo.phone,
         email: shouldMask ? maskSensitiveInfo(clientInfo.email) : clientInfo.email,
     }
-    doc.text(
-        `${displayInfo.companyName}\n${displayInfo.address}\n${displayInfo.phone}\n${displayInfo.email}`,
-        10,
-        82
-    );
+    doc.text(`${displayInfo.companyName}\n${displayInfo.address}\n${displayInfo.phone}\n${displayInfo.email}`, 10, 82);
     doc.setTextColor("");
 }
 
@@ -133,43 +129,73 @@ const formatPrice = (value: number | string, currency: string) => {
 
 export const setupPDFPrice = (doc: jsPDF, options: any, startY: number) => {
     const pageWidth = doc.internal.pageSize.width;
-    const startX = pageWidth - 80;
+    const fixedGap = 4;
     const lineHeight = 8;
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-
-    doc.text(`${t('features.invoice.subtotalHT')}:`, startX, startY);
-    doc.text(`${t('features.invoice.vat')} (${options.vatRate}%)`, startX, startY + lineHeight);
-    doc.text(`${t('features.invoice.vatAmount')}:`, startX, startY + 2 * lineHeight);
-    doc.text(`${t('features.invoice.balanceDue')}:`, startX, startY + 3 * lineHeight);
-
     doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    const amounts = [
+        formatPrice(options.subtotalHT, options.priceUnit),
+        `${options.vatRate}%`,
+        formatPrice(options.vatAmount, options.priceUnit),
+        formatPrice(options.balanceDue, options.priceUnit)
+    ];
+    const maxAmountWidth = Math.max(...amounts.map(amount => doc.getTextWidth(amount)));
 
-    doc.text(formatPrice(options.subtotalHT, options.priceUnit), pageWidth - 10, startY, { align: "right" });
-    doc.text(`${options.vatRate}%`, pageWidth - 10, startY + lineHeight, { align: "right" });
-    doc.text(formatPrice(options.vatAmount, options.priceUnit), pageWidth - 10, startY + 2 * lineHeight, { align: "right" });
-    doc.text(formatPrice(options.balanceDue, options.priceUnit), pageWidth - 10, startY + 3 * lineHeight, { align: "right" });
+    doc.setFont("helvetica", "bold");
+    const labels = [
+        `${t('features.invoice.subtotalHT')}:`,
+        `${t('features.invoice.vat')} (${options.vatRate}%):`,
+        `${t('features.invoice.vatAmount')}:`,
+        `${t('features.invoice.balanceDue')}:`
+    ];
+    const maxLabelWidth = Math.max(...labels.map(label => doc.getTextWidth(label)));
 
-    return startY + 4 * lineHeight + 10;
+    const priceWidth = maxAmountWidth + maxLabelWidth + fixedGap;
+    const labelStartX = pageWidth - (priceWidth + 10);
+    const amountStartX = pageWidth - 10;
+
+    labels.forEach((label, index) => {
+        const y = startY + (index * lineHeight);
+
+        doc.setFont("helvetica", "bold");
+        doc.text(label, labelStartX, y);
+
+        doc.setFont("helvetica", "normal");
+        doc.text(amounts[index], amountStartX, y, { align: "right" });
+    });
+
+    return {
+        endY: startY + 4 * lineHeight + 10,
+        priceWidth: priceWidth + 20
+    };
 };
 
-export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2: string, isEnabled: boolean, startY: number) => {
-    if (!isEnabled) return { endY: startY };
+export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2: string, isEnabled: boolean, startY: number, priceWidth: number = 100) => {
+    if (!isEnabled) return { endY: startY - 2, position: 'none' };
 
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
     const marginX = 10;
+    const marginRight = 10;
     const marginBottom = 20;
-    const boxWidth = pageWidth - 100;
+    const minModalityWidth = 300;
     const lineHeight = 4;
     const boxPadding = 5;
+    const sectionSpacing = 8;
 
+    const availableWidthBeside = pageWidth - priceWidth;
+    const shouldBeBeside = availableWidthBeside >= minModalityWidth;
+
+    let boxWidth;
+
+    if (shouldBeBeside) {
+        boxWidth = pageWidth - (marginX * 2);
+    } else {
+        boxWidth = pageWidth - priceWidth;
+    }
     let currentY = startY;
-
-    const fullText = text1 + (text1 && text2 ? '\n\n' : '') + text2;
-    const modalityLines = doc.splitTextToSize(fullText, boxWidth - (boxPadding * 2));
-    let currentLine = 0;
+    let lastEndY = currentY;
 
     // Titre initial
     doc.setFont("helvetica", "bold");
@@ -177,23 +203,25 @@ export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2:
     doc.text(t('features.invoice.modalitiesAndConditions'), marginX, currentY);
     currentY += 4;
 
-    let finalY = currentY;
+    const fullText = text1 + (text1 && text2 ? '\n\n' : '') + text2;
+    const modalityLines = doc.splitTextToSize(fullText, boxWidth - (boxPadding - 20));
+    let currentLine = 0;
+
     while (currentLine < modalityLines.length) {
         const availableHeight = pageHeight - marginBottom - currentY;
         const remainingLines = Math.floor((availableHeight - (boxPadding * 2)) / lineHeight);
         const linesToDraw = Math.min(remainingLines, modalityLines.length - currentLine);
         const boxHeight = (linesToDraw * lineHeight) + (boxPadding * 2);
 
-        // Dessiner l'encadré
         doc.setFont("helvetica", "normal");
         doc.rect(marginX, currentY, boxWidth, boxHeight);
 
-        // Ajouter le texte avec padding
         doc.setFontSize(10);
         const partialModality = modalityLines.slice(currentLine, currentLine + linesToDraw).join('\n');
         doc.text(partialModality, marginX + boxPadding, currentY + boxPadding + 2);
 
         currentLine += linesToDraw;
+        lastEndY = currentY + boxHeight + sectionSpacing;
 
         if (currentLine < modalityLines.length) {
             doc.addPage();
@@ -201,36 +229,35 @@ export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2:
             doc.setFont("helvetica", "bold");
             doc.setFontSize(12);
             doc.text(`${t('features.invoice.modalitiesAndConditions')} (${t('features.invoice.continued')})`, marginX, currentY - 2);
-            currentY += 3;
-        } else {
-            finalY = currentY + boxHeight;
+            currentY += 4;
         }
     }
 
-    return { endY: finalY };
+    return {
+        endY: lastEndY,
+        remainingPageSpace: pageHeight - lastEndY - marginBottom,
+        position: shouldBeBeside ? 'beside' : 'below'
+    };
 };
 
-export const setupPDFComments = (doc: jsPDF, options: any, comText: string, startY: number, isEnabled: boolean) => {
-    if (!isEnabled) return;
+export const setupPDFComments = (doc: jsPDF, options: any, comText: string, startY: number, isEnabled: boolean, remainingPageSpace: number = 0) => {
+    if (!isEnabled) return startY;
 
     const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
     const marginX = 10;
-    const marginBottom = 20;
     const boxWidth = pageWidth - (marginX * 2);
     const lineHeight = 4;
     const boxPadding = 5;
+    const titleHeight = 4;
 
-    const marginTop = 20;
-
-    let currentY = startY;
     const commentLines = doc.splitTextToSize(comText, boxWidth - (boxPadding * 2));
-    let currentLine = 0;
+    const totalCommentsHeight = (commentLines.length * lineHeight) + (boxPadding * 2) + titleHeight;
 
-    // Si on a besoin d'une nouvelle page, on réinitialise currentY à une position en haut
-    if (currentY + (commentLines.length * lineHeight) + boxPadding * 2 > pageHeight - marginBottom) {
+    let currentY = startY - 2;
+
+    if (remainingPageSpace < totalCommentsHeight) {
         doc.addPage();
-        currentY = marginTop + 20; // Position plus haute sur la nouvelle page
+        currentY = 20;
     }
 
     doc.setFont("helvetica", "bold");
@@ -238,30 +265,14 @@ export const setupPDFComments = (doc: jsPDF, options: any, comText: string, star
     doc.text(t('features.invoice.additionalComments'), marginX, currentY);
     currentY += 4;
 
-    while (currentLine < commentLines.length) {
-        const availableHeight = pageHeight - marginBottom - currentY;
-        const remainingLines = Math.floor((availableHeight - (boxPadding * 2)) / lineHeight);
-        const linesToDraw = Math.min(remainingLines, commentLines.length - currentLine);
-        const boxHeight = (linesToDraw * lineHeight) + (boxPadding * 2);
+    doc.setFont("helvetica", "normal");
+    const boxHeight = (commentLines.length * lineHeight) + (boxPadding * 2);
+    doc.rect(marginX, currentY, boxWidth, boxHeight);
 
-        doc.setFont("helvetica", "normal");
-        doc.rect(marginX, currentY, boxWidth, boxHeight);
+    doc.setFontSize(10);
+    doc.text(commentLines, marginX + boxPadding, currentY + boxPadding + 2);
 
-        doc.setFontSize(10);
-        const partialComments = commentLines.slice(currentLine, currentLine + linesToDraw).join('\n');
-        doc.text(partialComments, marginX + boxPadding, currentY + boxPadding + 2);
-
-        currentLine += linesToDraw;
-
-        if (currentLine < commentLines.length) {
-            doc.addPage();
-            currentY = marginTop; // Utiliser la marge supérieure définie pour la nouvelle page
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(12);
-            doc.text(`${t('features.invoice.additionalComments')} (${t('features.invoice.continued')})`, marginX, currentY - 2);
-            currentY += 10;
-        }
-    }
+    return currentY + boxHeight;
 };
 
 export const setupPDFFooter = (doc: jsPDF, isEnabled: boolean, startY: number) => {
@@ -269,7 +280,6 @@ export const setupPDFFooter = (doc: jsPDF, isEnabled: boolean, startY: number) =
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
 
-    // Positionner le crédit toujours en bas de page avec une marge de 10
     const footerY = pageHeight - 10;
 
     doc.setFont("helvetica", "normal");

@@ -1,5 +1,4 @@
 import { t } from 'i18next'
-import React from 'react'
 
 export default function NotFoundPage() {
   setTimeout(() => {

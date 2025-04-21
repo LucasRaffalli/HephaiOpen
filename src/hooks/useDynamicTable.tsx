@@ -10,7 +10,6 @@ export const useDynamicTable = () => {
     const [columns, setColumns] = useState<Column[]>(() => {
         const savedData = localStorage.getItem("invoiceData");
         const savedColumns = savedData ? JSON.parse(savedData).columns || [] : [];
-        // Nettoyage des colonnes au chargement
         return savedColumns.filter((col: Column) => col.header.trim() !== "");
     });
 
@@ -20,7 +19,6 @@ export const useDynamicTable = () => {
     });
 
     useEffect(() => {
-        // Nettoyer les données des colonnes supprimées dans les lignes
         const cleanedRows = rows.map((row: Record<string, any>) => {
             const cleanedRow: Record<string, any> = {
                 product: row.product,
@@ -63,7 +61,6 @@ export const useDynamicTable = () => {
         const columnToRemove = columns[index].dataKey;
         setColumns(columns.filter((_, i) => i !== index));
 
-        // Nettoyer la colonne supprimée des données
         setRows(rows.map((row: Record<string, any>) => {
             const { [columnToRemove]: _, ...rest } = row;
             return rest;
