@@ -11,11 +11,20 @@ interface ThemeSettingsProps {
 
 const ThemeSettings: React.FC<ThemeSettingsProps> = ({ isDarkMode, toggleTheme }) => {
     const colorHexTheme = getAccentColorHex();
+    
+    const handleThemeChange = (theme: 'light' | 'dark') => {
+        toggleTheme(theme);
+        // Attendre que le thème soit appliqué avant de recharger
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);
+    };
+
     return (
         <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
             <Flex direction={'column'} gap={'2'}>
                 <Tooltip content={t('utils.tooltips.themeL')}>
-                    <Box onClick={() => toggleTheme('light')} className={`themeColor ${!isDarkMode ? 'selected' : ''}`} style={{ '--color-bg': '' + colorHexTheme } as React.CSSProperties}>
+                    <Box onClick={() => handleThemeChange('light')} className={`themeColor ${!isDarkMode ? 'selected' : ''}`} style={{ '--color-bg': '' + colorHexTheme } as React.CSSProperties}>
                         <img src={themeLight} alt="Light Theme" />
                     </Box>
                 </Tooltip>
@@ -23,7 +32,7 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ isDarkMode, toggleTheme }
             </Flex>
             <Flex direction={'column'} gap={'2'}>
                 <Tooltip content={t('utils.tooltips.themeD')}>
-                    <Box className={`themeColor ${isDarkMode ? 'selected' : ''}`} style={{ '--color-bg': '' + colorHexTheme } as React.CSSProperties} onClick={() => toggleTheme('dark')}>
+                    <Box className={`themeColor ${isDarkMode ? 'selected' : ''}`} style={{ '--color-bg': '' + colorHexTheme } as React.CSSProperties} onClick={() => handleThemeChange('dark')}>
                         <img src={themeDark} alt="Dark Theme" />
                     </Box>
                 </Tooltip>

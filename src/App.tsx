@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Router, Routes } from 'react-router-dom'
+import {Route, Routes } from 'react-router-dom'
 import Home from './views/Home'
 import NotFoundPage from './views/NotFoundPage'
 import Layout from './layout/Layout'
@@ -11,8 +11,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import Update from './components/update'
 import Premium from './views/premium'
 import ShortcutsPanel from './components/shortcut/ShortcutsPanel'
-import { HephaiProvider } from './context/HephaiContext'
-
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 

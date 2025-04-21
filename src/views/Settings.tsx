@@ -190,6 +190,16 @@ export default function Settings() {
         }
     };
 
+    const handleImageDelete = () => {
+        setImageSrc(null);
+        localStorage.removeItem('profileImage');
+        // Réinitialiser le champ de fichier pour permettre la sélection du même fichier
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    };
+
     const toggleVisibility = (field: string) => {
         const newVisibility = {
             ...visibility,
@@ -304,7 +314,7 @@ export default function Settings() {
                                         <Text size={'5'} weight={'medium'}>{t('settings.informationUser.title')}</Text>
                                         <Text color="gray" size="2" weight={'regular'}>{t('settings.informationUser.subtitle')}</Text>
                                     </Flex>
-                                    <ProfileImage imageSrc={imageSrc} handleImageChange={handleImageChange} />
+                                    <ProfileImage imageSrc={imageSrc} handleImageChange={handleImageChange} handleImageDelete={handleImageDelete} />
                                 </Flex>
                             </motion.div>
 
@@ -314,7 +324,7 @@ export default function Settings() {
                                         <Text size={'5'} weight={'medium'}>{t('settings.informationUser.title')}</Text>
                                         <Text color="gray" size="2" weight={'regular'}>{t('settings.informationUser.subtitle')}</Text>
                                     </Flex>
-                                    <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} buttonSize='140px' visibility={visibility} onToggleVisibility={toggleVisibility} />
+                                    <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} buttonSize='180px' visibility={visibility} onToggleVisibility={toggleVisibility} />
                                 </Flex>
                             </motion.div>
 
@@ -437,14 +447,16 @@ export default function Settings() {
                     </Text>
                 </Flex>
                 <Flex className='effect__color footer__container' justify={'between'} style={{ color: colorHexTheme }} width={"100%"} align={'center'}>
-                    <Flex gap={"2"} style={{ border: `2px solid ${colorHexTheme}` }} height={'fit-content'} className='footer__container' >
-                        <Text size={'2'} ml={'2'} weight={'bold'}>HEPH</Text>
-                        <Box width={"26px"} style={{ backgroundColor: colorHexTheme }}></Box>
-                        <Text size={'2'} mr={'2'} weight={"bold"} >{firstJoinDate}</Text>
+                    <Flex className='footer__low' justify={'between'} align={'center'}>
+                        <Flex gap={"2"} style={{ border: `2px solid ${colorHexTheme}` }} height={'fit-content'} className='footer__container' >
+                            <Text size={'2'} ml={'2'} weight={'bold'}>HEPH</Text>
+                            <Box width={"26px"} style={{ backgroundColor: colorHexTheme }}></Box>
+                            <Text size={'2'} mr={'2'} weight={"bold"} >{firstJoinDate}</Text>
+                        </Flex>
+                        <Box width={'20%'} className='footer__hephai__text'>
+                            <Text size={'4'} weight={"bold"} >{t('utils.hephai1')}</Text>
+                        </Box>
                     </Flex>
-                    <Box width={'20%'}>
-                        <Text size={'4'} weight={"bold"} >{t('utils.hephai1')}</Text>
-                    </Box>
                 </Flex>
             </Flex>
         </Flex >

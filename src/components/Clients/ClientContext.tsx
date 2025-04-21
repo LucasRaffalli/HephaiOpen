@@ -12,6 +12,7 @@ interface ClientContextProps {
     handleAddClient: () => void;
     handleEditClient: (updatedClient: Client) => void;
     handleDeleteClient: (email: string) => void;
+    handleToggleBookmark: (email: string) => void;
     visibility: Record<string, boolean>;
     handleToggleVisibility: (field: string) => void;
     isDarkMode: boolean;
@@ -107,6 +108,16 @@ export const ClientProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setClients(updatedClients);
     };
 
+    const handleToggleBookmark = (email: string) => {
+        const updatedClients = clients.map(client =>
+            client.email === email 
+                ? { ...client, bookmarks: !client.bookmarks }
+                : client
+        );
+        localStorage.setItem('clients', JSON.stringify(updatedClients));
+        setClients(updatedClients);
+    };
+
     return (
         <ClientContext.Provider value={{
             selectedClient,
@@ -116,6 +127,7 @@ export const ClientProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             handleAddClient,
             handleEditClient,
             handleDeleteClient,
+            handleToggleBookmark,
             visibility,
             handleToggleVisibility,
             isDarkMode

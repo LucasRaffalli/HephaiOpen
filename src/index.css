@@ -13,29 +13,12 @@
   cursor: pointer;
 }
 
+.btnNotEvent {
+  pointer-events: none;
+}
+
 .btnCursor:disabled {
   cursor: not-allowed !important;
-}
-
-
-
-.glow {
-  border: 0.5px solid transparent;
-  filter: drop-shadow(0px 0px 0.5px transparent);
-  box-shadow: 0 0 2px 0 transparent;
-  transition: all 500ms ease;
-}
-
-.glow.active {
-  border: .05px solid var(--accent-9);
-  box-shadow: 0 0 2px 0 var(--accent-9);
-
-}
-
-.glow.active__premium {
-  border: .05px solid #F8B43A;
-  box-shadow: 0 0 2px 0 #F8B43A;
-
 }
 
 a {
@@ -45,10 +28,6 @@ a {
   font-feature-settings: "tnum";
   font-variant-numeric: tabular-nums;
 }
-
-
-
-
 
 .dark,
 .dark-theme,
@@ -85,7 +64,6 @@ a {
 
 .iconTextArea {
   background-color: var(--color-surface);
-
 }
 
 .textAreaCustom {
@@ -229,6 +207,18 @@ a {
   .small-toolbar__all.visible {
     display: flex;
 
+  }
+
+  .card__img {
+    width: 250px !important;
+  }
+
+  .footer__low {
+    flex-direction: column;
+  }
+
+  .footer__hephai__text {
+    width: 100%;
   }
 }
 

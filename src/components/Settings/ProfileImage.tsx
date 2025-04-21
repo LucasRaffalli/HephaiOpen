@@ -6,9 +6,10 @@ import React, { useRef, useState } from 'react';
 interface ProfileImageProps {
     imageSrc: string | null;
     handleImageChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleImageDelete?: () => void;
 }
 
-const ProfileImage: React.FC<ProfileImageProps> = ({ imageSrc, handleImageChange }) => {
+const ProfileImage: React.FC<ProfileImageProps> = ({ imageSrc, handleImageChange, handleImageDelete }) => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [errorMsg, setErrorMsg] = useState<string>('');
 
@@ -43,12 +44,21 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ imageSrc, handleImageChange
         <Flex direction={'column'} gap={'2'} width={'100%'}>
             <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} align={'center'}>
                 <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || 'placeholder.png'} alt="Profile" style={{ background: "var(--gray-a8)", padding: "0.25rem" }} />
-                <Tooltip content={t('utils.tooltips.btnimg')}>
-                    <Button variant="soft" className='btnCursor' size={'3'} onClick={handleButtonClick}>
-                        <Text size="2" weight={'regular'}>{t('buttons.upload.image')}</Text>
-                        <input ref={fileInputRef} type="file" accept="image/png" onChange={validateAndHandleChange} style={{ display: 'none' }} />
-                    </Button>
-                </Tooltip>
+                <Flex direction={'column'} gap={'2'}>
+                    <Tooltip content={t('utils.tooltips.btnimg')}>
+                        <Button variant="soft" className='btnCursor' size={'3'} onClick={handleButtonClick}>
+                            <Text size="2" weight={'regular'}>{t('buttons.upload.image')}</Text>
+                            <input ref={fileInputRef} type="file" accept="image/png" onChange={validateAndHandleChange} style={{ display: 'none' }} />
+                        </Button>
+                    </Tooltip>
+                    {imageSrc && handleImageDelete && (
+                        <Tooltip content={t('utils.tooltips.deletebtnimg')} >
+                            <Button variant="soft" color="red" className='btnCursor' size={'3'} onClick={handleImageDelete}>
+                                <Text size="2" weight={'regular'}>{t('buttons.delete.image')}</Text>
+                            </Button>
+                        </Tooltip>
+                    )}
+                </Flex>
             </Flex>
             {errorMsg && <Text size="2" color="red">{errorMsg}</Text>}
         </Flex>

@@ -46,7 +46,6 @@
         "addProduct": "Ajouter un produit",
         "addColumns": "Ajouter des colonnes",
         "addCustomer": "Ajouter un client",
-        "delete": "Supprimer",
         "insert": "Insérer",
         "edit": "Modifier",
         "save": "Enregistrer",
@@ -58,7 +57,16 @@
         "metadata": "Métadonnées",
         "properties": "Propriétés",
         "upload": {
-            "image": "Téléverser une image"
+            "image": "Télécharger une image"
+        },
+        "delete": {
+            "delete": "Supprimer",
+            "image": "Supprimer l'image",
+            "client": "Supprimer le client",
+            "product": "Supprimer le produit",
+            "column": "Supprimer la colonne",
+            "row": "Supprimer la ligne",
+            "rowAll": "Supprimer toutes les lignes"
         },
         "export": {
             "csv": "Exporter en CSV",
@@ -127,7 +135,7 @@
                 },
                 "paypalPlaceholder": "Saisis ton adresse email PayPal",
                 "ibanPlaceholder": "Saisis ton IBAN",
-                "otherPlaceholder": "Saisis tes informations de paiement"
+                "otherPlaceholder": "Informations de paiement"
             },
             "notProvided": "Mode de paiement non fourni",
             "productName": "Nom du produit",
@@ -193,7 +201,7 @@
                 "authorPhone": "Saisis le téléphone de ton entreprise.",
                 "authorEmail": "Saisis l'email de ton entreprise.",
                 "siret": "Saisis le numéro SIRET.",
-                "logo": "Téléverse ton logo d’entreprise."
+                "logo": "Télécharger ton logo d’entreprise."
             },
             "customer": {
                 "companyName": "Saisis le nom du client.",
@@ -204,7 +212,7 @@
             "vat": "Saisis ton numéro de TVA.",
             "language": "Choisis ta langue.",
             "savedata": "Sauvegarde tes données actuelles pour ne rien perdre.",
-            "btnimg": "Clique ici pour téléverser une image pour ton document ou profil.",
+            "btnimg": "Clique ici pour télécharger une image pour ton document ou profil.",
             "importjson": "Importe des données à partir d’un fichier JSON.",
             "exportjson": "Exporte tes données et paramètres actuels au format JSON.",
             "lang": "Sélectionne la langue de l’interface.",
@@ -224,6 +232,7 @@
                     "paypalError": "L’email PayPal saisi est invalide."
                 }
             },
+            "totalError": "Montant total doit être un chiffre.",
             "addClient": "Ajoute un nouveau client à ta liste.",
             "addProduct": "Ajoute un nouveau produit à ta liste.",
             "addColumns": "Ajoute de nouvelles colonnes à ton tableau.",
@@ -235,6 +244,7 @@
             "deleteAll": "Tout supprimer.",
             "update": "Mettre à jour.",
             "cancel": "Annuler les modifications.",
+            "deletebtnimg": "Clique ici pour supprimer l'image actuelle.",
             "colors": {
                 "tomato": "Tomato",
                 "red": "Red",
@@ -380,6 +390,14 @@
         },
         "credits": {
             "title": "Crédits"
+        }
+    },
+    "errors": {
+        "payment": {
+            "unknownCountryCode": "Code pays non reconnu. Exemple : FR7630001007941234567890185",
+            "ibanLength": "L'IBAN {{countryCode}} doit contenir {{length}} caractères (actuellement : {{current}})",
+            "invalidIbanFormat": "Format IBAN invalide pour {{countryCode}}. Exemple : FR7630001007941234567890185",
+            "invalidPaypalAddress": "Adresse PayPal invalide. Exemple : exemple@email.com"
         }
     }
 }

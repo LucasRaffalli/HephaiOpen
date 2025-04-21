@@ -46,7 +46,6 @@
         "addProduct": "Add a product",
         "addColumns": "Add columns",
         "addCustomer": "Add a customer",
-        "delete": "Delete",
         "insert": "Insert",
         "edit": "Edit",
         "save": "Save",
@@ -59,6 +58,16 @@
         "properties": "Properties",
         "upload": {
             "image": "Upload image"
+        },
+        "delete": {
+            "delete": "Delete",
+            "image": "Delete image",
+            "client": "Delete client",
+            "product": "Delete product",
+            "customer": "Delete customer",
+            "column": "Delete column",
+            "row": "Delete row",
+            "rowAll": "Delete all rows"
         },
         "export": {
             "csv": "Export as CSV",
@@ -129,6 +138,7 @@
                 "ibanPlaceholder": "Enter your IBAN",
                 "otherPlaceholder": "Enter your payment details"
             },
+            "totalError":"Total amount must be a number",
             "notProvided": "Payment method not provided",
             "productName": "Product name",
             "dated": "Dated",
@@ -205,6 +215,7 @@
             "language": "Choose your language.",
             "savedata": "Save your current data to avoid losing progress.",
             "btnimg": "Click here to upload an image for your document or profile.",
+            "deletebtnimg": "Click here to delete the current image.",
             "importjson": "Import data from a JSON file to restore or update your settings.",
             "exportjson": "Export your current settings and data as a JSON file.",
             "lang": "Select your preferred application language.",
@@ -369,7 +380,7 @@
         },
         "window": {
             "title": "Window",
-            "toolbar":"Show tools bar",
+            "toolbar": "Show tools bar",
             "shortcutsPanel": "Shortcuts panel",
             "darkMode": "Dark mode",
             "lightMode": "Light mode",
@@ -380,6 +391,14 @@
         },
         "credits": {
             "title": "Credits"
+        }
+    },
+    "errors": {
+        "payment": {
+            "unknownCountryCode": "Unknown country code. Example: FR7630001007941234567890185",
+            "ibanLength": "The IBAN for {{countryCode}} must contain {{length}} characters (currently: {{current}})",
+            "invalidIbanFormat": "Invalid IBAN format for {{countryCode}}. Example: FR7630001007941234567890185",
+            "invalidPaypalAddress": "Invalid PayPal address. Example: example@email.com"
         }
     }
 }

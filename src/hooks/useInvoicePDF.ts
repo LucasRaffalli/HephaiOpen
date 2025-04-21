@@ -77,7 +77,8 @@ export const useInvoicePDF = (options: OptionPdf) => {
         const priceHeight = 4 * 8 + 10;
         const modalityHeight = isModalitiesEnabled ? ((doc.splitTextToSize(modalitiesText1 || "", pageWidth - 110).length + doc.splitTextToSize(modalitiesText2 || "", pageWidth - 110).length) * 5 + 10) : 0;
         const commentsHeight = isCommentsEnabled ? (doc.splitTextToSize(commentsText || "", pageWidth - 20).length * 4 + 10) : 0;
-        const footerHeight = isFooterEnabled ? (doc.splitTextToSize(commentsText || "", pageWidth - 20).length * 4 + 10) : 0;
+        // Réduire la hauteur du footer car il ne contient qu'une ligne de texte
+        const footerHeight = isFooterEnabled ? 20 : 0;
 
         const maxHeight = Math.max(priceHeight, modalityHeight);
 
@@ -93,21 +94,22 @@ export const useInvoicePDF = (options: OptionPdf) => {
         const modalityY = startY;
         setupPDFModality(doc, options, modalitiesText1, modalitiesText2, isModalitiesEnabled, modalityY);
 
-        // Gérer les commentaires avec saut de page si nécessaire
-        let commentsY = startY + maxHeight + -5;
+        // Gérer les commentaires avec un espacement négatif mais en évitant la collision
+        let commentsY = startY + maxHeight - 18;
+        if (isModalitiesEnabled) {
+            // Si les modalités sont activées, s'assurer que les commentaires ne chevauchent pas
+            // et ajouter un espace supplémentaire de 10 unités
+            commentsY = Math.max(commentsY, modalityY + (modalityHeight || 0) - 10);
+        }
+
         if (commentsY + commentsHeight > pageHeight - marginBottom) {
             doc.addPage();
             commentsY = 10;
         }
         setupPDFComments(doc, options, commentsText, commentsY, isCommentsEnabled);
 
-        // Gérer le footer avec saut de page si nécessaire
-        let footerY = commentsY + commentsHeight + 10;
-        if (footerY + footerHeight > pageHeight - marginBottom) {
-            doc.addPage();
-            footerY = 10;
-        }
-        setupPDFFooter(doc, isFooterEnabled, footerY);
+        // Le crédit est maintenant toujours placé en bas de page, pas besoin de calcul de position
+        setupPDFFooter(doc, isFooterEnabled, 0);
 
         const pdfBytes = doc.output("arraybuffer");
         return new Uint8Array(pdfBytes);

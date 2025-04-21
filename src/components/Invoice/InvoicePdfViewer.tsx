@@ -67,10 +67,14 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
       setLoadingState({ ...loadingState, isPdfLoading: true });
       const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
       setPdfDoc(pdf);
+      // Si la page courante est supérieure au nombre total de pages, revenir à la page 1
+      if (currentPage > pdf.numPages) {
+        setCurrentPage(1);
+      }
       setLoadingState({ ...loadingState, isPdfLoading: false });
     };
     loadPdf();
-  }, [pdfUrl, setPdfDoc]);
+  }, [pdfUrl, setPdfDoc, currentPage, setCurrentPage]);
 
   useEffect(() => {
     const getFileSize = async () => {
@@ -282,9 +286,9 @@ useEffect(() => {
             <motion.div variants={buttonVariants}>
               <Tooltip content={t('utils.tooltips.download.pdf')} side="bottom">
                 <Button variant="soft" className='btnCursor' onClick={handleDownload} disabled={isLoading}>
-                  <Flex align={"center"} gap={"3"}>
-                    {t('buttons.download.download')}
+                  <Flex align={"center"} gap={"2"}>
                     <DownloadIcon />
+                    {t('buttons.download.download')}
                   </Flex>
                 </Button>
               </Tooltip>

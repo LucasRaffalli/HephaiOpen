@@ -60,12 +60,6 @@ const safeDOM = {
   },
 }
 
-/**
- * https://tobiasahlin.com/spinkit
- * https://connoratherton.com/loaders
- * https://projects.lukehaas.me/css-loaders
- * https://matejkustec.github.io/SpinThatShit
- */
 function useLoading() {
   const oStyle = document.createElement('style')
   const oDiv = document.createElement('div')
@@ -86,16 +80,11 @@ function useLoading() {
   }
 }
 
-// ----------------------------------------------------------------------
-
 const { appendLoading, removeLoading } = useLoading()
 domReady().then(appendLoading)
 
 window.onmessage = (ev) => {
-  // setTimeout(() => {
-  //   ev.data.payload === 'removeLoading' && removeLoading()
-  // }, 4999);
-
+  if (ev.data?.payload === 'removeLoading') {
+    removeLoading()
+  }
 }
-
-setTimeout(removeLoading, 4999)

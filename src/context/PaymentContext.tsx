@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
+import { ibanFormats } from '@/types/hephai';
+import { t } from 'i18next';
 
 interface PaymentContextType {
     paymentData: {
@@ -32,17 +34,43 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
 
     const regexRules = {
-        iban: /^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$/,
+        iban: /^[A-Z]{2}\d+$/,
         paypal: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+    };
+
+    const validateIBAN = (iban: string): string => {
+        if (!iban) return '';
+
+        const countryCode = iban.substring(0, 2).toUpperCase();
+        const format = ibanFormats[countryCode];
+
+        if (!format) {
+            return t('errors.payment.unknownCountryCode');
+        }
+
+        if (iban.length !== format.length) {
+            return t('errors.payment.ibanLength', {
+                countryCode,
+                length: format.length,
+                current: iban.length
+            });
+        }
+
+        if (!format.regex.test(iban)) {
+            return t('errors.payment.invalidIbanFormat', { countryCode });
+        }
+
+        return '';
     };
 
     const validateField = (field: string, value: string) => {
         let errorMessage = '';
-        if (field === 'iban' && value && !regexRules.iban.test(value)) {
-            errorMessage = 'IBAN invalide. Exemple : FR7630001007941234567890185';
+        if (field === 'iban') {
+            errorMessage = validateIBAN(value);
         } else if (field === 'paypal' && value && !regexRules.paypal.test(value)) {
-            errorMessage = 'Adresse PayPal invalide. Exemple : exemple@email.com';
+            errorMessage = t('errors.payment.invalidPaypalAddress');
         }
+
         setErrors(prev => ({
             ...prev,
             [field]: errorMessage,
@@ -52,6 +80,18 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const handleFieldSelect = (field: string) => {
         setSelectedField(field);
+        // Réinitialiser les autres champs
+        setPaymentData(prev => ({
+            iban: field === 'iban' ? prev.iban : '',
+            paypal: field === 'paypal' ? prev.paypal : '',
+            other: field === 'other' ? prev.other : '',
+        }));
+        // Réinitialiser les erreurs des autres champs
+        setErrors(prev => ({
+            iban: field === 'iban' ? prev.iban : '',
+            paypal: field === 'paypal' ? prev.paypal : '',
+            other: field === 'other' ? prev.other : '',
+        }));
     };
 
     const handleInputChange = (field: string, value: string) => {

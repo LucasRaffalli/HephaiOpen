@@ -1,46 +1,12 @@
 {
   "name": "hephai_open",
-  "version": "1.0.0",
+  "version": "0.0.5",
   "main": "dist-electron/main/index.js",
   "description": "Invoice creation application.",
   "author": "Lucas Raffalli",
+  "type": "module",
   "license": "MIT",
   "private": true,
-  "debug": {
-    "env": {
-      "VITE_DEV_SERVER_URL": "http://127.0.0.1:7777/"
-    }
-  },
-  "build": {
-    "appId": "net.protocol.hephaiopen",
-    "productName": "HephaiOpen",
-    "files": [
-      "dist",
-      "dist-electron",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "win": {
-      "target": "nsis",
-      "icon": "public/favicon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": true,
-      "installerIcon": "public/installerIcon.ico",
-      "uninstallerIcon": "public/uninstallerIcon.ico",
-      "include": "public/installer.nsh"
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "LucasRaffalli",
-        "repo": "hephai"
-      }
-    ]
-  },
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
@@ -74,6 +40,8 @@
     "react-toastify": "^10.0.6"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/plugin-transform-react-jsx": "^7.25.9",
     "@playwright/test": "^1.42.1",
     "@types/electron-store": "^3.2.2",
     "@types/file-saver": "^2.0.7",

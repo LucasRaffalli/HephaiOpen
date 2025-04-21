@@ -1,22 +1,17 @@
 {
-  "appId": "net.protocol.hephai",
-  "asar": false,
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "net.protocol.hephaiopen",
+  "asar": true,
+  "productName": "HephaiOpen",
   "directories": {
     "output": "release/${version}"
   },
-  "asarUnpack": [],
-"files": [
-  "dist-electron",
-  {
-    "from": "dist",
-    "filter": [
-      "**/*",
-      "!**/*.map",
-      "!**/unused/**",
-      "!**/tests/**"
-    ]
-  }
-],
+  "files": [
+    "dist",
+    "dist-electron",
+    "node_modules/**/*",
+    "package.json"
+  ],
   "mac": {
     "artifactName": "${productName}_${version}.${ext}",
     "target": [
@@ -33,17 +28,21 @@
         ]
       }
     ],
-    "artifactName": "${productName}_${version}.${ext}"
+    "artifactName": "${productName}_${version}.${ext}",
+    "icon": "public/favicon.ico"
   },
   "nsis": {
     "oneClick": false,
     "perMachine": true,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
+    "deleteAppDataOnUninstall": false,
+    "installerIcon": "public/installerIcon.ico",
+    "uninstallerIcon": "public/uninstallerIcon.ico",
+    "include": "public/installer.nsh"
   },
   "publish": {
-    "provider": "generic",
-    "channel": "latest",
-    "url": "https://github.com/lucasraffalli/hephai/releases/download/${version}/"
+    "provider": "github",
+    "owner": "LucasRaffalli",
+    "repo": "hephai"
   }
 }

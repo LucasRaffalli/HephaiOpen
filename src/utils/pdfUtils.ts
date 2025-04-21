@@ -9,8 +9,8 @@ const maskSensitiveInfo = (text: string): string => {
 };
 export const addLogoToPDF = async (doc: jsPDF, imageSrc: string | null, pageHeight: number) => {
     if (!imageSrc) {
-        doc.setFillColor("150");
-        doc.rect(10, 10, 40, 40, "F");
+
+
         return;
     }
     const img = new Image();
@@ -20,16 +20,10 @@ export const addLogoToPDF = async (doc: jsPDF, imageSrc: string | null, pageHeig
     const imgWidth = pageHeight / scaleFactor;
     const imgHeight = (img.height / img.width) * imgWidth;
     doc.addImage(img, "PNG", 10, 10, imgWidth, imgHeight);
+    doc.setFillColor("F2F2F2");
 };
 
-export const setupPDFHeader = (
-    doc: jsPDF,
-    pageWidth: number,
-    paymentText: string,
-    selectedDate: string,
-    paymentInfo: PaymentInfo,
-    invoiceNumber: string,
-) => {
+export const setupPDFHeader = (doc: jsPDF, pageWidth: number, paymentText: string, selectedDate: string, paymentInfo: PaymentInfo, invoiceNumber: string,) => {
     doc.setFillColor("F2F2F2");
     doc.rect(0, 0, pageWidth, 60, "F");
 
@@ -41,10 +35,10 @@ export const setupPDFHeader = (
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
 
-    doc.text(`${t('features.invoice.number')}: ${invoiceNumber} `, pageWidth - 10, 30, { align: "right" });
+    doc.text(`${t('features.invoice.number')}: ${invoiceNumber}`, pageWidth - 10, 30, { align: "right" });
     doc.text(`${t('features.invoice.dated')}: ${selectedDate}`, pageWidth - 10, 35, { align: "right" });
     doc.setFont("helvetica", "bold");
-    doc.text(`${t('features.invoice.paymentMode')}: ${paymentText}`, pageWidth - 10, 40, { align: "right" });
+    doc.text(`${t('features.invoice.paymentMode')}:${paymentText ? ' ' + paymentText : ''}`, pageWidth - 10, 40, { align: "right" });
 
     const normalizedType = paymentInfo.type.trim().toUpperCase();
 
@@ -55,7 +49,7 @@ export const setupPDFHeader = (
 };
 
 export const setupPDFClient = (doc: jsPDF, clientInfo: any, shouldMask = false) => {
-    doc.setTextColor("");
+    doc.setTextColor("#4D4D4D");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.text(`${t('features.invoice.billedTo')}:`, 10, 75);
@@ -77,8 +71,6 @@ export const setupPDFClient = (doc: jsPDF, clientInfo: any, shouldMask = false) 
     doc.setTextColor("");
 }
 
-
-
 export const setupPDFAuthor = (doc: jsPDF, pageWidth: any, companyInfo: any, shouldMask = false) => {
     doc.setTextColor("");
     doc.setFont("helvetica", "bold");
@@ -97,7 +89,7 @@ export const setupPDFAuthor = (doc: jsPDF, pageWidth: any, companyInfo: any, sho
     };
 
     doc.text(
-        `${displayInfo.authorCompanyName}\n${displayInfo.authorAddress}\n${displayInfo.authorPhone}\n${displayInfo.authorEmail}\n${t('features.invoice.siret')}: ${displayInfo.siret}`,
+        `${displayInfo.authorCompanyName}\n${displayInfo.authorAddress}\n${displayInfo.authorPhone}\n${displayInfo.authorEmail}${displayInfo.siret ? `\nSIRET : ${displayInfo.siret}` : ''}`,
         pageWidth - 10,
         82,
         { align: "right" }
@@ -126,7 +118,6 @@ export const setupPDFTable = (doc: jsPDF, rows: any[], options: any) => {
     });
 
 };
-
 
 const formatPrice = (value: number | string, currency: string) => {
     const numericValue = typeof value === 'string' ? parseFloat(value) : value;
@@ -176,7 +167,6 @@ export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2:
 
     let currentY = startY;
 
-    // Combine les deux textes avec un séparateur
     const fullText = text1 + (text1 && text2 ? '\n\n' : '') + text2;
     const modalityLines = doc.splitTextToSize(fullText, boxWidth - (boxPadding * 2));
     let currentLine = 0;
@@ -185,7 +175,7 @@ export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2:
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.text(t('features.invoice.modalitiesAndConditions'), marginX, currentY);
-    currentY += 3;
+    currentY += 4;
 
     let finalY = currentY;
     while (currentLine < modalityLines.length) {
@@ -208,7 +198,6 @@ export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2:
         if (currentLine < modalityLines.length) {
             doc.addPage();
             currentY = 20;
-            // Ajouter le titre avec "(suite)" sur la nouvelle page
             doc.setFont("helvetica", "bold");
             doc.setFontSize(12);
             doc.text(`${t('features.invoice.modalitiesAndConditions')} (${t('features.invoice.continued')})`, marginX, currentY - 2);
@@ -232,15 +221,22 @@ export const setupPDFComments = (doc: jsPDF, options: any, comText: string, star
     const lineHeight = 4;
     const boxPadding = 5;
 
+    const marginTop = 20;
+
     let currentY = startY;
     const commentLines = doc.splitTextToSize(comText, boxWidth - (boxPadding * 2));
     let currentLine = 0;
 
-    // Titre initial "Commentaires"
+    // Si on a besoin d'une nouvelle page, on réinitialise currentY à une position en haut
+    if (currentY + (commentLines.length * lineHeight) + boxPadding * 2 > pageHeight - marginBottom) {
+        doc.addPage();
+        currentY = marginTop + 20; // Position plus haute sur la nouvelle page
+    }
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.text(t('features.invoice.additionalComments'), marginX, currentY);
-    currentY += 3;
+    currentY += 4;
 
     while (currentLine < commentLines.length) {
         const availableHeight = pageHeight - marginBottom - currentY;
@@ -248,11 +244,9 @@ export const setupPDFComments = (doc: jsPDF, options: any, comText: string, star
         const linesToDraw = Math.min(remainingLines, commentLines.length - currentLine);
         const boxHeight = (linesToDraw * lineHeight) + (boxPadding * 2);
 
-        // Dessiner l'encadré
         doc.setFont("helvetica", "normal");
         doc.rect(marginX, currentY, boxWidth, boxHeight);
 
-        // Ajouter le texte avec padding
         doc.setFontSize(10);
         const partialComments = commentLines.slice(currentLine, currentLine + linesToDraw).join('\n');
         doc.text(partialComments, marginX + boxPadding, currentY + boxPadding + 2);
@@ -261,12 +255,11 @@ export const setupPDFComments = (doc: jsPDF, options: any, comText: string, star
 
         if (currentLine < commentLines.length) {
             doc.addPage();
-            currentY = 20;
-            // Ajouter le titre avec "(suite)" sur la nouvelle page
+            currentY = marginTop; // Utiliser la marge supérieure définie pour la nouvelle page
             doc.setFont("helvetica", "bold");
             doc.setFontSize(12);
             doc.text(`${t('features.invoice.additionalComments')} (${t('features.invoice.continued')})`, marginX, currentY - 2);
-            currentY += 3;
+            currentY += 10;
         }
     }
 };
@@ -276,8 +269,11 @@ export const setupPDFFooter = (doc: jsPDF, isEnabled: boolean, startY: number) =
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
 
+    // Positionner le crédit toujours en bas de page avec une marge de 10
+    const footerY = pageHeight - 10;
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor("#808080");
-    doc.text(`${t('utils.credit')}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+    doc.text(`${t('utils.credit')}`, pageWidth / 2, footerY, { align: "center" });
 };

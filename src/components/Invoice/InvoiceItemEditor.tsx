@@ -1,5 +1,5 @@
 import { Box, Button, Flex, TextField, Text, Tooltip, Select, Separator, IconButton } from "@radix-ui/themes";
-import { PlusIcon } from "lucide-react";
+import { Delete, DeleteIcon, PlusIcon, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDynamicTableContext } from "@/context/DynamicTableContext";
@@ -104,7 +104,7 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
             <Flex direction="column" gap="2" width="100%">
                 <Select.Root value={selectedProductIndex !== null ? String(selectedProductIndex) : ""} onValueChange={handleProductSelect}>
                     <Select.Trigger placeholder={t('features.invoice.notProduct')} className="btnCursor" />
-                    <Select.Content position="popper">
+                    <Select.Content position="popper" style={{ height: "10.5rem" }}>
                         {rows.length > 0 ? (
                             rows.map((row, index) => (
                                 <Select.Item key={index} value={String(index)} className="btnCursor">
@@ -126,7 +126,7 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
                     {dynamicColumns.map((col) => (
                         <TextField.Root key={`form-${col.dataKey}`} placeholder={col.header} value={formData[col.dataKey] || ""} onChange={(e) => handleChange(col.dataKey, e.target.value)} />
                     ))}
-                    <TextField.Root placeholder={`${t("features.invoice.tableItem.total")} (${priceUnit})`} value={formData.total} onChange={(e) => handleChange("total", e.target.value)} />
+                    <TextField.Root type="number" placeholder={`${t("features.invoice.tableItem.total")} (${priceUnit})`} value={formData.total} onChange={(e) => handleChange("total", e.target.value)} />
 
                     {error && <Text color="red" style={{ marginTop: "8px" }}>{error}</Text>}
 
@@ -137,7 +137,7 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
                                     <Tooltip content={t('utils.tooltips.delete')}>
                                         <Box style={{ width: "100%" }}>
                                             <Button variant="soft" color="red" className="btnCursor btnCustom1" onClick={handleDeleteRow}>
-                                                {t("buttons.delete")}
+                                                {t("buttons.delete.product")}
                                             </Button>
                                         </Box>
                                     </Tooltip>
@@ -159,7 +159,11 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
                                     <Tooltip content={t('utils.tooltips.deleteAll')}>
 
                                         <Button variant="soft" className="btnCursor" color="red" onClick={() => { clearRows(); resetForm(); }} style={{ width: "100%" }}>
-                                            {t("buttons.clearAll")}
+                                            <Trash2 size={16} />
+                                            <Text>
+                                                {t("buttons.clearAll")}
+
+                                            </Text>
                                         </Button>
                                     </Tooltip>
                                 </motion.div>

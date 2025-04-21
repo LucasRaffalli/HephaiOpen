@@ -22,7 +22,7 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
         clients,
         handleDeleteClient,
         handleEditClient,
-        handleAddClient, // si t’en as besoin
+        handleToggleBookmark,
         setSelectedClient,
     } = useClientContext();
     const [editingClient, setEditingClient] = useState<Client | null>(null);
@@ -69,14 +69,27 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
         loadClients();
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dialogOpen) {
+                const dialogContent = document.querySelector('[role="dialog"]');
+                if (dialogContent && !dialogContent.contains(event.target as Node)) {
+                    setDialogOpen(false);
+                    setEditingClient(null);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [dialogOpen]);
 
 
     const toggleBookmark = (email: string) => {
-        if (!clients) return;
-        const updatedClients = clients.map((client) =>
-            client.email === email ? { ...client, bookmarks: !client.bookmarks } : client
-        );
-        localStorage.setItem('clients', JSON.stringify(updatedClients));
+        if (!email) return;
+        handleToggleBookmark(email);
     };
 
 
@@ -102,15 +115,32 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
                                         </DropdownMenu.Trigger>
                                         <DropdownMenu.Content>
                                             <DropdownMenu.Item>
-                                                <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
-                                                    <Dialog.Trigger onClick={(e) => { e.stopPropagation(); setEditingClient(client); }}>
+                                                <Dialog.Root open={dialogOpen} onOpenChange={(open) => {
+                                                    if (!open) {
+                                                        setEditingClient(null);
+                                                    }
+                                                    setDialogOpen(open);
+                                                }}>
+                                                    <Dialog.Trigger onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setEditingClient(client);
+                                                    }}>
                                                         <Flex align={"center"} gap={"2"} justify={"between"} width={"100%"} >
                                                             <Text>{t('buttons.edit')}</Text>
                                                             <SquarePenIcon size={16} />
                                                         </Flex>
                                                     </Dialog.Trigger>
                                                     <Dialog.Content maxWidth="450px" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}
-                                                        onKeyDown={handleDialogKeyDown}>
+                                                        onKeyDown={handleDialogKeyDown}
+                                                        onInteractOutside={(e) => {
+                                                            e.preventDefault();
+                                                            setDialogOpen(false);
+                                                            setEditingClient(null);
+                                                        }}
+                                                        onEscapeKeyDown={() => {
+                                                            setDialogOpen(false);
+                                                            setEditingClient(null);
+                                                        }}>
                                                         <Dialog.Title>{t('popup.edit.client.title')}</Dialog.Title>
                                                         <Dialog.Description size="2" mb="4">{t('popup.edit.client.description')}</Dialog.Description>
                                                         <Flex direction="column" gap="3" onPointerDown={(e) => e.stopPropagation()}>
@@ -141,9 +171,9 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
 
                                                         <Flex gap="3" mt="4" justify="end">
                                                             <Dialog.Close>
-                                                                <Button variant="soft" color="gray">{t('buttons.cancel')}</Button>
+                                                                <Button variant="soft" color="gray" className='btnCursor'>{t('buttons.cancel')}</Button>
                                                             </Dialog.Close>
-                                                            <Button onClick={handleEditSave}>{t('buttons.save')}</Button>
+                                                            <Button onClick={handleEditSave} className='btnCursor'>{t('buttons.save')}</Button>
                                                         </Flex>
                                                     </Dialog.Content>
                                                 </Dialog.Root>

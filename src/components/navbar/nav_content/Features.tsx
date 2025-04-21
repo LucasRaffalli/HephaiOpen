@@ -3,6 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import "../../../css/feature.css";
 import { useTranslation } from 'react-i18next';
 import { motion } from "framer-motion";
+import PremiumSvgIcon from '@/assets/premium.svg';
+import InvoiceIcon from '/img/invoiceImg.png';
+import StarsHephaiIcon from '/img/starsHephai.png';
 
 export default function Features() {
     const { t } = useTranslation();
@@ -51,10 +54,10 @@ export default function Features() {
                                         {t('features.invoice.title')}
                                     </Text>
                                 </Box>
-                                <Flex direction={'row'} justify={'end'} className='card__container__grid'>
+                                <Flex direction={'row'} justify={'end'} className='card__container__grid btnNotEvent' >
                                     <Box style={{ 'zIndex': 22 }}>
-                                        <div className={`filter__paper ${isActive('/chart') ? 'active' : ''}`}></div>
-                                        <img src="/img/invoiceImg.png" alt="InvoiceImg" />
+                                        <div className={`filter__paper ${isActive('/navigation/factures') ? 'active' : ''}`}></div>
+                                        <img src={InvoiceIcon} alt="InvoiceImg" />
                                     </Box>
                                 </Flex>
                             </Flex>
@@ -73,11 +76,10 @@ export default function Features() {
                                         {t('features.premium.title')}
                                     </Text>
                                 </Box>
-                                <Flex direction={'row'} justify={'end'} className='card__container__grid__premium '>
-                                    <Box style={{ 'zIndex': 22 }}>
-                                        <div className={` ${isActive('/navigation/premium') ? 'active' : ''}`}></div>
-                                        <img src="/img/premium.svg" alt="premiumImg" />
-                                    </Box>
+                                <Flex direction={'row'} justify={'end'} className='card__container__grid__premium btnNotEvent'>
+                                    <Flex style={{ 'zIndex': 22 }} direction={"row"} align={"center"} justify={"center"}>
+                                        <img src={StarsHephaiIcon} alt="premiumImg" className={`filter__paper__premium ${isActive('/navigation/premium') ? 'active' : ''}`} />
+                                    </Flex>
                                 </Flex>
                             </Flex>
                         </Card>

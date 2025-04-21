@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron/simple'
 import pkg from './package.json'
 import svgr from "vite-plugin-svgr";
-// https://vitejs.dev/config/
+
 export default defineConfig(({ command }) => {
   rmSync('dist-electron', { recursive: true, force: true })
 
@@ -18,68 +18,77 @@ export default defineConfig(({ command }) => {
       alias: {
         '@': path.join(__dirname, 'src'),
         '@electron': path.resolve(__dirname, './electron'),
-        events: 'events/',
       },
     },
+    base: './',
     build: {
-      target: 'esnext',
+      outDir: 'dist',
+      assetsDir: 'assets',
+      minify: 'esbuild',
+      emptyOutDir: true,
+      target: ['chrome89', 'edge89', 'firefox89', 'safari15'],
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+        },
+        output: {
+          format: 'esm',
+          entryFileNames: '[name].[hash].js',
+          chunkFileNames: '[name].[hash].js',
+          assetFileNames: '[name].[hash].[ext]',
+          manualChunks: {
+            'vendor': [
+              'react', 
+              'react-dom',
+            ],
+            'router': ['react-router-dom'],
+            'ui': ['@radix-ui/themes', '@radix-ui/react-icons'],
+          }
+        }
+      },
     },
     plugins: [
-      react(),
+      react({
+        jsxRuntime: 'automatic',
+      }),
       svgr({
         svgrOptions: { exportType: "default", ref: true, svgo: false, titleProp: true },
         include: "**/*.svg",
       }),
       electron({
         main: {
-          // Shortcut of `build.lib.entry`
           entry: 'electron/main/index.ts',
-          onstart(args) {
-            if (process.env.VSCODE_DEBUG) {
-              console.log(/* For `.vscode/.debug.script.mjs` */'[startup] Electron App')
-            } else {
-              args.startup()
-            }
-          },
           vite: {
             build: {
-              sourcemap,
-              minify: isBuild,
               outDir: 'dist-electron/main',
               rollupOptions: {
-                external: Object.keys(pkg.dependencies || {}),
+                external: Object.keys(pkg.dependencies || {})
               },
             },
           },
         },
         preload: {
-          // Shortcut of `build.rollupOptions.input`.
-          // Preload scripts may contain Web assets, so use the `build.rollupOptions.input` instead `build.lib.entry`.
           input: 'electron/preload/index.ts',
           vite: {
             build: {
-              sourcemap: sourcemap ? 'inline' : undefined, // #332
-              minify: isBuild,
               outDir: 'dist-electron/preload',
               rollupOptions: {
-                external: Object.keys(pkg.dependencies || {}),
+                external: Object.keys(pkg.dependencies || {})
               },
             },
           },
         },
-        // Ployfill the Electron and Node.js API for Renderer process.
-        // If you want use Node.js in Renderer process, the `nodeIntegration` needs to be enabled in the Main process.
-        // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
         renderer: {},
       }),
     ],
-    server: process.env.VSCODE_DEBUG && (() => {
-      const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
-      return {
-        host: url.hostname,
-        port: +url.port,
-      }
-    })(),
-    clearScreen: false,
+    optimizeDeps: {
+      include: [
+        'react',
+        'react-dom',
+        'react-router-dom',
+        '@radix-ui/themes',
+      ],
+      force: true
+    }
   }
 })

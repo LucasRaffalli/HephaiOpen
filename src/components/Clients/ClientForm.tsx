@@ -9,25 +9,10 @@ interface ClientFormProps {
     flexJustify?: 'start' | 'end' | 'center' | 'between';
 }
 
-const ClientForm: React.FC<ClientFormProps> = ({ 
-    flexJustify = 'start', 
-    boxWidth = '240px' 
-}) => {
-    const { 
-        selectedClient,
-        handleChange,
-        handleAddClient,
-        visibility,
-        handleToggleVisibility
-    } = useClientContext();
+const ClientForm: React.FC<ClientFormProps> = ({ flexJustify = 'start', boxWidth = '240px' }) => {
+    const { selectedClient, handleChange, handleAddClient, visibility, handleToggleVisibility } = useClientContext();
 
-    const clientData = selectedClient || {
-        bookmarks: false,
-        companyName: '',
-        address: '',
-        email: '',
-        phone: '',
-    };
+    const clientData = selectedClient || { bookmarks: false, companyName: '', address: '', email: '', phone: '', };
 
     return (
         <Flex direction="column" gap="3" width="100%" height="fit-content">
@@ -39,44 +24,21 @@ const ClientForm: React.FC<ClientFormProps> = ({
                             <Box key={key} width={boxWidth} mb="0">
                                 <Tooltip content={t(`utils.tooltips.${key}`)}>
                                     <Flex align="center" gap="2">
-                                        <Switch 
-                                            checked={value as boolean} 
-                                            onCheckedChange={(checked) => 
-                                                handleChange({ 
-                                                    target: { 
-                                                        name: 'bookmarks', 
-                                                        value: checked,
-                                                        type: 'checkbox',
-                                                        checked
-                                                    }
-                                                } as any)
-                                            } 
-                                        />
+                                        <Switch checked={value as boolean} onCheckedChange={(checked) => handleChange({ target: { name: 'bookmarks', value: checked, type: 'checkbox', checked } } as any)} />
                                         <Text size="2">{t('buttons.bookmark.base')}</Text>
                                     </Flex>
                                 </Tooltip>
                             </Box>
                         );
                     }
+
                     return (
                         <Box key={key} width={boxWidth} mb="0">
                             <Tooltip content={t(`utils.tooltips.customer.${key}`)}>
-                                <TextField.Root 
-                                    placeholder={key.charAt(0).toUpperCase() + key.slice(1)} 
-                                    name={key} 
-                                    onChange={handleChange} 
-                                    value={value || ''} 
-                                    size="2" 
-                                    type={['email', 'phone', 'address'].includes(key) ? (visibility[key] ? 'text' : 'password') : 'text'}
-                                >
+                                <TextField.Root placeholder={key.charAt(0).toUpperCase() + key.slice(1)} name={key} onChange={handleChange} value={value || ''} size="2" type={['email', 'phone', 'address'].includes(key) ? (visibility[key] ? 'text' : 'password') : 'text'}>
                                     {['email', 'phone', 'address'].includes(key) && (
                                         <TextField.Slot side="right">
-                                            <IconButton 
-                                                onClick={() => handleToggleVisibility(key)} 
-                                                variant="ghost" 
-                                                size="1" 
-                                                className="btnCursor"
-                                            >
+                                            <IconButton onClick={() => handleToggleVisibility(key)} variant="ghost" size="1" className="btnCursor">
                                                 {visibility[key] ? <Eye size={16} /> : <EyeClosed size={16} />}
                                             </IconButton>
                                         </TextField.Slot>
