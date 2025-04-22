@@ -1,6 +1,6 @@
 {
   "name": "hephai_open",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "dist-electron/main/index.js",
   "description": "Invoice creation application.",
   "author": "Lucas Raffalli",
