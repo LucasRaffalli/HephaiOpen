@@ -37,6 +37,11 @@
     left: -0.5%;
 }
 
+/* Ajustement pour la toolbar quand la navbar est visible */
+.navbar-normal ~ .small-toolbar__all {
+    transform: translateX(calc(-50% + 120px)); /* La moitié de la largeur de la navbar */
+}
+
 .no-hover {
     position: relative !important;
     z-index: auto !important;
