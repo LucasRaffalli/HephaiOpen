@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Button, Flex, Box, Text, Dialog, Tooltip, Callout } from "@radix-ui/themes";
-import { ChevronLeft, ChevronRight, OctagonAlert, TriangleAlert } from "lucide-react";
+import { Button, Flex, Text, Dialog, Tooltip, Callout } from "@radix-ui/themes";
+import { ChevronLeft, ChevronRight, TriangleAlert } from "lucide-react";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 import PdfMetadataDialog from '@/components/template/PdfMetadataDialog';
@@ -67,7 +67,6 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
       setLoadingState({ ...loadingState, isPdfLoading: true });
       const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
       setPdfDoc(pdf);
-      // Si la page courante est supérieure au nombre total de pages, revenir à la page 1
       if (currentPage > pdf.numPages) {
         setCurrentPage(1);
       }
@@ -147,80 +146,73 @@ const InvoicePdfViewer: React.FC<InvoicePdfViewerProps> = ({ pdfUrl, downloadPDF
     const context = canvas.getContext('2d');
     if (!context) return;
 
-    // Annuler la tâche de rendu précédente
     if (renderTask.current) {
-        try {
-            await renderTask.current.cancel();
-            renderTask.current = null;
-            // Attendre que le canvas soit libéré
-            await new Promise(resolve => setTimeout(resolve, 150));
-        } catch (error) {
-            console.warn('Erreur lors de l\'annulation de la tâche de rendu précédente:', error);
-        }
+      try {
+        await renderTask.current.cancel();
+        renderTask.current = null;
+        await new Promise(resolve => setTimeout(resolve, 150));
+      } catch (error) {
+        console.warn('Erreur lors de l\'annulation de la tâche de rendu précédente:', error);
+      }
     }
 
     updateLoadingState({ isCanvasLoading: true });
 
     try {
-        const dpiScale = window.devicePixelRatio || 1;
-        const page = await pdfDoc.getPage(currentPage);
-        const viewport = page.getViewport({ scale: dpiScale });
+      const dpiScale = window.devicePixelRatio || 1;
+      const page = await pdfDoc.getPage(currentPage);
+      const viewport = page.getViewport({ scale: dpiScale });
 
-        // Nettoyer complètement le canvas avant chaque rendu
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        canvas.style.width = `${viewport.width / dpiScale}px`;
-        canvas.style.height = `${viewport.height / dpiScale}px`;
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      canvas.style.width = `${viewport.width / dpiScale}px`;
+      canvas.style.height = `${viewport.height / dpiScale}px`;
 
-        // S'assurer que le contexte est propre
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = '#ffffff';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = '#ffffff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
 
-        const newRenderTask = page.render({
-            canvasContext: context,
-            viewport: viewport,
-            intent: 'display',
-            // enableWebGL: false // Désactiver WebGL pour éviter des conflits
-        });
+      const newRenderTask = page.render({
+        canvasContext: context,
+        viewport: viewport,
+        intent: 'display',
 
-        renderTask.current = newRenderTask;
+      });
 
-        try {
-            await newRenderTask.promise;
-        } catch (error: any) {
-            if (error.name !== 'RenderingCancelledException') {
-                console.error('Erreur de rendu:', error);
-            }
-        } finally {
-            if (renderTask.current === newRenderTask) {
-                renderTask.current = null;
-            }
+      renderTask.current = newRenderTask;
+
+      try {
+        await newRenderTask.promise;
+      } catch (error: any) {
+        if (error.name !== 'RenderingCancelledException') {
+          console.error('Erreur de rendu:', error);
         }
+      } finally {
+        if (renderTask.current === newRenderTask) {
+          renderTask.current = null;
+        }
+      }
     } catch (error) {
-        console.error('Erreur lors du rendu de la page:', error);
+      console.error('Erreur lors du rendu de la page:', error);
     } finally {
-        updateLoadingState({ isCanvasLoading: false });
+      updateLoadingState({ isCanvasLoading: false });
     }
-}, [pdfDoc, currentPage]);
+  }, [pdfDoc, currentPage]);
 
-// Cleanup effect
-useEffect(() => {
+  useEffect(() => {
     return () => {
-        if (renderTask.current) {
-            renderTask.current.cancel();
-            renderTask.current = null;
-        }
+      if (renderTask.current) {
+        renderTask.current.cancel();
+        renderTask.current = null;
+      }
     };
-}, []);
-
-// Single render effect
-useEffect(() => {
+  }, []);
+  useEffect(() => {
     const timeout = setTimeout(() => {
-        renderPage();
+      renderPage();
     }, 100);
     return () => clearTimeout(timeout);
-}, [renderPage]);
+  }, [renderPage]);
 
   return (
     <Flex direction="column" align="center" justify="center" gap="4" className="InvoicePdfViewerContent">
@@ -245,9 +237,7 @@ useEffect(() => {
             <Dialog.Title>{t('download.title')}</Dialog.Title>
             <Dialog.Description>
               <Text size="2">
-                {downloadState.progress < 100
-                  ? t('download.message')
-                  : t('download.complete')}
+                {downloadState.progress < 100 ? t('download.message') : t('download.complete')}
               </Text>
             </Dialog.Description>
             <Flex justify="between" align="center">

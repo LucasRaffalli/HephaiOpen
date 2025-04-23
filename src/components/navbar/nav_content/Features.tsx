@@ -3,13 +3,15 @@ import { Link, useLocation } from 'react-router-dom';
 import "../../../css/feature.css";
 import { useTranslation } from 'react-i18next';
 import { motion } from "framer-motion";
-import PremiumSvgIcon from '@/assets/premium.svg';
 import InvoiceIcon from '/img/invoiceImg.png';
 import StarsHephaiIcon from '/img/starsHephai.png';
+import UpdateHephaiIcon from '/img/updateImg.webp';
+import { useUpdate } from '@/context/UpdateContext';
 
 export default function Features() {
     const { t } = useTranslation();
     const location = useLocation();
+    const { updateAvailable } = useUpdate();
 
     const cardVariants = {
         hidden: {
@@ -44,17 +46,38 @@ export default function Features() {
 
     return (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" style={{ width: '100%', display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+
+            {updateAvailable && (
+                <motion.div variants={cardVariants}>
+                    <Box className="update">
+                        <Link to="/update" style={{ textDecoration: 'none' }}>
+                            <Card className={`glow btnCursor update ${isActive('/update') ? 'active' : ''}`}>
+                                <Flex gap="3" justify={'between'} align="center" height={'5vh'}>
+                                    <Box>
+                                        <Text as="div" size="2" weight="bold">{t('update.checkButton')}</Text>
+                                    </Box>
+                                    <Flex direction={'row'} justify={'end'} className='card__container__grid__update btnNotEvent'>
+                                        <Flex style={{ 'zIndex': 0 }} direction={"row"} align={"center"} justify={"center"}>
+                                            <div className={`filter__paper__update ${isActive('/update') ? 'active' : ''}`}></div>
+                                            <img src={UpdateHephaiIcon} alt="premiumImg" />
+                                        </Flex>
+                                    </Flex>
+                                </Flex>
+                            </Card>
+                        </Link>
+                    </Box>
+                </motion.div>
+            )}
+
             <motion.div variants={cardVariants}>
                 <Box className="invoice">
                     <Link to="/navigation/factures" style={{ textDecoration: 'none' }}>
                         <Card className={`glow ${isActive('/navigation/factures') ? 'active' : ''} btnCursor`}>
-                            <Flex gap="3" justify={'between'} align="center" height={'5vh'} className=''>
+                            <Flex gap="3" justify={'between'} align="center" height={'5vh'}>
                                 <Box>
-                                    <Text size="2" weight="bold">
-                                        {t('features.invoice.title')}
-                                    </Text>
+                                    <Text size="2" weight="bold">{t('features.invoice.title')}</Text>
                                 </Box>
-                                <Flex direction={'row'} justify={'end'} className='card__container__grid btnNotEvent' >
+                                <Flex direction={'row'} justify={'end'} className='card__container__grid btnNotEvent'>
                                     <Box style={{ 'zIndex': 22 }}>
                                         <div className={`filter__paper ${isActive('/navigation/factures') ? 'active' : ''}`}></div>
                                         <img src={InvoiceIcon} alt="InvoiceImg" />
@@ -69,12 +92,10 @@ export default function Features() {
             <motion.div variants={cardVariants}>
                 <Box className="premium">
                     <Link to="/navigation/premium" style={{ textDecoration: 'none' }}>
-                        <Card className={`glow btnCursor premium ${isActive('/navigation/premium') ? 'active__premium' : ''}`} >
+                        <Card className={`glow btnCursor premium ${isActive('/navigation/premium') ? 'active__premium' : ''}`}>
                             <Flex gap="3" justify={'between'} align="center" height={'5vh'}>
                                 <Box>
-                                    <Text as="div" size="2" weight="bold">
-                                        {t('features.premium.title')}
-                                    </Text>
+                                    <Text as="div" size="2" weight="bold">{t('features.premium.title')}</Text>
                                 </Box>
                                 <Flex direction={'row'} justify={'end'} className='card__container__grid__premium btnNotEvent'>
                                     <Flex style={{ 'zIndex': 22 }} direction={"row"} align={"center"} justify={"center"}>
@@ -86,7 +107,8 @@ export default function Features() {
                     </Link>
                 </Box>
             </motion.div>
-            {/* </Flex> */}
+
+
         </motion.div>
     );
 }

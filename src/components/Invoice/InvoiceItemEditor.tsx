@@ -135,7 +135,6 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
                 </Select.Root>
 
                 <Separator orientation="horizontal" style={{ width: "100%" }} />
-
                 <>
                     <TextField.Root placeholder={t("features.invoice.tableItem.product")} value={formData.product} onChange={(e) => handleChange("product", e.target.value)} />
                     {dynamicColumns.map((col) => (

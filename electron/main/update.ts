@@ -1,12 +1,23 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createRequire } from 'node:module'
 import type { ProgressInfo, UpdateDownloadedEvent, UpdateInfo } from 'electron-updater'
+import { mockUpdate } from './update.mock'
 
 const { autoUpdater } = createRequire(import.meta.url)('electron-updater')
 
 let isDownloading = false
 
 export function update(win: BrowserWindow) {
+  // En mode dev, utiliser le mock
+  // if (!app.isPackaged) {
+  //   ipcMain.handle('check-update', async () => {
+  //     mockUpdate(win)
+  //     return { update: true, message: 'Mode développement : simulation de mise à jour' }
+  //   })
+  //   return
+  // }
+
+  // Mode production : vraie logique de mise à jour
   autoUpdater.autoDownload = false
   autoUpdater.disableWebInstaller = false
   autoUpdater.allowDowngrade = false

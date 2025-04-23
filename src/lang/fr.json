@@ -84,7 +84,9 @@
         },
         "data": {
             "save": "Enregistrer les données"
-        }
+        },
+        "later": "Plus tard",
+        "installNow": "Installer maintenant"
     },
     "popup": {
         "edit": {
@@ -365,7 +367,8 @@
     "menu": {
         "file": {
             "title": "Fichier",
-            "exit": "Quitter"
+            "exit": "Quitter",
+            "checkUpdate": "Rechercher des mises à jour"
         },
         "view": {
             "title": "Affichage",
@@ -398,6 +401,25 @@
             "ibanLength": "L'IBAN {{countryCode}} doit contenir {{length}} caractères (actuellement : {{current}})",
             "invalidIbanFormat": "Format IBAN invalide pour {{countryCode}}. Exemple : FR7630001007941234567890185",
             "invalidPaypalAddress": "Adresse PayPal invalide. Exemple : exemple@email.com"
+        },
+        "update": {
+            "downloadError": "Erreur lors du téléchargement de la dernière version."
         }
+    },
+    "update": {
+        "latestVersion": "La dernière version disponible est",
+        "progress": "Progression de la mise à jour",
+        "checking": "Vérification en cours...",
+        "checkButton": "Vérifier les mises à jour",
+        "checkUpdate": "Vérifier les mises à jour",
+        "checkForUpdates": "Rechercher des mises à jour",
+        "clickToCheck": "Cliquer pour vérifier",
+        "available": "Mise à jour disponible",
+        "newVersion": "Nouvelle version",
+        "availableNow": "Disponible maintenant",
+        "downloading": "Téléchargement en cours",
+        "downloaded": "téléchargé",
+        "downloadingNow": "Téléchargement en cours",
+        "pleaseWait": "Veuillez patienter..."
     }
 }

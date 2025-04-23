@@ -1,4 +1,3 @@
-import { Box } from 'lucide-react';
 import React from 'react';
 
 

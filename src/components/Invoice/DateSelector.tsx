@@ -2,7 +2,6 @@ import { Flex, Box, Button, Text, Tooltip } from "@radix-ui/themes";
 import { motion } from "framer-motion";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 
 interface DateSelectorProps {
     selectedDate: string;
@@ -21,7 +20,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({ selectedDate, handleCustomD
     useEffect(() => {
         const storedLang = localStorage.getItem('language');
         if (storedLang) {
-            setLang(storedLang);  // Si une langue est définie dans localStorage, on l'utilise
+            setLang(storedLang);
         }
     }, []);
     useEffect(() => {

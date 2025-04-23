@@ -46,6 +46,16 @@
     }
 }
 
+.card__container__grid__update {
+    width: 100%;
+    height: 100%;
+
+    img {
+        width: fit-content;
+        height: 100%;
+    }
+}
+
 .filter__paper.active {
     position: absolute;
     height: 60px;
@@ -65,6 +75,8 @@
 .filter__paper__premium.active {
     z-index: 2;
     bottom: 0;
+    mix-blend-mode: overlay;
+
     background-color: #F8B43A;
     mask: url('../assets/FilterStars.svg') no-repeat center;
     -webkit-mask: url('../assets/FilterStars.svg') no-repeat center;
@@ -72,4 +84,80 @@
     -webkit-mask-size: contain;
     stroke: #F8B43A;
     fill: #F8B43A;
+}
+
+.filter__paper__update.active {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    mix-blend-mode: overlay;
+
+    background-color: var(--accent-9);
+    mask: url('../assets/FilterUpdate.svg') no-repeat center;
+    -webkit-mask: url('../assets/FilterUpdate.svg') no-repeat center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    stroke: var(--accent-9);
+    fill: var(--accent-9);
+
+}
+
+/* Update card styles */
+
+.update {
+    position: relative;
+}
+
+.update .glow {
+    border: 1px solid var(--accent-6);
+    transition: all 0.3s ease;
+}
+
+.update .glow:hover {
+    border-color: var(--accent-8);
+    background-color: var(--accent-3);
+}
+
+.update-icon {
+    color: var(--accent-9);
+}
+
+
+.card__container__grid__update {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.update::after {
+    pointer-events: none;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--accent-6);
+    border-radius: inherit;
+    z-index: 1;
+    animation: breath 6s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    opacity: 0;
+
+}
+
+@keyframes breath {
+    0% {
+        transform: scale(1, 1);
+        opacity: 1;
+    }
+
+    40%,
+    100% {
+        filter: blur(1rem);
+
+        transform: scale(2);
+        opacity: 0;
+    }
+
 }

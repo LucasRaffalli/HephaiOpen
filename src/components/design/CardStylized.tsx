@@ -17,9 +17,12 @@ interface CardStylized {
     isGrayTop?: boolean;
     isGrayBottom?: boolean;
     isItalicTopSmall?: boolean;
+    effectVariant?: "stars" | "bubbles" | "sparkles" | "none" | "update";
+    onClick?: () => void;
+    style?: ""
 }
 
-export default function CardStylized({ contentTop, topSmallText, bottomTitle, bottomDescription, sizeText, sizeTextSmall, weight, isGrayTop, isGrayBottom }: CardStylized) {
+export default function CardStylized({ contentTop, topSmallText, bottomTitle, bottomDescription, sizeText, sizeTextSmall, weight, isGrayTop, isGrayBottom, effectVariant = "stars", onClick, style }: CardStylized) {
     const cardAnimation = {
         hidden: { opacity: 0, y: 20, scale: 0.9 },
         visible: {
@@ -40,36 +43,38 @@ export default function CardStylized({ contentTop, topSmallText, bottomTitle, bo
     };
 
     return (
-        <motion.div variants={cardAnimation} initial="hidden" animate="visible" >
+        <motion.div variants={cardAnimation} initial="hidden" animate="visible" onClick={onClick} className="btnCursor" style={{ border: 'none', }}>
             <Flex p="4" height="43vh" width="30vh" className='cardStylized__base'>
                 <Box className='gradient' />
-                <Box className='starsEffect' />
+                {effectVariant !== "none" && <Box className={`${effectVariant}Effect`} />}
                 <Flex height="100%" width="100%" direction="column" justify="center" align="center" className='cardStylized__content'>
-                    <Flex direction="column" p="2" height="100%" width="100%" className='cardStylized__content__top'>
-                        <Flex direction="column">
-                            {contentTop?.split(',').map((text, index) => (
-                                <motion.div key={index} variants={textAnimation} initial="hidden" animate="visible" custom={index}>
-                                    <Text size={sizeText} weight={weight}>{text.trim()}</Text>
-                                </motion.div>
-                            ))}
+                    <Flex height="100%" width="100%" direction="column" justify="center" align="center" className='cardStylized__content'>
+                        <Flex direction="column" p="2" height="100%" width="100%" className='cardStylized__content__top'>
+                            <Flex direction="column">
+                                {contentTop?.split(',').map((text, index) => (
+                                    <motion.div key={index} variants={textAnimation} initial="hidden" animate="visible" custom={index}>
+                                        <Text size={sizeText} weight={weight}>{text.trim()}</Text>
+                                    </motion.div>
+                                ))}
+                            </Flex>
+                            <motion.div variants={textAnimation} initial="hidden" animate="visible" custom={3}>
+                                <Text color={isGrayTop ? "gray" : undefined} size={sizeTextSmall} style={{ fontStyle: "italic" }}>
+                                    {topSmallText}
+                                </Text>
+                            </motion.div>
                         </Flex>
-                        <motion.div variants={textAnimation} initial="hidden" animate="visible" custom={3}>
-                            <Text color={isGrayTop ? "gray" : undefined} size={sizeTextSmall} style={{ fontStyle: "italic" }}>
-                                {topSmallText}
-                            </Text>
-                        </motion.div>
-                    </Flex>
-                    <Flex direction="column" p="2" height="20%" width="100%" className='cardStylized__content__bottom'>
-                        <motion.div variants={textAnimation} initial="hidden" animate="visible" custom={4}>
-                            <Text size={sizeText} weight={weight} color={isGrayBottom ? "gray" : undefined} className="textGradient " data-text={bottomTitle}>
-                                {bottomTitle}
-                            </Text>
-                        </motion.div>
-                        <motion.div variants={textAnimation} initial="hidden" animate="visible" custom={5}>
-                            <Text weight={weight} color={isGrayBottom ? "gray" : undefined}>
-                                {bottomDescription}
-                            </Text>
-                        </motion.div>
+                        <Flex direction="column" p="2" height="20%" width="100%" className='cardStylized__content__bottom'>
+                            <motion.div variants={textAnimation} initial="hidden" animate="visible" custom={4}>
+                                <Text size={sizeText} weight={weight} color={isGrayBottom ? "gray" : undefined} className="textGradient " data-text={bottomTitle}>
+                                    {bottomTitle}
+                                </Text>
+                            </motion.div>
+                            <motion.div variants={textAnimation} initial="hidden" animate="visible" custom={5}>
+                                <Text weight={weight} color={isGrayBottom ? "gray" : undefined}>
+                                    {bottomDescription}
+                                </Text>
+                            </motion.div>
+                        </Flex>
                     </Flex>
                 </Flex>
             </Flex>

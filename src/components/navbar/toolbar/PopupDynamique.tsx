@@ -13,7 +13,6 @@ const PopupDynamique: React.FC<PopupDynamiqueProps> = ({ isOpen, onClose, anchor
 
     useLayoutEffect(() => {
         if (isOpen && anchorRef.current) {
-            // petit délai pour laisser le temps au DOM de rendre le popup
             setTimeout(() => {
                 if (!popupRef.current || !anchorRef.current) return;
 
@@ -24,9 +23,7 @@ const PopupDynamique: React.FC<PopupDynamiqueProps> = ({ isOpen, onClose, anchor
                 let top = anchorRect.top + window.scrollY - popupRect.height - 76;
                 let left = anchorRect.left + window.scrollX + (anchorRect.width / 2) - (popupRect.width / 2);
 
-                // Empêche que le popup dépasse à gauche
                 left = Math.max(16, left);
-                // Empêche qu'il dépasse à droite
                 left = Math.min(left, window.innerWidth - popupRect.width - 16);
 
 
@@ -57,14 +54,8 @@ const PopupDynamique: React.FC<PopupDynamiqueProps> = ({ isOpen, onClose, anchor
     if (!isOpen) return null;
 
     return (
-        // <div ref={popupRef} style={{ position: 'absolute', zIndex: 9999, top: style.top + 'px', left: style.left, transform: 'translateX(-50%)' }} className="toolbar-popup-dynamic">
-        //     {children}
-        // </div>
-        <div
-            ref={popupRef}
-            style={{ position: 'absolute', zIndex: 9999, top: style.top + 'px' }}
-            className="toolbar-popup-dynamic"
-        >
+
+        <div ref={popupRef} style={{ position: 'absolute', zIndex: 9999, top: style.top + 'px' }} className="toolbar-popup-dynamic">
             {children}
         </div>
     );

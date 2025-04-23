@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Eye, EyeClosedIcon, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { Flex, Box, Separator, Button, Tooltip } from "@radix-ui/themes";
 import { t } from "i18next";
 import { useModalities } from "@/context/ModalitiesContext";

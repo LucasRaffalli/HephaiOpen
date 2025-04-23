@@ -1,4 +1,3 @@
-import { AccentColor } from '@/types/hephai';
 import { Avatar, Button, Flex, Tooltip, Text } from '@radix-ui/themes';
 import { t } from 'i18next';
 import React, { useRef, useState } from 'react';

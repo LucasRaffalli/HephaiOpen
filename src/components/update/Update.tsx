@@ -2,9 +2,15 @@ import type { ProgressInfo } from 'electron-updater'
 import { useCallback, useEffect, useState } from 'react'
 import Modal from '@/components/update/Modal'
 import Progress from '@/components/update/Progress'
+import { useTranslation } from 'react-i18next'
+import { Box, Button, Flex, Heading, Text } from '@radix-ui/themes'
 import './update.css'
+import ContainerInterface from '../template/ContainerInterface'
+import CardStylized from '../design/CardStylized'
+import SmokeEffect from '../design/SmokeEffect'
 
 const Update = () => {
+  const { t } = useTranslation()
   const [checking, setChecking] = useState(false)
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [versionInfo, setVersionInfo] = useState<VersionInfo>()
@@ -17,6 +23,8 @@ const Update = () => {
     onCancel?: () => void
     onOk?: () => void
   }>({
+    cancelText: t('buttons.cancel'),
+    okText: t('buttons.update'),
     onCancel: () => setModalOpen(false),
     onOk: () => window.ipcRenderer.invoke('start-download'),
   })
@@ -43,8 +51,8 @@ const Update = () => {
     if (arg1.update) {
       setModalBtn(state => ({
         ...state,
-        cancelText: 'Cancel',
-        okText: 'Update',
+        cancelText: t('buttons.cancel'),
+        okText: t('buttons.update'),
         onOk: () => window.ipcRenderer.invoke('start-download'),
       }))
       setUpdateAvailable(true)
@@ -66,14 +74,13 @@ const Update = () => {
     setProgressInfo({ percent: 100 })
     setModalBtn(state => ({
       ...state,
-      cancelText: 'Later',
-      okText: 'Install now',
+      cancelText: t('buttons.later'),
+      okText: t('buttons.installNow'),
       onOk: () => window.ipcRenderer.invoke('quit-and-install'),
     }))
   }, [])
 
   useEffect(() => {
-    // Get version information and whether to update
     window.ipcRenderer.on('update-can-available', onUpdateCanAvailable)
     window.ipcRenderer.on('update-error', onUpdateError)
     window.ipcRenderer.on('download-progress', onDownloadProgress)
@@ -88,44 +95,38 @@ const Update = () => {
   }, [])
 
   return (
-    <>
-      <Modal
-        open={modalOpen}
-        cancelText={modalBtn?.cancelText}
-        okText={modalBtn?.okText}
-        onCancel={modalBtn?.onCancel}
-        onOk={modalBtn?.onOk}
-        footer={updateAvailable ? /* hide footer */null : undefined}
-      >
+    <ContainerInterface height='100%' padding='4' justify='center' align='center' direction='column' >
+
+      <Modal open={modalOpen} cancelText={modalBtn?.cancelText} okText={modalBtn?.okText} onCancel={modalBtn?.onCancel} onOk={modalBtn?.onOk} footer={updateAvailable ? null : undefined}>
         <div className='modal-slot'>
           {updateError
             ? (
               <div>
-                <p>Error downloading the latest version.</p>
-                <p>{updateError.message}</p>
+                <Text color="red" size="3">{t('errors.update.downloadError')}</Text>
+                <Text color="red" size="2"></Text>
               </div>
             ) : updateAvailable
               ? (
-                <div>
-                  <div>The last version is: v{versionInfo?.newVersion}</div>
-                  <div className='new-version__target'>v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}</div>
-                  <div className='update__progress'>
-                    <div className='progress__title'>Update progress:</div>
-                    <div className='progress__bar'>
-                      <Progress percent={progressInfo?.percent} ></Progress>
-                    </div>
-                  </div>
-                </div>
+                <Flex direction="column" gap="3">
+                  <Text size="3">{t('update.latestVersion')}: v{versionInfo?.newVersion}</Text>
+                  <Text size="2" color="gray">v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}</Text>
+                  <Flex direction="column" gap="2">
+                    <Text size="2">{t('update.progress')}:</Text>
+                  </Flex>
+                </Flex>
               )
               : (
-                <div className='can-not-available'>{JSON.stringify(versionInfo ?? {}, null, 2)}</div>
+                <Text>{JSON.stringify(versionInfo ?? null, null, 2)}</Text>
               )}
         </div>
       </Modal>
-      <button disabled={checking} onClick={checkUpdate}>
-        {checking ? 'Checking...' : 'Check update'}
-      </button>
-    </>
+
+      <CardStylized onClick={checkUpdate} effectVariant='update' isGrayTop sizeTextSmall="3" uppercase sizeText='4' weight='bold' contentTop="HephaiOpen Update" topSmallText="Update available! Get the latest improvements and enhancements." bottomTitle="hephai Update" bottomDescription={<SmokeEffect text="Available now" size='2' uppercase weight='medium' color='gray' />} />
+      {/* <Box className='shadowCard' /> */}
+
+
+    </ContainerInterface>
+
   )
 }
 

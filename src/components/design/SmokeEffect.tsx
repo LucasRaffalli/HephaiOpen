@@ -31,14 +31,7 @@ export default function SmokeEffect({ text, size = '3', uppercase = false, weigh
             {displayText.split(" ").map((word, wordIndex) => (
                 <Flex key={`word-${wordIndex}`}>
                     {word.split("").map((char, charIndex) => (
-                        <Text
-                            color={color}
-                            as="span"
-                            size={size}
-                            weight={weight}
-                            key={`${wordIndex}-${charIndex}`}
-                            style={{ "--d": `${(wordIndex * word.length + charIndex) / 20}s` } as React.CSSProperties}
-                        >
+                        <Text color={color} as="span" size={size} weight={weight} key={`${wordIndex}-${charIndex}`} style={{ "--d": `${(wordIndex * word.length + charIndex) / 20}s` } as React.CSSProperties}>
                             {char}
                         </Text>
                     ))}

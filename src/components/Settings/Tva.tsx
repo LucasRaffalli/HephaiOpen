@@ -1,11 +1,9 @@
 
-import { Box, Button, TextField, Tooltip, Text, Flex, IconButton } from '@radix-ui/themes';
+import { Box, TextField, Tooltip, Text, Flex } from '@radix-ui/themes';
 import { t } from 'i18next';
-import React, { useState, useEffect } from 'react';
-import { EyeOpenIcon, EyeClosedIcon } from '@radix-ui/react-icons';
+import React, { useState } from 'react';
 
 interface TvaProps {
-    // handleTvaChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     boxWidth?: string;
     flexJustify?: 'start' | 'end' | 'center' | 'between';
     valueTva: any;

@@ -1,24 +1,31 @@
-import { Avatar, Box, Card, Flex, Text, Tooltip } from '@radix-ui/themes';
+import { Box, Card, Flex, Text, Tooltip, Badge } from '@radix-ui/themes';
 import "../../css/navbar.css";
 import Clients from './nav_content/Clients';
 import Features from '@/components/navbar/nav_content/Features';
 import { useState } from 'react';
 import { SettingsGearIcon } from '../design/IconsAnimate';
-import { NavLink } from 'react-router-dom';
-import { version, name, } from '../../../package.json';
+import { Link, NavLink } from 'react-router-dom';
+import { version } from '../../../package.json';
 import { motion } from "framer-motion";
 import { t } from 'i18next';
 import HephaiIcon from '../design/icons/hephai';
-
+import { useUpdate } from '@/context/UpdateContext';
 
 export default function Navbar() {
     const [mainTab, setMainTab] = useState<'navigation' | 'clients'>('navigation');
-
+    const { updateAvailable } = useUpdate();
     const borderRadius = mainTab === 'navigation' ? '0 var(--radius-4) 0 0' : 'var(--radius-4) 0 0 0';
 
     const tabs = [
-        { id: 'navigation', title: 'Navigation' },
-        { id: 'clients', title: 'Clients' },
+        {
+            id: 'navigation',
+            title: 'Navigation',
+            badge: updateAvailable
+        },
+        {
+            id: 'clients',
+            title: 'Clients'
+        },
     ];
 
     return (
@@ -29,14 +36,22 @@ export default function Navbar() {
                         <Flex className="tabs" width="100%" justify="between" align="center">
                             {tabs.map((tab) => (
                                 <div key={tab.id} className={`tab ${mainTab === tab.id ? 'active' : ''}`} onClick={() => setMainTab(tab.id as 'navigation' | 'clients')}>
-                                    <Text className="tab-title" style={{ zIndex: 69 }}>{tab.title}</Text>
+                                    <Flex align="center" gap="2" style={{ zIndex: 69 }}>
+                                        <Text className="tab-title">{tab.title}</Text>
+                                        {tab.badge && (
+                                            <Badge variant="surface" radius="medium">
+                                                1
+                                            </Badge>
+                                        )}
+                                    </Flex>
                                 </div>
                             ))}
                             <Box className="tab-indicator" style={{ width: `${100 / tabs.length}%`, left: `${tabs.findIndex((t) => t.id === mainTab) * (100 / tabs.length)}%`, }} />
                         </Flex>
+
                     </Flex>
 
-                    <Flex className="tab__content" height="100%" pt={'4'} pb="4" pl="4" pr="4" style={{ borderRadius }}>
+                    <Flex className="tab__content" height="100%" direction={"column"} pt={'4'} pb="4" pl="4" pr="4" style={{ borderRadius }}>
                         {mainTab === 'navigation' &&
                             <Features />
                         }
@@ -44,8 +59,10 @@ export default function Navbar() {
                             <Clients />
                         }
                     </Flex>
+
                 </Flex>
-            </Box >
+            </Box>
+
             <motion.div initial={{ y: 20, opacity: 0, scale: 0.95 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ duration: 0.2, delay: 0.2, type: "spring", stiffness: 400, damping: 20 }}>
                 <Tooltip content={t('utils.tooltips.settings')}>
                     <Box maxWidth="100%">
@@ -66,6 +83,6 @@ export default function Navbar() {
                     </Box>
                 </Tooltip>
             </motion.div>
-        </Flex >
+        </Flex>
     );
 }

@@ -12,6 +12,7 @@ import './i18n';
 import { WindowContextProvider } from '../electron/win/components/WindowContext';
 import { menuItems } from '../electron/win';
 import { HephaiProvider } from './context/HephaiContext';
+import { UpdateProvider } from './context/UpdateContext';
 
 console.log("Main.tsx - Début du chargement");
 
@@ -30,9 +31,11 @@ const Root = () => {
   return (
     <Theme appearance={isDarkMode ? "dark" : "light"} accentColor={accentColor as any} radius="small" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <WindowContextProvider titlebar={{ title: 'HephaiOpen', menuItems, icon: '/favicon.ico' }}>
-        <HephaiProvider>
-          <App />
-        </HephaiProvider>
+        <UpdateProvider>
+          <HephaiProvider>
+            <App />
+          </HephaiProvider>
+        </UpdateProvider>
       </WindowContextProvider>
     </Theme>
   );

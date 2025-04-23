@@ -1,5 +1,5 @@
 import { TextField } from '@radix-ui/themes';
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePDF } from '@/context/PDFContext';
 interface InputFileNameProps {
@@ -22,14 +22,12 @@ export default function InputFileName({ width = '', height = '' }: InputFileName
         }
     }, [t]);
 
-    // Optimiser la gestion des changements avec useCallback
     const handlePrefixChange = useCallback((value: string) => {
         const cleanedValue = value.replace(/[^a-zA-Z0-9-_]/g, '');
         setCustomPrefix(cleanedValue);
         localStorage.setItem('customFileNamePrefix', cleanedValue);
     }, []);
 
-    // Se mettre à jour quand le PDF change
     useEffect(() => {
         if (pdfDoc) {
             const savedPrefix = localStorage.getItem('customFileNamePrefix');
@@ -40,12 +38,6 @@ export default function InputFileName({ width = '', height = '' }: InputFileName
     }, [pdfDoc]);
 
     return (
-        <TextField.Root
-            placeholder={t('features.invoice.filenamePrefix')}
-            value={customPrefix}
-            onChange={(e) => handlePrefixChange(e.target.value)}
-            maxLength={20}
-            style={{ width, height }}
-        />
+        <TextField.Root placeholder={t('features.invoice.filenamePrefix')} value={customPrefix} onChange={(e) => handlePrefixChange(e.target.value)} maxLength={20} style={{ width, height }} />
     );
 }

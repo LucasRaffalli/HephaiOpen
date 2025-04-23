@@ -85,7 +85,9 @@
         },
         "data": {
             "save": "Save data"
-        }
+        },
+        "later": "Later",
+        "installNow": "Install now"
     },
     "popup": {
         "edit": {
@@ -367,7 +369,8 @@
     "menu": {
         "file": {
             "title": "File",
-            "exit": "Exit"
+            "exit": "Exit",
+            "checkUpdate": "Check for updates"
         },
         "view": {
             "title": "View",
@@ -400,6 +403,15 @@
             "ibanLength": "The IBAN for {{countryCode}} must contain {{length}} characters (currently: {{current}})",
             "invalidIbanFormat": "Invalid IBAN format for {{countryCode}}. Example: FR7630001007941234567890185",
             "invalidPaypalAddress": "Invalid PayPal address. Example: example@email.com"
+        },
+        "update": {
+            "downloadError": "Error downloading the latest version."
         }
+    },
+    "update": {
+        "latestVersion": "The latest version is",
+        "progress": "Update progress",
+        "checking": "Checking...",
+        "checkButton": "Check for updates"
     }
 }

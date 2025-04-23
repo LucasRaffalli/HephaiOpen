@@ -100,7 +100,7 @@ function Layout() {
     }, [isHoverMode]);
 
     return (
-        <Box className='layout' m={"0"} style={{ height: '100%' }}>
+        <Box className='layout test' m={"0"} style={{ height: '100%' }}>
             <Flex direction="row" style={{ height: '100%', position: 'relative', minHeight: 0, overflow: 'hidden' }}>
                 <ClientProvider>
                     <PDFProvider>
@@ -145,7 +145,8 @@ function Layout() {
                             )}
                         </AnimatePresence>
 
-                        <motion.div initial={{ x: -20, opacity: 0, scale: 0.95, skew: -2 }} animate={{ x: 0, opacity: 1, scale: 1, skew: 0 }} transition={{ duration: 0.3, delay: 0.1, type: "spring", stiffness: 300, damping: 20 }} style={{ width: '100%', margin: "0rem 1rem 1rem 1rem", overflow: "hidden" }}>
+                        <motion.div initial={{ x: -20, opacity: 0, scale: 0.95, skew: -2 }} animate={{ x: 0, opacity: 1, scale: 1, skew: 0 }} transition={{ duration: 0.3, delay: 0.1, type: "spring", stiffness: 300, damping: 20 }} style={{ width: '100%', margin: "0rem 1rem 1rem 1rem", overflow: "hidden" }} className="layout-content">
+
                             <Outlet />
                         </motion.div>
                     </PDFProvider>

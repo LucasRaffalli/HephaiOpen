@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Button, Flex, Tooltip, Box, Progress, Text } from '@radix-ui/themes';
+import { Flex, Tooltip, Box, Progress } from '@radix-ui/themes';
 import { Calendar, Package, Table, UserPen, FileText, MessageCircle, Download, WalletCards, ChevronLeft, ChevronRight, Stamp } from 'lucide-react';
 import { ToolbarProvider, useToolbar, PopupType } from './toolbar/ToolbarContext';
-import { useTranslation } from 'react-i18next';
 import '../../css/component/toolbar.css';
 import DateSelector from '../Invoice/DateSelector';
 import PaymentSelection from '../Invoice/PaymentSelection';
@@ -17,13 +16,12 @@ import { useInvoicePDF } from '../../hooks/useInvoicePDF';
 import { useDynamicTableContext } from '../../context/DynamicTableContext';
 import { useComments } from '../../context/CommentsContext';
 import { useModalities } from '../../context/ModalitiesContext';
-import type { CompanyInfo, Client, PaymentInfo } from '../../types/hephai';
+import type { CompanyInfo } from '../../types/hephai';
 import { motion, AnimatePresence } from 'framer-motion';
 import { t } from 'i18next';
 import { usePDF } from '@/context/PDFContext';
 import InputFileName from '../Invoice/InputFileName';
 import { useClientContext } from '../Clients/ClientContext';
-import CreditHephai from '../Invoice/CreditHephai';
 import { useFooter } from '@/context/FooterContext';
 import StampOff from '../design/icons/StampOff';
 import InvoiceItemEditor from '../Invoice/InvoiceItemEditor';
@@ -157,7 +155,6 @@ const ToolbarContent: React.FC = () => {
                                     </Box>
                                 </Box>
                             </Flex>
-
                         </motion.div>
                     )}
                 </AnimatePresence>

@@ -15,14 +15,12 @@ const DynamicColumnEditor = () => {
 
     return (
         <Flex direction="column" width="100%" gap="3">
-            {/* Champ Produit (verrouillé) */}
             <TextField.Root placeholder={t('features.invoice.tableItem.product')} size="2" disabled>
                 <TextField.Slot side="right">
                     <Lock size={14} />
                 </TextField.Slot>
             </TextField.Root>
 
-            {/* Colonnes dynamiques */}
             {dynamicColumns.map((col, index) => (
                 <Box key={col.dataKey} width="100%">
                     <Tooltip content={t('utils.tooltips.column.edit')}>
@@ -38,21 +36,14 @@ const DynamicColumnEditor = () => {
                     </Tooltip>
                 </Box>
             ))}
-            {/* Champ Total (verrouillé) */}
             <TextField.Root placeholder={t('features.invoice.tableItem.total')} size="2" disabled>
                 <TextField.Slot side="right">
                     <Lock size={14} />
                 </TextField.Slot>
             </TextField.Root>
 
-            {/* Bouton Ajouter une colonne */}
             <Tooltip content={t('utils.tooltips.addColumns')}>
-                <Button
-                    className="btnCursor"
-                    variant="soft"
-                    onClick={addColumn}
-                    disabled={dynamicColumns.length >= maxColumns}
-                >
+                <Button className="btnCursor" variant="soft" onClick={addColumn} disabled={dynamicColumns.length >= maxColumns}>
                     <PlusIcon size={16} />
                     <Text size="2">
                         {t('buttons.addColumns')} ({dynamicColumns.length}/{maxColumns})

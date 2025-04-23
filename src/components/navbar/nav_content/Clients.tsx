@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ClientsList from '@/components/Clients/ClientsList';
 import { useClientContext } from '@/components/Clients/ClientContext';
 import { Client } from '@/types/hephai';
-import { Box, ScrollArea, Button, Dialog, Flex, Text } from '@radix-ui/themes';
+import { Box, Button, Dialog, Flex, Text } from '@radix-ui/themes';
 import ClientForm from '@/components/Clients/ClientForm';
 import { motion } from "framer-motion";
 import { t } from 'i18next';
@@ -75,12 +75,7 @@ export default function Clients() {
   };
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      style={{ width: '100%' }}
-    >
+    <motion.div variants={containerVariants} initial="hidden" animate="visible" style={{ width: '100%' }}>
       <Flex direction="column" gap="2">
         <motion.div variants={elementVariants}>
           <Button className='btnCursor' variant="soft" onClick={() => setIsFormOpen(true)} style={{ width: '100%' }}>

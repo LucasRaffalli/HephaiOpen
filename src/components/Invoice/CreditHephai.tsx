@@ -1,6 +1,6 @@
-import { Box, Button, Flex, IconButton, TextField } from '@radix-ui/themes'
+import { Flex, IconButton, TextField } from '@radix-ui/themes'
 import { t } from 'i18next';
-import { Eye, EyeOff, Lock, PlusIcon, Stamp, Trash2Icon } from "lucide-react";
+import { Stamp } from "lucide-react";
 import React, { useState } from 'react'
 import StampOff from '../design/icons/StampOff';
 interface InvoiceCreditProps {

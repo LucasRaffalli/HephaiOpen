@@ -19,6 +19,16 @@ export const menuItems: TitlebarMenu[] = [
     name: t('menu.file.title'),
     items: [
       {
+        name: t('menu.file.checkUpdate'),
+        actionCallback: () => {
+          window.location.hash = '/update';
+        },
+        shortcut: 'Ctrl + U'
+      },
+      {
+        name: '---'
+      },
+      {
         name: t('menu.file.exit'),
         action: 'window-close',
       },

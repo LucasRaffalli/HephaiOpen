@@ -13,10 +13,9 @@ const InvoiceTable: React.FC = () => {
     const [dynamicColumns, setDynamicColumns] = useState<Column[]>([]);
 
     const addDynamicColumn = () => {
-        // Utiliser Date.now() pour générer un identifiant unique
-        setDynamicColumns([...dynamicColumns, { 
-            dataKey: `col-${Date.now()}`, 
-            header: '' 
+        setDynamicColumns([...dynamicColumns, {
+            dataKey: `col-${Date.now()}`,
+            header: ''
         }]);
     };
 
@@ -43,11 +42,7 @@ const InvoiceTable: React.FC = () => {
 
                 {dynamicColumns.map((col, index) => (
                     <Box key={col.dataKey} width={"100%"}>
-                        <TextField.Root
-                            placeholder=""
-                            size="2"
-                            value={col.header}
-                            onChange={(e) => handleEditColumn(index, e.target.value)}>
+                        <TextField.Root placeholder="" size="2" value={col.header} onChange={(e) => handleEditColumn(index, e.target.value)}>
                             <TextField.Slot side={'right'}>
                                 <IconButton onClick={() => removeColumn(index)} variant="ghost" size={"1"}>
                                     <Trash2Icon size={14} />
