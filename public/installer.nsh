@@ -1,32 +1,32 @@
 !macro customHeader
-  !system "echo '' > ${BUILD_RESOURCES_DIR}/customHeader"
+  ; Active le header avec image
+  !define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_RIGHT
+!define MUI_HEADERIMAGE_BITMAP "${BUILD_RESOURCES_DIR}/installerSidebar.bmp"
 !macroend
 
 !macro preInit
-  ; This macro is inserted at the beginning of the NSIS .OnInit callback
-  !system "echo '' > ${BUILD_RESOURCES_DIR}/preInit"
+  ; Si besoin d'initialisation avant tout
 !macroend
 
 !macro customInit
-  !system "echo '' > ${BUILD_RESOURCES_DIR}/customInit"
+  ; Logique personnalisée d'init
 !macroend
 
 !macro customInstall
-  !system "echo '' > ${BUILD_RESOURCES_DIR}/customInstall"
+  ; Logique personnalisée d’installation
 !macroend
 
 !macro customInstallMode
-  # set $isForceMachineInstall or $isForceCurrentInstall
-  # to enforce one or the other modes.
+  ; set $isForceMachineInstall ou $isForceCurrentInstall si tu veux forcer un mode
 !macroend
 
 !macro customWelcomePage
-  # Welcome Page is not added by default for installer.
-  !insertMacro MUI_PAGE_WELCOME
+  !insertmacro MUI_PAGE_WELCOME
 !macroend
 
 !macro customUnWelcomePage
-  !define MUI_WELCOMEPAGE_TITLE "custom title for uninstaller welcome page"
-  !define MUI_WELCOMEPAGE_TEXT "custom text for uninstaller welcome page $\r$\n more"
+  !define MUI_WELCOMEPAGE_TITLE "Welcome to HephaiOpen Setup"
+  !define MUI_WELCOMEPAGE_TEXT "Setup will guide you through the installation of HephaiOpen.$\r$\nClick Next to continue."
   !insertmacro MUI_UNPAGE_WELCOME
 !macroend

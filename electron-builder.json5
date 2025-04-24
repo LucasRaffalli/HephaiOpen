@@ -4,7 +4,9 @@
   "asar": true,
   "productName": "HephaiOpen",
   "directories": {
-    "output": "release/${version}"
+    "output": "release/${version}",
+  "buildResources": "build"
+
   },
   "files": [
     "dist",
@@ -31,13 +33,15 @@
     "artifactName": "${productName}_${version}.${ext}",
     "icon": "public/favicon.ico"
   },
+  "compression": "maximum",
   "nsis": {
     "oneClick": false,
     "perMachine": true,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false,
+    "deleteAppDataOnUninstall": true,
     "installerIcon": "public/installerIcon.ico",
     "uninstallerIcon": "public/uninstallerIcon.ico",
+    "installerSidebar":"build/installerSidebar.bmp",
     "include": "public/installer.nsh"
   },
   "publish": {
