@@ -28,7 +28,7 @@
     "electron-updater": "^6.1.8",
     "file-saver": "^2.0.5",
     "i18next": "^23.16.5",
-    "jspdf": "^2.5.2",
+    "jspdf": "^3.0.1",
     "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.462.0",
     "motion": "^11.12.0",
