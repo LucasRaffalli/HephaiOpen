@@ -1,6 +1,5 @@
 import type { ProgressInfo } from 'electron-updater'
 import { useCallback, useEffect, useState } from 'react'
-import Modal from '@/components/update/Modal'
 import Progress from '@/components/update/Progress'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Heading, Text } from '@radix-ui/themes'
@@ -97,29 +96,27 @@ const Update = () => {
   return (
     <ContainerInterface height='100%' padding='4' justify='center' align='center' direction='column' >
 
-      <Modal open={modalOpen} cancelText={modalBtn?.cancelText} okText={modalBtn?.okText} onCancel={modalBtn?.onCancel} onOk={modalBtn?.onOk} footer={updateAvailable ? null : undefined}>
-        <div className='modal-slot'>
-          {updateError
+      <div className='modal-slot'>
+        {updateError
+          ? (
+            <div>
+              <Text color="red" size="3">{t('errors.update.downloadError')}</Text>
+              <Text color="red" size="2"></Text>
+            </div>
+          ) : updateAvailable
             ? (
-              <div>
-                <Text color="red" size="3">{t('errors.update.downloadError')}</Text>
-                <Text color="red" size="2"></Text>
-              </div>
-            ) : updateAvailable
-              ? (
-                <Flex direction="column" gap="3">
-                  <Text size="3">{t('update.latestVersion')}: v{versionInfo?.newVersion}</Text>
-                  <Text size="2" color="gray">v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}</Text>
-                  <Flex direction="column" gap="2">
-                    <Text size="2">{t('update.progress')}:</Text>
-                  </Flex>
+              <Flex direction="column" gap="3">
+                <Text size="3">{t('update.latestVersion')}: v{versionInfo?.newVersion}</Text>
+                <Text size="2" color="gray">v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}</Text>
+                <Flex direction="column" gap="2">
+                  <Text size="2">{t('update.progress')}:</Text>
                 </Flex>
-              )
-              : (
-                <Text>{JSON.stringify(versionInfo ?? null, null, 2)}</Text>
-              )}
-        </div>
-      </Modal>
+              </Flex>
+            )
+            : (
+              <Text>{JSON.stringify(versionInfo ?? null, null, 2)}</Text>
+            )}
+      </div>
 
       <CardStylized onClick={checkUpdate} effectVariant='update' isGrayTop sizeTextSmall="3" uppercase sizeText='4' weight='bold' contentTop="HephaiOpen Update" topSmallText="Update available! Get the latest improvements and enhancements." bottomTitle="hephai Update" bottomDescription={<SmokeEffect text="Available now" size='2' uppercase weight='medium' color='gray' />} />
       {/* <Box className='shadowCard' /> */}
