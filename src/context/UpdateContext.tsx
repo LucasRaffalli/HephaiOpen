@@ -19,19 +19,19 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
     };
 
-    useEffect(() => {
-        // Vérifier les mises à jour au démarrage
-        checkForUpdates();
+    // useEffect(() => {
+    //     // Vérifier les mises à jour au démarrage
+    //     checkForUpdates();
 
-        // Écouter les événements de mise à jour
-        window.ipcRenderer.on('update-can-available', (_, arg) => {
-            setUpdateAvailable(!!arg?.update);
-        });
+    //     // Écouter les événements de mise à jour
+    //     window.ipcRenderer.on('update-can-available', (_, arg) => {
+    //         setUpdateAvailable(!!arg?.update);
+    //     });
 
-        return () => {
-            window.ipcRenderer.removeAllListeners('update-can-available');
-        };
-    }, []);
+    //     return () => {
+    //         window.ipcRenderer.removeAllListeners('update-can-available');
+    //     };
+    // }, []);
 
     return (
         <UpdateContext.Provider value={{ updateAvailable, checkForUpdates }}>

@@ -6,9 +6,9 @@ export const useDarkMode = () => {
         return savedMode ? JSON.parse(savedMode) : false;
     });
 
-    useEffect(() => {
-        localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
-    }, [isDarkMode]);
+    // useEffect(() => {
+    //     localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
+    // }, [isDarkMode]);
 
     return [isDarkMode, setIsDarkMode] as const;
 };

@@ -26,7 +26,7 @@ const DynamicTableContext = createContext<DynamicTableContextProps | undefined>(
 
 export const DynamicTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isDarkMode] = useDarkMode();
-    const { columns, rows, setRows, addColumn: addColumnBase, removeColumn,setColumns } = useDynamicTable();
+    const { columns, rows, setRows, addColumn: addColumnBase, removeColumn, setColumns } = useDynamicTable();
     const maxColumns = 4;
 
     const handleEditColumn = (index: number, value: string) => {
@@ -69,18 +69,7 @@ export const DynamicTableProvider: React.FC<{ children: ReactNode }> = ({ childr
     };
 
     return (
-        <DynamicTableContext.Provider value={{
-            columns,
-            rows,
-            addColumn,
-            removeColumn,
-            handleEditColumn,
-            addRow,
-            removeRow,
-            editRow,
-            clearRows,
-            maxColumns
-        }}>
+        <DynamicTableContext.Provider value={{ columns, rows, addColumn, removeColumn, handleEditColumn, addRow, removeRow, editRow, clearRows, maxColumns }}>
             {children}
         </DynamicTableContext.Provider>
     );

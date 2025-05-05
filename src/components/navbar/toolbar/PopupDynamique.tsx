@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 interface PopupDynamiqueProps {
     isOpen: boolean;
     onClose: () => void;
-    anchorRef: React.RefObject<HTMLElement>;
+    anchorRef: React.RefObject<HTMLElement | null>;
     children: React.ReactNode;
 }
 

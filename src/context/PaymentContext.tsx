@@ -80,13 +80,11 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const handleFieldSelect = (field: string) => {
         setSelectedField(field);
-        // Réinitialiser les autres champs
         setPaymentData(prev => ({
             iban: field === 'iban' ? prev.iban : '',
             paypal: field === 'paypal' ? prev.paypal : '',
             other: field === 'other' ? prev.other : '',
         }));
-        // Réinitialiser les erreurs des autres champs
         setErrors(prev => ({
             iban: field === 'iban' ? prev.iban : '',
             paypal: field === 'paypal' ? prev.paypal : '',
@@ -103,13 +101,7 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
 
     return (
-        <PaymentContext.Provider value={{
-            paymentData,
-            selectedField,
-            errors,
-            handleFieldSelect,
-            handleInputChange,
-        }}>
+        <PaymentContext.Provider value={{ paymentData, selectedField, errors, handleFieldSelect, handleInputChange, }}>
             {children}
         </PaymentContext.Provider>
     );

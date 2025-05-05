@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import "@radix-ui/themes/styles.css";
@@ -7,20 +7,19 @@ import './index.css'
 import '../electron/win/window.css'
 import { HashRouter } from 'react-router-dom';
 import { Theme } from '@radix-ui/themes';
-import { ThemeProvider, useTheme } from './utils/ThemeContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import './i18n';
 import { WindowContextProvider } from '../electron/win/components/WindowContext';
 import { menuItems } from '../electron/win';
 import { HephaiProvider } from './context/HephaiContext';
 import { UpdateProvider } from './context/UpdateContext';
 
-console.log("Main.tsx - Début du chargement");
 
 const Root = () => {
-  console.log("Main.tsx - Rendu du composant Root");
   const { isDarkMode, accentColor } = useTheme();
 
-  React.useEffect(() => {
+
+  useEffect(() => {
     const timeout = setTimeout(() => {
       postMessage({ payload: 'removeLoading' }, '*');
     }, 1000);
@@ -41,9 +40,7 @@ const Root = () => {
   );
 };
 
-console.log("Main.tsx - Avant le createRoot");
 const rootElement = document.getElementById('root');
-console.log("Root element trouvé:", rootElement);
 
 ReactDOM.createRoot(rootElement as HTMLElement).render(
   <ThemeProvider>

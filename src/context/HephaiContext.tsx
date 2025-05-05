@@ -1,13 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Client, CompanyInfo, PaymentInfo } from '@/types/hephai';
-import { DateProvider, useDateContext } from './DateContext';
-import { PaymentProvider, usePaymentContext } from './PaymentContext';
-import { DynamicTableProvider, useDynamicTableContext } from './DynamicTableContext';
-import { ModalitiesProvider, useModalities } from './ModalitiesContext';
-import { CommentsProvider, useComments } from './CommentsContext';
-import { FooterProvider, useFooter } from './FooterContext';
-import { ThemeProvider, useTheme } from '../utils/ThemeContext';
-import { PDFProvider } from './PDFContext';
+import React, { createContext } from 'react';
+import { DateProvider, useDateContext } from '@/context/DateContext';
+import { PaymentProvider, usePaymentContext } from '@/context/PaymentContext';
+import { DynamicTableProvider, useDynamicTableContext } from '@/context/DynamicTableContext';
+import { ModalitiesProvider, useModalities } from '@/context/ModalitiesContext';
+import { CommentsProvider, useComments } from '@/context/CommentsContext';
+import { FooterProvider, useFooter } from '@/context/FooterContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { PDFProvider } from '@/context/PDFContext';
 
 interface HephaiContextType {
     // Date
@@ -64,6 +63,7 @@ interface HephaiContextType {
 }
 
 const HephaiContext = createContext<HephaiContextType | null>(null);
+
 
 export const HephaiProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (

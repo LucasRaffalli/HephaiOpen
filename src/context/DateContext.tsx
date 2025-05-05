@@ -32,13 +32,7 @@ export const DateProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [isAutoDate]);
 
     return (
-        <DateContext.Provider value={{
-            selectedDate,
-            isAutoDate,
-            setSelectedDate,
-            setIsAutoDate,
-            handleCustomDate
-        }}>
+        <DateContext.Provider value={{ selectedDate, isAutoDate, setSelectedDate, setIsAutoDate, handleCustomDate }}>
             {children}
         </DateContext.Provider>
     );

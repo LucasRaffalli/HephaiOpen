@@ -19,7 +19,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
         updateThemeBasedOnMode(storedThemeMode as 'light' | 'dark' | 'system');
     }, []);
-
+    useEffect(() => {
+        document.documentElement.style.setProperty('--accent-color', accentColor);
+    }, [accentColor]);
     useEffect(() => {
         if (themeMode === 'system') {
             const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');

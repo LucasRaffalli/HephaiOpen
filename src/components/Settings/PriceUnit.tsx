@@ -25,7 +25,7 @@ const PriceUnit: React.FC<PriceUnitProps> = ({ className = '' }) => {
                 <Select.Trigger />
                 <Select.Content position='popper'>
                     {Object.entries(PriceUnitEnum).map(([key, value]) => (
-                        <Select.Item key={key} value={value}>
+                        <Select.Item key={key} value={value} className="btnCursor">
                             {t(`settings.priceUnit.${key.toLowerCase()}`)} ({value})
                         </Select.Item>
                     ))}

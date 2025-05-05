@@ -37,12 +37,12 @@ function Layout() {
     }, [location.pathname]);
 
     const [isHoverMode, setIsHoverMode] = useState(false);
-    const hoverTimeoutRef = useRef<NodeJS.Timeout>();
-    const resetTimeoutRef = useRef<NodeJS.Timeout>();
+    const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const resetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const lastMousePosition = useRef({ x: 0, y: 0 });
     const isMouseOverNavbar = useRef(false);
     const wasManuallyHidden = useRef(false);
-    const mouseActivityTimeout = useRef<NodeJS.Timeout>();
+    const mouseActivityTimeout = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
@@ -100,22 +100,13 @@ function Layout() {
     }, [isHoverMode]);
 
     return (
-        <Box className='layout test' m={"0"} style={{ height: '100%' }}>
+        <Box className='layout' m={"0"} style={{ height: '100%' }}>
             <Flex direction="row" style={{ height: '100%', position: 'relative', minHeight: 0, overflow: 'hidden' }}>
                 <ClientProvider>
                     <PDFProvider>
                         <AnimatePresence>
                             {isNavbarVisible && (
-                                <motion.div
-                                    initial={{ x: -100, opacity: 0, scale: 0.9 }}
-                                    animate={{ x: 0, opacity: 1, scale: 1 }}
-                                    exit={{ x: -100, opacity: 0, scale: 0.9, transition: { duration: 0.2, ease: "easeInOut" } }}
-                                    transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 20 }}
-                                    className={isHoverMode ? 'navbar-absolute' : 'navbar-normal'}
-                                    onDoubleClick={() => {
-                                        setIsHoverMode(false);
-                                        setIsNavbarVisible(false);
-                                    }}
+                                <motion.div initial={{ x: -100, opacity: 0, scale: 0.9 }} animate={{ x: 0, opacity: 1, scale: 1 }} exit={{ x: -100, opacity: 0, scale: 0.9, transition: { duration: 0.2, ease: "easeInOut" } }} transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 20 }} className={isHoverMode ? 'navbar-absolute' : 'navbar-normal'} onDoubleClick={() => { setIsHoverMode(false); setIsNavbarVisible(false); }}
                                     onMouseEnter={() => {
                                         isMouseOverNavbar.current = true;
                                         if (hoverTimeoutRef.current) {
@@ -146,7 +137,6 @@ function Layout() {
                         </AnimatePresence>
 
                         <motion.div initial={{ x: -20, opacity: 0, scale: 0.95, skew: -2 }} animate={{ x: 0, opacity: 1, scale: 1, skew: 0 }} transition={{ duration: 0.3, delay: 0.1, type: "spring", stiffness: 300, damping: 20 }} style={{ width: '100%', margin: "0rem 1rem 1rem 1rem", overflow: "hidden" }} className="layout-content">
-
                             <Outlet />
                         </motion.div>
                     </PDFProvider>

@@ -21,7 +21,7 @@ const InvoiceComments: React.FC = () => {
     return (
         <Flex direction="column" width="100%" gap="3">
             <Flex overflow={"hidden"} className={`packModalitis ${isFocused ? "focused" : ""}`} >
-                <Tooltip content={t('utils.tooltips.comment')}>
+                <Tooltip content={t('utils.tooltips.comment')} side="left">
                     <textarea value={text} onChange={(e) => updateText(e.target.value)} placeholder={t('utils.tooltips.comment')} rows={4} className="textAreaCustom" onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} />
                 </Tooltip>
                 <Box className="iconTextArea" onClick={handleIconClick}>

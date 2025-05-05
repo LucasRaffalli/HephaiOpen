@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from '@radix-ui/themes';
 import React from 'react';
 import { motion } from 'framer-motion';
-import '@/css/component/cardStylized.css';
+import '@/css/cardStylized.css';
 import '@/css/premium.css';
 
 interface CardStylized {

@@ -33,6 +33,9 @@ a {
   --color-background: #0a0a0a;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
 
 ::-webkit-scrollbar {
   width: 4px;
@@ -180,6 +183,8 @@ a {
   width: 100%;
 }
 
+
+
 @media screen and (max-width: 1300px) {
 
   .actionBarFalse,
@@ -197,7 +202,7 @@ a {
   }
 
   .card__img {
-    width: 250px !important;
+    width: 100% !important;
   }
 
   .footer__low {
@@ -211,8 +216,6 @@ a {
 
 
 @media screen and (max-width: 1910px) {
-
-
   .InvoicePdfViewerContent {
     scale: 0.86;
   }

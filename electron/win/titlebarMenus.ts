@@ -84,15 +84,16 @@ export const menuItems: TitlebarMenu[] = [
     name: t('menu.window.title'),
     items: [
       {
-        name: localStorage.getItem('isDarkMode') === 'true' 
-          ? t('menu.window.lightMode') 
+        name: localStorage.getItem('themeMode') === 'dark'
+          ? t('menu.window.lightMode')
           : t('menu.window.darkMode'),
-        action: 'window-darkmode-toggle',
+        action: 'window-theme-toggle',
         shortcut: 'Toggle',
         actionCallback: () => {
-          const isDark = localStorage.getItem('isDarkMode') === 'true';
-          localStorage.setItem('isDarkMode', (!isDark).toString());
-          setTimeout(() => window.location.reload(), 100);
+          const current = localStorage.getItem('themeMode') === 'dark' ? 'dark' : 'light';
+          const next = current === 'dark' ? 'light' : 'dark';
+          localStorage.setItem('themeMode', next);
+          window.location.reload();
         },
       },
       {

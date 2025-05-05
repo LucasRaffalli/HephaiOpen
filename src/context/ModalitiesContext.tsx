@@ -28,13 +28,7 @@ export const ModalitiesProvider: React.FC<{ children: ReactNode }> = ({ children
     };
 
     return (
-        <ModalitiesContext.Provider value={{
-            text1,
-            text2,
-            isEnabled,
-            updateText,
-            toggleModalities
-        }}>
+        <ModalitiesContext.Provider value={{ text1, text2, isEnabled, updateText, toggleModalities }}>
             {children}
         </ModalitiesContext.Provider>
     );

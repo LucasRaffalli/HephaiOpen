@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import '@/css/component/parallax.css'
+import '@/css/parallax.css'
 
 interface ParallaxEffectProps {
     children: React.ReactNode;

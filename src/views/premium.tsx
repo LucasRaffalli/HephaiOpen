@@ -1,6 +1,6 @@
 import SmokeEffect from '@/components/design/SmokeEffect';
 import '@/css/premium.css';
-import '@/css/component/holographic.css';
+import '@/css/holographic.css';
 import ContainerInterface from '@/components/template/ContainerInterface';
 import CardStylized from '@/components/design/CardStylized';
 import ParallaxEffect from '@/components/design/ParallaxEffect';

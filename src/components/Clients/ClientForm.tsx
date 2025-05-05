@@ -22,7 +22,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ flexJustify = 'start', boxWidth
                     if (key === 'bookmarks') {
                         return (
                             <Box key={key} width={boxWidth} mb="0">
-                                <Tooltip content={t(`utils.tooltips.${key}`)}>
+                                <Tooltip content={t(`utils.tooltips.${key}`)} side="right">
                                     <Flex align="center" gap="2">
                                         <Switch checked={value as boolean} onCheckedChange={(checked) => handleChange({ target: { name: 'bookmarks', value: checked, type: 'checkbox', checked } } as any)} />
                                         <Text size="2">{t('buttons.bookmark.base')}</Text>
@@ -34,7 +34,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ flexJustify = 'start', boxWidth
 
                     return (
                         <Box key={key} width={boxWidth} mb="0">
-                            <Tooltip content={t(`utils.tooltips.customer.${key}`)}>
+                            <Tooltip content={t(`utils.tooltips.customer.${key}`)} side="right">
                                 <TextField.Root placeholder={key.charAt(0).toUpperCase() + key.slice(1)} name={key} onChange={handleChange} value={value || ''} size="2" type={['email', 'phone', 'address'].includes(key) ? (visibility[key] ? 'text' : 'password') : 'text'}>
                                     {['email', 'phone', 'address'].includes(key) && (
                                         <TextField.Slot side="right">
@@ -49,7 +49,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ flexJustify = 'start', boxWidth
                     );
                 })}
             </Flex>
-            <Tooltip content={t('utils.tooltips.addClient')}>
+            <Tooltip content={t('utils.tooltips.addClient')} side="right">
                 <Button variant="soft" className='btnCursor' onClick={handleAddClient}>
                     <PlusIcon size={16} />
                     <Text size="2" weight="regular">{t('buttons.addClient')}</Text>

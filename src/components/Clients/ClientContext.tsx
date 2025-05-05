@@ -15,7 +15,6 @@ interface ClientContextProps {
     handleToggleBookmark: (email: string) => void;
     visibility: Record<string, boolean>;
     handleToggleVisibility: (field: string) => void;
-    isDarkMode: boolean;
 }
 
 const emptyClient: Client = {
@@ -119,7 +118,7 @@ export const ClientProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     };
 
     return (
-        <ClientContext.Provider value={{ selectedClient, clients, setSelectedClient, handleChange, handleAddClient, handleEditClient, handleDeleteClient, handleToggleBookmark, visibility, handleToggleVisibility, isDarkMode }}>
+        <ClientContext.Provider value={{ selectedClient, clients, setSelectedClient, handleChange, handleAddClient, handleEditClient, handleDeleteClient, handleToggleBookmark, visibility, handleToggleVisibility }}>
             {children}
         </ClientContext.Provider>
     );

@@ -5,7 +5,7 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { BookUser, EllipsisVertical, FileInput, IdCard } from 'lucide-react';
 import { DeleteIcon, SparklesIcon, SquarePenIcon } from '@/components/design/IconsAnimate';
 import { truncateText } from '@/utils/TruncateText';
-import AnimatedText from '@/utils/AnimatedText';
+import AnimatedText from '@/components/design/AnimatedText';
 import { t } from 'i18next';
 import { useClientContext } from './ClientContext';
 
@@ -108,12 +108,7 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
                                         </DropdownMenu.Trigger>
                                         <DropdownMenu.Content>
                                             <DropdownMenu.Item>
-                                                <Dialog.Root open={dialogOpen} onOpenChange={(open) => {
-                                                    if (!open) {
-                                                        setEditingClient(null);
-                                                    }
-                                                    setDialogOpen(open);
-                                                }}>
+                                                <Dialog.Root open={dialogOpen} onOpenChange={(open) => { if (!open) { setEditingClient(null); } setDialogOpen(open); }}>
                                                     <Dialog.Trigger onClick={(e) => { e.stopPropagation(); setEditingClient(client); }}>
                                                         <Flex align={"center"} gap={"2"} justify={"between"} width={"100%"} >
                                                             <Text>{t('buttons.edit')}</Text>

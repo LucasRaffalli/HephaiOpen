@@ -67,7 +67,8 @@ async function createWindow() {
       preload,
       nodeIntegration: false,
       contextIsolation: true,
-      webSecurity: true
+      webSecurity: true,
+      // devTools: false
     },
   })
   if (VITE_DEV_SERVER_URL) {
@@ -84,14 +85,13 @@ async function createWindow() {
   });
 
   win.webContents.on('did-finish-load', () => {
-    console.log('Chargement terminé');
   });
 
   // Register all window IPC handlers
   registerWindowIPC(win)
 
   // Auto update
-  update(win)
+  // update(win)
 
   win.on('maximize', () => {
     win?.webContents.send('window-maximized-change', true)

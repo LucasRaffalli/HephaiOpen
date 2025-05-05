@@ -1,6 +1,6 @@
 import '@/css/setting.css'
 import React, { useEffect, useRef, useState } from 'react'
-import { useTheme } from '@/utils/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Avatar, Box, Button, Flex, Heading, Kbd, Skeleton, Text, Tooltip } from '@radix-ui/themes';
 import { AccentColor, CompanyInfo, Client } from '@/types/hephai'
 import { exportData } from '@/utils/exportData';
@@ -42,12 +42,12 @@ export default function Settings() {
     const [tva, setTva] = useState(localStorage.getItem('tva') || '0');
     const [customFileNamePrefix, setCustomFileNamePrefix] = useState(localStorage.getItem('customFileNamePrefix') || '');
     const [clients, setClients] = useState<Client[]>(() => { const storedClients = localStorage.getItem('clients'); return storedClients ? JSON.parse(storedClients) : []; });
-    const [settingsData, setSettingsData] = useState(() => ({ theme: isDarkMode ? 'true' : 'false', accentColor: accentColor, customFileNamePrefix: customFileNamePrefix, companyInfo: companyInfo, language: localStorage.getItem('language') || 'en', dateJoins: localStorage.getItem('dateJoins'), visibilityPreferences: visibility, clients: clients, profileImage: localStorage.getItem('profileImage') }));
+    const [settingsData, setSettingsData] = useState(() => ({ accentColor: accentColor, customFileNamePrefix: customFileNamePrefix, companyInfo: companyInfo, language: localStorage.getItem('language') || 'en', dateJoins: localStorage.getItem('dateJoins'), visibilityPreferences: visibility, clients: clients, profileImage: localStorage.getItem('profileImage'), tva: tva, toggleTheme: localStorage.getItem('themeMode') || 'light' || 'dark' || 'system' }));
 
 
     useEffect(() => {
         setSettingsData({
-            theme: isDarkMode ? 'true' : 'false',
+            toggleTheme: localStorage.getItem('themeMode') || 'light' || 'dark' || 'system',
             accentColor: accentColor,
             customFileNamePrefix: customFileNamePrefix,
             companyInfo: companyInfo,
@@ -55,9 +55,10 @@ export default function Settings() {
             dateJoins: localStorage.getItem('dateJoins'),
             visibilityPreferences: visibility,
             clients: clients,
+            tva: tva,
             profileImage: localStorage.getItem('profileImage')
         });
-    }, [isDarkMode, accentColor, companyInfo, visibility, clients, customFileNamePrefix]);
+    }, [accentColor, companyInfo, visibility, clients, customFileNamePrefix, toggleTheme]);
 
     const handleExportJson = () => {
         try {
@@ -68,10 +69,14 @@ export default function Settings() {
             toast.error(t('toast.export.error'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
         }
     };
-
+    const handleResetSettings = () => {
+        localStorage.clear();
+        window.location.reload();
+    }
     const handleChangeLanguage = (language: string) => {
         i18n.changeLanguage(language);
         localStorage.setItem('language', language);
+        window.location.reload();
     };
 
     const handleImportSettings = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,8 +87,9 @@ export default function Settings() {
                 const importedSettings = JSON.parse(text);
                 if (Array.isArray(importedSettings) && importedSettings.length > 0) {
                     const settings = importedSettings[0];
-                    if (settings.theme) {
-                        toggleTheme(settings.theme === 'dark' ? 'dark' : 'light');
+                    if (settings.toggleTheme) {
+                        setIsDarkMode(settings.toggleTheme === 'dark' || settings.toggleTheme === 'system' ? true : false);
+                        localStorage.setItem('themeMode', settings.toggleTheme);
                     }
                     if (settings.accentColor) {
                         setAccentColor(settings.accentColor);
@@ -99,13 +105,21 @@ export default function Settings() {
                         setClients(settings.clients);
                         localStorage.setItem('clients', JSON.stringify(settings.clients));
                     }
+                    if (settings.companyInfo) {
+                        setCompanyInfo(settings.companyInfo);
+                        localStorage.setItem('companyInfos', JSON.stringify([settings.companyInfo]));
+                    }
+                    if (settings.tva) {
+                        setTva(settings.tva);
+                        localStorage.setItem('tva', settings.tva);
+                    }
                     if (settings.customFileNamePrefix) {
                         setCustomFileNamePrefix(settings.customFileNamePrefix);
                         localStorage.setItem('customFileNamePrefix', settings.customFileNamePrefix);
                     }
-                    localStorage.setItem('isDarkMode', settings.theme === 'dark' ? 'true' : 'false');
                     localStorage.setItem('accentColor', settings.accentColor);
                     localStorage.setItem('language', settings.language);
+                    window.location.reload();
                     toast.success(t('toast.import.success'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
                 } else {
                     console.error('Le fichier importé n\'est pas au format attendu.');
@@ -263,10 +277,10 @@ export default function Settings() {
         window.location.reload();
     };
     return (
-        <Flex width={'100%'} className='test2' height={'100%'} style={{ overflow: 'hidden' }}>
+        <Flex width={'100%'} gap={"6"} height={'100%'} style={{ overflow: 'hidden' }} className='settings__container'>
             <Box width={'100%'} height={'100%'} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
                 <Heading mb={'9'} className="sticky-title">{t('settings.title')}</Heading>
-                <Flex direction={'row'} className='test'>
+                <Flex direction={'row'} className='settings__container__left' gap={'9'}>
                     <motion.div variants={containerLeftVariants} initial="hidden" animate="visible">
                         <Flex direction={'column'} gap={'9'} ml={'2'}>
                             <motion.div variants={featureVariants}>
@@ -364,6 +378,11 @@ export default function Settings() {
                                                     <Text size="2" weight={'regular'}>{t('buttons.import.json')}</Text>
                                                 </Button>
                                             </Tooltip>
+                                            <Tooltip content={t('utils.tooltips.reset')}>
+                                                <Button color={'red'} variant="soft" size={'3'} className='btnCursor' onClick={handleResetSettings}>
+                                                    <Text size="2" weight={'regular'}>{t('buttons.reset')}</Text>
+                                                </Button>
+                                            </Tooltip>
 
                                         </Flex>
                                         <Flex align={"center"} gap={"4"}>
@@ -384,7 +403,7 @@ export default function Settings() {
                 </Flex>
             </Box >
             <ToastContainer position="bottom-right" />
-            <Flex className='card' direction={'column'} p={'3'} style={{ background: gradientBackground }} gap={"4"} >
+            <Flex className='card' direction={'column'} p={'3'} style={{ background: gradientBackground, width: "430px" }} gap={"4"} >
                 <Flex>
                     <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} className='card__img' />
                     <Skeleton>

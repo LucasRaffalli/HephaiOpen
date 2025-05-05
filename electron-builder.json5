@@ -42,6 +42,7 @@
     "installerIcon": "public/installerIcon.ico",
     "uninstallerIcon": "public/uninstallerIcon.ico",
     "installerSidebar":"build/installerSidebar.bmp",
+    "uninstallerSidebar":"build/uninstallerSidebar.bmp",
     "include": "public/installer.nsh"
   },
   "publish": {

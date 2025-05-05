@@ -86,6 +86,7 @@
         "data": {
             "save": "Save data"
         },
+        "reset": "Reset data",
         "later": "Later",
         "installNow": "Install now"
     },
@@ -140,7 +141,7 @@
                 "ibanPlaceholder": "Enter your IBAN",
                 "otherPlaceholder": "Enter your payment details"
             },
-            "totalError":"Please enter a valid number for the total amount.",
+            "totalError": "Please enter a valid number for the total amount.",
             "notProvided": "Payment method not provided.",
             "productName": "Product name.",
             "dated": "Dated",
@@ -191,6 +192,8 @@
         "hephai1": "Hephai Invoice",
         "credit": "Made with HephaiOpen",
         "tooltips": {
+            "nameFile":"Enter the name of your document.",
+            "reset": "Reset application data.",
             "settings": "Settings",
             "bookmarks": "Add a client to your bookmarks.",
             "metadata": "Document properties",
@@ -224,6 +227,7 @@
             "lang": "Select your preferred application language.",
             "themeL": "Choose the application color theme: Light.",
             "themeD": "Choose the application color theme: Dark.",
+            "themeS": "Choose the application color theme: System.",
             "date": {
                 "today": "Select today's date.",
                 "other": "Select another date."
@@ -241,6 +245,8 @@
             "addClient": "Add a new client to your list.",
             "addProduct": "Add a new product to your list.",
             "addColumns": "Add new columns to your table.",
+            "deleteColumns": "Delete column.",
+            "editColumns": "Edit column.",
             "addCustomer": "Add a new customer to your list.",
             "delete": "Delete the selected item.",
             "insert": "Insert a new item before the selected one.",
@@ -409,9 +415,19 @@
         }
     },
     "update": {
-        "latestVersion": "The latest version is",
+        "latestVersion": "The latest version available is",
         "progress": "Update progress",
-        "checking": "Checking...",
-        "checkButton": "Check for updates"
+        "checking": "Checking in progress... ",
+        "checkButton": "Check for updates",
+        "checkUpdate": "Check for updates",
+        "checkForUpdates": "Check for updates",
+        "clickToCheck": "Click to check",
+        "available": "Update available",
+        "newVersion": "New version",
+        "availableNow": "Available now",
+        "downloading": "Downloading in progress",
+        "downloaded": "downloaded",
+        "downloadingNow": "Downloading in progress",
+        "pleaseWait": "Please wait..."
     }
 }

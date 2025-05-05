@@ -64,6 +64,7 @@
             "image": "Supprimer l'image",
             "client": "Supprimer le client",
             "product": "Supprimer le produit",
+            "customer": "Delete customer",
             "column": "Supprimer la colonne",
             "row": "Supprimer la ligne",
             "rowAll": "Supprimer toutes les lignes"
@@ -85,6 +86,7 @@
         "data": {
             "save": "Enregistrer les données"
         },
+        "reset": "Réinitialiser les données",
         "later": "Plus tard",
         "installNow": "Installer maintenant"
     },
@@ -188,6 +190,8 @@
         "hephai1": "Hephai Facture",
         "credit": "Fait avec HephaiOpen",
         "tooltips": {
+            "nameFile": "Saisissez le nom de votre document.",
+            "reset": "Réinitialiser les données de l'application.",
             "settings": "Paramètres",
             "bookmarks": "Ajoute un client à ta liste de favoris.",
             "metadata": "Propriétés du document",
@@ -220,6 +224,7 @@
             "lang": "Sélectionne la langue de l’interface.",
             "themeL": "Choisir le thème clair.",
             "themeD": "Choisir le thème sombre.",
+            "themeS": "Choisir le thème système.",
             "date": {
                 "today": "Sélectionner la date d’aujourd’hui.",
                 "other": "Sélectionner une autre date."
@@ -238,6 +243,8 @@
             "addClient": "Ajoute un nouveau client à ta liste.",
             "addProduct": "Ajoute un nouveau produit à ta liste.",
             "addColumns": "Ajoute de nouvelles colonnes à ton tableau.",
+            "deleteColumns": "Supprime la colonne.",
+            "editColumns": "Modifie la colonne.",
             "addCustomer": "Ajoute un nouveau client à ta liste.",
             "delete": "Supprime l’élément sélectionné.",
             "insert": "Insère un nouvel élément avant celui sélectionné.",

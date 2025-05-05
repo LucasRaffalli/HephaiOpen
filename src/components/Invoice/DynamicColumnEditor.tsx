@@ -23,10 +23,10 @@ const DynamicColumnEditor = () => {
 
             {dynamicColumns.map((col, index) => (
                 <Box key={col.dataKey} width="100%">
-                    <Tooltip content={t('utils.tooltips.column.edit')}>
+                    <Tooltip content={t('utils.tooltips.editColumns')} side="left">
                         <TextField.Root placeholder={t('features.invoice.tableItem.columnPlaceholder')} size="2" value={col.header} onChange={(e) => handleEditColumn(index, e.target.value)}>
                             <TextField.Slot side="right">
-                                <Tooltip content={t('utils.tooltips.column.delete')}>
+                                <Tooltip content={t('utils.tooltips.deleteColumns')} side="left">
                                     <IconButton onClick={() => removeColumn(index)} variant="ghost" size="1" className="btnCursor">
                                         <Trash2Icon size={14} />
                                     </IconButton>
@@ -42,7 +42,7 @@ const DynamicColumnEditor = () => {
                 </TextField.Slot>
             </TextField.Root>
 
-            <Tooltip content={t('utils.tooltips.addColumns')}>
+            <Tooltip content={t('utils.tooltips.addColumns')} side="left">
                 <Button className="btnCursor" variant="soft" onClick={addColumn} disabled={dynamicColumns.length >= maxColumns}>
                     <PlusIcon size={16} />
                     <Text size="2">

@@ -148,14 +148,14 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
                         <AnimatePresence mode="wait">
                             {selectedProductIndex !== null ? (
                                 <motion.div key="edit" style={{ width: '100%', overflow: 'hidden', display: "flex", gap: "var(--space-2)" }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }} transition={{ duration: 0.1, type: "spring", stiffness: 600, damping: 25 }}>
-                                    <Tooltip content={t('utils.tooltips.delete')}>
+                                    <Tooltip content={t('utils.tooltips.delete')} side="left">
                                         <Box style={{ width: "100%" }}>
                                             <Button variant="soft" color="red" className="btnCursor btnCustom1" onClick={handleDeleteRow}>
                                                 {t("buttons.delete.product")}
                                             </Button>
                                         </Box>
                                     </Tooltip>
-                                    <Tooltip content={t('utils.tooltips.update')}>
+                                    <Tooltip content={t('utils.tooltips.update')} side="left">
                                         <Button variant="soft" className="btnCursor" onClick={handleUpdateRow}>
                                             {t("buttons.update")}
                                         </Button>
@@ -163,21 +163,17 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
                                 </motion.div>
                             ) : (
                                 <motion.div key="add" style={{ width: "100%", overflow: 'hidden', display: "flex", flexDirection: "column", gap: "var(--space-2)" }} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }} transition={{ duration: 0.1, type: "spring", stiffness: 600, damping: 25 }}>
-                                    <Tooltip content={t('utils.tooltips.addProduct')}>
+                                    <Tooltip content={t('utils.tooltips.addProduct')} side="left">
                                         <Button variant="soft" onClick={handleAddRow} disabled={!formData.product || !formData.total || !!error} className='btnCursor' style={{ width: "100%" }}>
                                             <PlusIcon size={16} />
                                             <Text>{t("buttons.addProduct")}</Text>
                                         </Button>
                                     </Tooltip>
 
-                                    <Tooltip content={t('utils.tooltips.deleteAll')}>
-
+                                    <Tooltip content={t('utils.tooltips.deleteAll')} side="left">
                                         <Button variant="soft" className="btnCursor" color="red" onClick={() => { clearRows(); resetForm(); }} style={{ width: "100%" }}>
                                             <Trash2 size={16} />
-                                            <Text>
-                                                {t("buttons.clearAll")}
-
-                                            </Text>
+                                            <Text>{t("buttons.clearAll")}</Text>
                                         </Button>
                                     </Tooltip>
                                 </motion.div>

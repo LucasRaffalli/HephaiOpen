@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Flex, Tooltip, Box, Progress } from '@radix-ui/themes';
 import { Calendar, Package, Table, UserPen, FileText, MessageCircle, Download, WalletCards, ChevronLeft, ChevronRight, Stamp } from 'lucide-react';
 import { ToolbarProvider, useToolbar, PopupType } from './toolbar/ToolbarContext';
-import '../../css/component/toolbar.css';
+import '../../css/toolbar.css';
 import DateSelector from '../Invoice/DateSelector';
 import PaymentSelection from '../Invoice/PaymentSelection';
 import { useDateContext } from '../../context/DateContext';
@@ -109,7 +109,7 @@ const ToolbarContent: React.FC = () => {
         setIsAutoDate(false);
         setSelectedDate(e.target.value);
     };
-    const btnRef = useRef(null);
+    const btnRef = useRef<HTMLDivElement | null>(null);
     const inputFileNameRef = useRef(null);
 
     useEffect(() => {
@@ -196,12 +196,7 @@ const ToolbarContent: React.FC = () => {
                                 <Progress value={progress} max={100} size="1" />
                             ) : (
                                 <Tooltip content={t('utils.tooltips.download.pdf')}>
-                                    <Box
-                                        ref={btnRef}
-                                        className="btnToolBar"
-                                        onClick={downloadPDF}
-                                        style={{ cursor: 'pointer' }}
-                                    >
+                                    <Box ref={btnRef} className="btnToolBar" onClick={downloadPDF} style={{ cursor: 'pointer' }}>
                                         <Download size={20} />
                                     </Box>
                                 </Tooltip>

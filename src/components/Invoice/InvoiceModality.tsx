@@ -22,7 +22,7 @@ const InvoiceModality: React.FC = () => {
     return (
         <Flex direction="column" width="100%" gap="3">
             <Flex overflow={"hidden"} className={`packModalitis ${isFocused ? "focused" : ""}`} >
-                <Tooltip content={t('utils.tooltips.modalities')}>
+                <Tooltip content={t('utils.tooltips.modalities')} side="right">
                     <textarea value={text1} onChange={(e) => updateText("text1", e.target.value)} placeholder={t('utils.tooltips.modalities')} rows={4} className="textAreaCustom" onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} />
                 </Tooltip>
                 <Box className="iconTextArea" onClick={handleIconClick}>
@@ -35,7 +35,7 @@ const InvoiceModality: React.FC = () => {
                 <Separator orientation="horizontal" size={"4"} />
             </Flex>
             <Flex overflow={"hidden"} className={`packModalitis ${isFocused2 ? "focused" : ""}`}>
-                <Tooltip content={t('utils.tooltips.modalities')}>
+                <Tooltip content={t('utils.tooltips.modalities')} side="right">
                     <textarea value={text2} onChange={(e) => updateText("text2", e.target.value)} placeholder={t('utils.tooltips.modalities')} className="textAreaCustom" onFocus={() => setIsFocused2(true)} onBlur={() => setIsFocused2(false)} />
                 </Tooltip>
                 <Box className="iconTextArea" onClick={handleIconClick}>

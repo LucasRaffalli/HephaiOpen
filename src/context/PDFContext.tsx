@@ -14,20 +14,14 @@ const PDFContext = createContext<PDFContextType | undefined>(undefined);
 export const PDFProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [, setRefreshKey] = useState(0);
 
   const refreshPDF = () => {
     setRefreshKey(prev => prev + 1);
   };
 
   return (
-    <PDFContext.Provider value={{ 
-      currentPage, 
-      setCurrentPage, 
-      pdfDoc, 
-      setPdfDoc,
-      refreshPDF 
-    }}>
+    <PDFContext.Provider value={{ currentPage, setCurrentPage, pdfDoc, setPdfDoc, refreshPDF }}>
       {children}
     </PDFContext.Provider>
   );

@@ -22,12 +22,7 @@ export const CommentsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
 
     return (
-        <CommentsContext.Provider value={{
-            text,
-            isEnabled,
-            updateText,
-            toggleComments
-        }}>
+        <CommentsContext.Provider value={{ text, isEnabled, updateText, toggleComments }}>
             {children}
         </CommentsContext.Provider>
     );

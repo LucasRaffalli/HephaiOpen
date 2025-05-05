@@ -1,4 +1,4 @@
-import { TextField } from '@radix-ui/themes';
+import { TextField, Tooltip } from '@radix-ui/themes';
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePDF } from '@/context/PDFContext';
@@ -38,6 +38,8 @@ export default function InputFileName({ width = '', height = '' }: InputFileName
     }, [pdfDoc]);
 
     return (
-        <TextField.Root placeholder={t('features.invoice.filenamePrefix')} value={customPrefix} onChange={(e) => handlePrefixChange(e.target.value)} maxLength={20} style={{ width, height }} />
+        <Tooltip content={t('utils.tooltips.nameFile')} side="bottom">
+            <TextField.Root placeholder={t('features.invoice.filenamePrefix')} value={customPrefix} onChange={(e) => handlePrefixChange(e.target.value)} maxLength={20} style={{ width, height }} />
+        </Tooltip>
     );
 }
