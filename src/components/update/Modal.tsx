@@ -39,14 +39,17 @@ const Modal: React.FC<ModalProps> = ({
 
                     <Flex>
                         {children}
-                    </Flex>
-
-                    <Flex gap="3" mt="4" justify="end">
+                    </Flex>                    <Flex gap="3" mt="4" justify="end">
                         <Dialog.Close>
-                            <Button variant="soft" color="red">
-                                Cancel
+                            <Button variant="soft" color="red" onClick={onCancel}>
+                                {cancelText}
                             </Button>
                         </Dialog.Close>
+                        {okText && (
+                            <Button variant="solid" color="blue" onClick={onOk}>
+                                {okText}
+                            </Button>
+                        )}
                     </Flex>
 
                 </Dialog.Content>
