@@ -23,12 +23,20 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          npm list electron electron-builder
 
       - name: Build application
-        run: npm run build
+        run: |
+          echo "Starting build process..."
+          npm run build
+          echo "Build completed"
+          echo "Checking release directory..."
+          Get-ChildItem -Path release -Recurse
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: electron-builder
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -40,5 +48,6 @@ jobs:
             release/**/latest.yml
           draft: false
           prerelease: false
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
