@@ -12,17 +12,19 @@ import log from 'electron-log'
 const { autoUpdater } = createRequire(import.meta.url)('electron-updater')
 
 let isDownloading = false
+let downloadTimeout: NodeJS.Timeout | null = null
 
 export function update(win: BrowserWindow) {
-  // Configuration de base de l'auto-updater
+  // Configuration de base de l'auto-updater avec timeouts
   autoUpdater.autoDownload = false
   autoUpdater.disableWebInstaller = false
   autoUpdater.allowDowngrade = false
+  autoUpdater.autoInstallOnAppQuit = true
   
   // Ajout de logs détaillés
   autoUpdater.logger = log
   autoUpdater.logger.transports.file.level = 'debug'
-  console.log('Version actuelle:', app.getVersion())
+  log.info('Version actuelle:', app.getVersion())
 
   // En mode dev, utiliser le mock
   if (!app.isPackaged) {
@@ -37,31 +39,39 @@ export function update(win: BrowserWindow) {
     })
     return
   }
-  // Configuration pour GitHub
+
+  // Configuration pour GitHub avec timeout
   const options = {
     provider: 'github',
     owner: 'LucasRaffalli',
-    repo: 'HephaiOpen'
+    repo: 'HephaiOpen',
+    requestHeaders: {
+      'User-Agent': `HephaiOpen/${app.getVersion()}`
+    }
   }
   
-  console.log('Configuration auto-updater:', options)
+  log.info('Configuration auto-updater:', options)
   Object.assign(autoUpdater, options)
 
-  // Événements d'auto-updater pour le logging
+  // Événements d'auto-updater avec gestion améliorée
   autoUpdater.on('checking-for-update', () => {
-    console.log('Vérification des mises à jour...')
+    log.info('Vérification des mises à jour...')
   })
 
   autoUpdater.on('update-available', (info: UpdateInfo) => {
-    console.log('Mise à jour disponible:', info)
+    log.info('Mise à jour disponible:', info)
+    if (downloadTimeout) {
+      clearTimeout(downloadTimeout)
+      downloadTimeout = null
+    }
   })
 
   autoUpdater.on('update-not-available', (info: UpdateInfo) => {
-    console.log('Pas de mise à jour disponible:', info)
+    log.info('Pas de mise à jour disponible:', info)
   })
 
   autoUpdater.on('error', (error: Error) => {
-    console.error('Erreur de l\'auto-updater:', error)
+    log.error('Erreur de l\'auto-updater:', error)
   })
 
   // 🔎 Vérification des mises à jour
@@ -99,37 +109,73 @@ export function update(win: BrowserWindow) {
     }
   })
 
-  // 📥 Lancement du téléchargement
+  // 📥 Lancement du téléchargement avec gestion du timeout
   ipcMain.handle('start-download', (event) => {
     if (isDownloading) {
-      console.warn("⚠️ Téléchargement déjà en cours...")
+      log.warn("⚠️ Téléchargement déjà en cours...")
       return
     }
-    isDownloading = true
 
-    autoUpdater.downloadUpdate()
+    // Reset du statut de téléchargement
+    isDownloading = true
+    
+    // Définir un timeout de 5 minutes pour le téléchargement
+    downloadTimeout = setTimeout(() => {
+      if (isDownloading) {
+        log.error("❌ Timeout du téléchargement")
+        isDownloading = false
+        event.sender.send('update-error', { 
+          message: 'Le téléchargement a pris trop de temps', 
+          error: new Error('Download timeout') 
+        })
+        autoUpdater.removeAllListeners('download-progress')
+        autoUpdater.removeAllListeners('update-downloaded')
+      }
+    }, 5 * 60 * 1000)
+
+    autoUpdater.downloadUpdate().catch((error: Error) => {
+      log.error("❌ Erreur lors du démarrage du téléchargement:", error)
+      if (downloadTimeout) {
+        clearTimeout(downloadTimeout)
+        downloadTimeout = null
+      }
+      isDownloading = false
+      event.sender.send('update-error', { message: error.message, error })
+    })
 
     autoUpdater.on('download-progress', (progress: ProgressInfo) => {
-      console.log(`📊 Progression du téléchargement : ${progress.percent.toFixed(2)}%`)
+      log.info(`📊 Progression : ${progress.percent.toFixed(2)}% à ${progress.bytesPerSecond} octets/s`)
       event.sender.send('download-progress', progress)
     })
 
-    autoUpdater.on('error', (error: any) => {
-      console.error("❌ Erreur lors du téléchargement :", error)
-      event.sender.send('update-error', { message: error.message, error })
-      isDownloading = false
-    })
-
     autoUpdater.on('update-downloaded', (event: UpdateDownloadedEvent) => {
-      console.log("✅ Mise à jour téléchargée.")
-      win.webContents.send('update-downloaded')
+      log.info("✅ Mise à jour téléchargée")
+      if (downloadTimeout) {
+        clearTimeout(downloadTimeout)
+        downloadTimeout = null
+      }
       isDownloading = false
+      win.webContents.send('update-downloaded', { 
+        version: event.version,
+        files: event.files,
+        path: event.path
+      })
     })
   })
 
-  // ⚡ Installation de la mise à jour
+  // ⚡ Installation de la mise à jour avec vérification
   ipcMain.handle('quit-and-install', () => {
-    console.log("🚀 Installation de la mise à jour...")
-    setImmediate(() => autoUpdater.quitAndInstall(false, true))
+    log.info("🚀 Installation de la mise à jour...")
+    try {
+      setImmediate(() => {
+        autoUpdater.quitAndInstall(true, true)
+      })
+    } catch (error) {
+      log.error("❌ Erreur lors de l'installation:", error)
+      win.webContents.send('update-error', { 
+        message: 'Erreur lors de l\'installation', 
+        error 
+      })
+    }
   })
 }
