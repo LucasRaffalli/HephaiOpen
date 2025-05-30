@@ -37,12 +37,11 @@ export function update(win: BrowserWindow) {
     })
     return
   }
-
   // Configuration pour GitHub
   const options = {
     provider: 'github',
-    owner: process.env.GITHUB_REPOSITORY_OWNER || 'votre-nom-github',
-    repo: process.env.GITHUB_REPOSITORY_NAME || 'hephai'
+    owner: 'LucasRaffalli',
+    repo: 'HephaiOpen'
   }
   
   console.log('Configuration auto-updater:', options)
