@@ -23,14 +23,33 @@
     "target": [
       {
         "target": "dmg",
-        "arch": [
-          "x64"
-        ]
+        "arch": ["x64", "arm64"]
       }
     ],
     "artifactName": "${productName}_${version}.${ext}",
-    "icon": "public/favicon.ico",
-    "category": "public.app-category.utilities"
+    "icon": "build/installerIcon.icns",
+    "category": "public.app-category.business",
+    "darkModeSupport": true,
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false
+  },
+  "dmg": {
+    "contents": [
+      {
+        "x": 130,
+        "y": 220
+      },
+      {
+        "x": 410,
+        "y": 220,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ],
+    "window": {
+      "width": 540,
+      "height": 400
+    }
   },
   "win": {
     "target": [
@@ -47,11 +66,20 @@
   "linux": {
     "target": [
       "AppImage",
-      "deb"
+      "deb",
+      "rpm"
     ],
-    "artifactName": "${productName}_${version}.${ext}",
-    "icon": "public/favicon.ico",
-    "category": "Utility"
+    "category": "Office",
+    "icon": "build/installerIcon.png",
+    "maintainer": "LucasRaffalli",
+    "description": "Invoice creation application",
+    "desktop": {
+      "entry": {
+        "Name": "HephaiOpen",
+        "Comment": "Invoice creation application",
+        "Categories": "Office;Finance"
+      }
+    }
   },
   "compression": "maximum",
   "nsis": {
