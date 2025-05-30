@@ -6,13 +6,12 @@
   "author": "LucasRaffalli",
   "type": "module",
   "license": "MIT",
-  "private": true,
-  "scripts": {
+  "private": true,  "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "build:win": "electron-vite build && electron-builder --win",
-    "build:mac": "electron-vite build && electron-builder --mac",
-    "build:linux": "electron-vite build && electron-builder --linux",
+    "build:win": "npx electron-vite build && electron-builder --win",
+    "build:mac": "npx electron-vite build && electron-builder --mac",
+    "build:linux": "npx electron-vite build && electron-builder --linux",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test"
@@ -50,6 +49,7 @@
     "electron": "^36.0.1",
     "electron-builder": "^26.0.12",
     "electron-devtools-installer": "^4.0.0",
+    "electron-vite": "^2.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.3",

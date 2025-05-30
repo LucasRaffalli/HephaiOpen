@@ -27,6 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install --no-package-lock
+          npm install -g electron-vite@latest
         shell: bash
 
       # Linux dependencies
@@ -38,12 +39,12 @@ jobs:
 
       - name: Build application
         run: |
-          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            npm run build:win
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
             npm run build:mac
           elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             npm run build:linux
-          else
-            npm run build:win
           fi
         shell: bash
         env:
