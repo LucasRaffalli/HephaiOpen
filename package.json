@@ -1,6 +1,6 @@
 {
   "name": "hephai_open",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "dist-electron/main/index.js",
   "description": "Invoice creation application.",
   "author": "Lucas Raffalli",
@@ -10,6 +10,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
+    "build:win": "electron-vite build && electron-builder --win",
+    "build:mac": "electron-vite build && electron-builder --mac",
+    "build:linux": "electron-vite build && electron-builder --linux",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test"

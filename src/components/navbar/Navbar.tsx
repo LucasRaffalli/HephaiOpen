@@ -30,7 +30,7 @@ export default function Navbar() {
 
     return (
         <Flex justify={'between'} direction={'column'} height={'100%'} gap={'4'}>
-            <Box className="navbar" height={'100%'} >
+            <Box className="navbar"  >
                 <Flex direction={"column"} justify={"between"} maxWidth='240px' height={"100%"}>
                     <Flex width="29vw" maxWidth="240px" direction="column" gap="2">
                         <Flex className="tabs" width="100%" justify="between" align="center">

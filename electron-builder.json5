@@ -14,12 +14,19 @@
     "node_modules/**/*",
     "package.json"
   ],
-  "mac": {
-    "artifactName": "${productName}_${version}.${ext}",
+
+"mac": {
     "target": [
-      "dmg",
-      "zip"
-    ]
+      {
+        "target": "dmg",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "artifactName": "${productName}_${version}.${ext}",
+    "icon": "public/favicon.ico",
+    "category": "public.app-category.utilities"
   },
   "win": {
     "target": [
@@ -32,6 +39,15 @@
     ],
     "artifactName": "${productName}_${version}.${ext}",
     "icon": "public/favicon.ico"
+  },
+  "linux": {
+    "target": [
+      "AppImage",
+      "deb"
+    ],
+    "artifactName": "${productName}_${version}.${ext}",
+    "icon": "public/favicon.ico",
+    "category": "Utility"
   },
   "compression": "maximum",
   "nsis": {
@@ -48,6 +64,6 @@
   "publish": {
     "provider": "github",
     "owner": "LucasRaffalli",
-    "repo": "hephai"
+    "repo": "HephaiOpen",
   }
 }
