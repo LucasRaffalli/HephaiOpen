@@ -86,12 +86,12 @@ async function createWindow() {
 
   win.webContents.on('did-finish-load', () => {
   });
-
   // Register all window IPC handlers
   registerWindowIPC(win)
 
   // Auto update
-  // update(win)
+  console.log("Initializing auto-updater...")
+  update(win)
 
   win.on('maximize', () => {
     win?.webContents.send('window-maximized-change', true)

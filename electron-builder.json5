@@ -5,8 +5,7 @@
   "productName": "HephaiOpen",
   "directories": {
     "output": "release/${version}",
-  "buildResources": "build"
-
+    "buildResources": "build"
   },
   "files": [
     "dist",
@@ -14,8 +13,13 @@
     "node_modules/**/*",
     "package.json"
   ],
-
-"mac": {
+  "publish": [{
+    "provider": "github",
+    "releaseType": "release",
+    "private": false,
+    "publishAutoUpdate": true
+  }],
+  "mac": {
     "target": [
       {
         "target": "dmg",
@@ -60,10 +64,5 @@
     "installerSidebar":"build/installerSidebar.bmp",
     "uninstallerSidebar":"build/uninstallerSidebar.bmp",
     "include": "public/installer.nsh"
-  },
-  "publish": {
-    "provider": "github",
-    "owner": "LucasRaffalli",
-    "repo": "HephaiOpen",
   }
 }

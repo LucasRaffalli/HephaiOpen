@@ -1,4 +1,5 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, app } from 'electron'
+import { log } from 'electron-log'
 
 export function mockUpdate(win: BrowserWindow) {
   setTimeout(() => {
@@ -23,6 +24,7 @@ export function mockUpdate(win: BrowserWindow) {
     if (progress >= 100) {
       clearInterval(interval)
       win.webContents.send('update-downloaded')
+      console.log("Mock update downloaded");
     }
   }, 1000)
 }

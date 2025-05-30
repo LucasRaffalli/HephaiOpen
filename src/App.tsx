@@ -10,7 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Premium from './views/premium'
 import ShortcutsPanel from './components/shortcut/ShortcutsPanel'
-import Update from './components/update/Update'
+import UpdatePage from './components/update'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -26,7 +26,7 @@ function App() {
           <Route path="navigation/premium" element={<Premium />} />
           <Route path="clients" element={<Clients />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="/update" element={<Update />} />
+          <Route path="update" element={<UpdatePage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
