@@ -9,16 +9,145 @@
   }
 
   .progress__title {
-    margin-right: 10px;
+    margin-bottom: 10px;
+    font-weight: 500;
   }
 
   .progress__bar {
-    width: 0;
+    width: 100%;
     flex-grow: 1;
   }
 
   .can-not-available {
     padding: 20px;
     text-align: center;
+    color: #666;
   }
+
+  .error {
+    color: #dc3545;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #dc3545;
+    border-radius: 4px;
+    background-color: #fff8f8;
+  }
+}
+
+.update-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.update-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.update-header svg {
+  width: 24px;
+  height: 24px;
+  color: #007bff;
+}
+
+.update-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.new-version__target {
+  margin: 12px 0;
+  font-size: 1.1em;
+  color: #007bff;
+  background-color: #f0f7ff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.update__progress {
+  margin-top: 20px;
+}
+
+.progress__title {
+  margin-bottom: 12px;
+  font-weight: 500;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress__bar {
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress__bar .progress {
+  height: 8px;
+  background-color: #007bff;
+  transition: width 0.3s ease;
+}
+
+.can-not-available {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.error-container {
+  padding: 16px;
+  background-color: #fff1f0;
+  border: 1px solid #ffccc7;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.error-container p:first-child {
+  color: #cf1322;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.error-container p:last-child {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.check-update-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto;
+}
+
+.check-update-button:hover {
+  background-color: #0056b3;
+}
+
+.check-update-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.check-update-button svg {
+  width: 18px;
+  height: 18px;
 }

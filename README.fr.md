@@ -35,7 +35,7 @@ npm run dev
 
 ## 🧰 Technologies utilisées
 Ce projet utilise les technologies et bibliothèques suivantes :
-- **Electron** pour l'application de bureau : `electron`,`electron-builder`, `electron-store`, `electron-updater`
+- **Electron** pour l'application de bureau : `electron`,`electron-builder`, `electron-updater`
 - **React** pour l'interface utilisateur : `react`, `react-dom`, `react-router-dom`, `react-toastify`, `react-i18next`
 - **PDF** Generation avec `jsPDF` et `react-pdf` pour la création de factures PDF
 - **Internationalisation** avec `i18next` et `react-i18next`

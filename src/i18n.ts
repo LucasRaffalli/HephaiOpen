@@ -1,8 +1,6 @@
-// src/i18n.ts
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-// Importez vos traductions
 import enTranslation from '@/lang/en.json';
 import frTranslation from '@/lang/fr.json';
 
@@ -19,5 +17,9 @@ i18n
         fallbackLng: 'fr',
         interpolation: { escapeValue: false },
     });
+
+export const t = (key: string) => {
+    return i18n.t(key) || key;
+};
 
 export default i18n;

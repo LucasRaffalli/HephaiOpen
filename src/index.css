@@ -5,38 +5,27 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-
-  /* transition: all 500ms ease; */
-
 }
 
-.btncursor {
+.btnCursor {
   cursor: pointer;
 }
 
-.glow {
-  border: 0.5px solid transparent;
-  filter: drop-shadow(0px 0px 0.5px transparent);
-  box-shadow: 0 0 2px 0 transparent;
-  transition: all 500ms ease;
-  /* transition: border 160ms linear, filter 160ms linear, box-shadow 300ms ease; */
+.btnNotEvent {
+  pointer-events: none;
 }
 
-.glow.active {
-  border: .05px solid var(--accent-9);
-  box-shadow: 0 0 2px 0 var(--accent-9);
-
+.btnCursor:disabled {
+  cursor: not-allowed !important;
 }
-a{
+
+a {
 
   text-decoration: none;
   color: inherit;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
 }
-
-
-
-
-/* var(--card-background-color); */
 
 .dark,
 .dark-theme,
@@ -44,8 +33,289 @@ a{
   --color-background: #0a0a0a;
 }
 
-/* @media screen and (max-width: 1300px) {
-  .invoice__paper {
-    transform: scale(0.5);
+::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f031;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f0f0f031;
+  border-radius: 10px;
+}
+
+.full-height {
+  height: 100% !important;
+}
+
+.packModalitis {
+  border: 1.5px solid var(--gray-a7);
+  border-radius: var(--radius-2);
+
+
+}
+
+.iconTextArea {
+  background-color: var(--color-surface);
+}
+
+.textAreaCustom {
+  resize: none;
+  max-height: 200px;
+  min-height: 100px;
+  width: 100%;
+  padding: var(--space-2) var(--space-2);
+  border-radius: var(--radius-2);
+  cursor: text;
+  background-color: var(--color-surface);
+  font-size: var(--font-size-2);
+  border: none;
+
+}
+
+.textAreaCustom:focus {
+  border: none;
+  outline: none;
+  box-shadow: none
+}
+
+.focused {
+  border: 1.5px solid var(--focus-8);
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--gray-a7);
+}
+
+
+.textAreaCustom::placeholder {
+  color: var(--gray-10);
+  font-weight: 500;
+}
+
+.sticky-title {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-background);
+}
+
+.Toastify {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999999;
+}
+
+.Toastify__toast-container {
+  position: fixed !important;
+  z-index: 999999 !important;
+  pointer-events: auto;
+}
+
+.Toastify__toast {
+  z-index: 999999 !important;
+  margin-bottom: 1rem;
+}
+
+.radix-dialog-overlay,
+.radix-dialog-content {
+  z-index: 99999;
+}
+
+.invoice__content {
+  border-radius: var(--radius-4);
+  border: 1px solid var(--gray-6);
+  background-color: var(--gray-1);
+}
+
+
+.toolbar-popup-dynamic {
+  position: fixed;
+  width: 20rem;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--gray-1);
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-4);
+  padding: 0.75rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+  transition: opacity 0.2s ease;
+}
+
+.small-toolbar__all {
+  overflow: hidden;
+  position: fixed;
+  height: fit-content;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: fit-content;
+  z-index: 9999;
+  display: block;
+  border-radius: var(--radius-4);
+  border: 1.5px solid var(--gray-6);
+  background-color: var(--gray-2);
+
+}
+
+.inputFileName {
+  width: 100%;
+}
+
+.small-toolbar__2 {
+  z-index: 2;
+  border-left: 1.5px solid var(--gray-6);
+  background-color: var(--gray-2);
+}
+
+.btnCustom1 {
+  width: 100%;
+}
+
+
+
+@media screen and (max-width: 1300px) {
+
+  .actionBarFalse,
+  .InvoicePdfViewerButtons {
+    display: none;
   }
-} */
+
+  .InvoicePdfViewerContent {
+    scale: 0.86;
+  }
+
+  .small-toolbar__all.visible {
+    display: flex;
+
+  }
+
+  .card__img {
+    width: 100% !important;
+  }
+
+  .footer__low {
+    flex-direction: column;
+  }
+
+  .footer__hephai__text {
+    width: 100%;
+  }
+}
+
+
+@media screen and (max-width: 1910px) {
+  .InvoicePdfViewerContent {
+    scale: 0.86;
+  }
+}
+
+.app-loading-wrap {
+  background-color: #111113;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  gap: 2rem;
+  flex-direction: column;
+}
+
+@keyframes exitLoading {
+  0% {
+    opacity: 1;
+
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+
+.loaders__hephai {
+  font-size: 28px;
+  font-weight: 700;
+  position: relative;
+  color: white;
+}
+
+.load__bar {
+  height: 4px;
+  width: 256px;
+  border-radius: 50px;
+  position: relative;
+  background-color: #212225;
+}
+
+.load__bar::after {
+  content: "";
+  height: 5px;
+  width: 0;
+  background-color: white;
+  border-radius: 50px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  animation: load 2.5s forwards;
+}
+
+@keyframes load {
+  0% {
+    width: 0;
+  }
+
+
+  50% {
+    width: 65%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+.bottom__load {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #43484E;
+  gap: 1rem;
+  font-size: 14px;
+
+}
+
+.all__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: exitLoading 1s linear 3.5s forwards;
+}
+
+@keyframes exitLoading {
+  0% {
+    opacity: 1;
+
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

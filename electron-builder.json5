@@ -1,19 +1,36 @@
 {
-  "appId": "com.hephai.app",
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "net.protocol.hephaiopen",
   "asar": true,
+  "productName": "HephaiOpen",
   "directories": {
-    "output": "release/${version}"
+    "output": "release/${version}",
+    "buildResources": "build"
   },
   "files": [
+    "dist",
     "dist-electron",
-    "dist"
+    "node_modules/**/*",
+    "package.json"
   ],
+  "publish": [{
+    "provider": "github",
+    "releaseType": "release",
+    "private": false,
+    "publishAutoUpdate": true
+  }],
   "mac": {
-    "artifactName": "${productName}_${version}.${ext}",
     "target": [
-      "dmg",
-      "zip"
-    ]
+      {
+        "target": "dmg",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "artifactName": "${productName}_${version}.${ext}",
+    "icon": "public/favicon.ico",
+    "category": "public.app-category.utilities"
   },
   "win": {
     "target": [
@@ -24,17 +41,28 @@
         ]
       }
     ],
-    "artifactName": "${productName}_${version}.${ext}"
+    "artifactName": "${productName}_${version}.${ext}",
+    "icon": "public/favicon.ico"
   },
+  "linux": {
+    "target": [
+      "AppImage",
+      "deb"
+    ],
+    "artifactName": "${productName}_${version}.${ext}",
+    "icon": "public/favicon.ico",
+    "category": "Utility"
+  },
+  "compression": "maximum",
   "nsis": {
     "oneClick": false,
     "perMachine": true,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
-  },
-  "publish": {
-    "provider": "generic",
-    "channel": "latest",
-    "url": "https://github.com/ton-utilisateur/hephai/releases/download/${version}/"
+    "deleteAppDataOnUninstall": true,
+    "installerIcon": "public/installerIcon.ico",
+    "uninstallerIcon": "public/uninstallerIcon.ico",
+    "installerSidebar":"build/installerSidebar.bmp",
+    "uninstallerSidebar":"build/uninstallerSidebar.bmp",
+    "include": "public/installer.nsh"
   }
 }

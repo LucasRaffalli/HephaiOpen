@@ -1,0 +1,137 @@
+.window-frame {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+
+.window-content {
+  /* margin-top: 30px; */
+  /* height: calc(100vh - 30px); */
+}
+
+.static {
+  /* color: red; */
+  pointer-events: none;
+}
+
+.window-titlebar-icon {
+  width: 102px;
+  display: flex;
+}
+
+.window-titlebar {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  height: fit-content;
+  padding: .5rem 1rem;
+  align-items: center;
+  z-index: 1000;
+  -webkit-app-region: drag;
+}
+
+
+.window-titlebar-icon img {
+  width: 100% !important;
+  max-width: 16px !important;
+}
+
+.window-titlebar-title {
+  opacity: 1;
+  display: block;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.window-titlebar-title.menus-visible {
+  opacity: 0;
+  display: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.window-titlebar-controls {
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-4);
+  display: flex;
+}
+
+.window-titlebar-title[data-centered] {
+  text-align: center;
+  padding-left: 0;
+  margin: 0;
+}
+
+
+.window-titlebar-menu {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  -webkit-app-region: no-drag;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.titlebar-menuItem .menuItem-label {
+  padding: 2px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 200;
+}
+
+.window-titlebar-controls {
+  display: flex;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar-controlButton:hover {
+  cursor: pointer;
+  background-color: var(--accent-3);
+}
+
+.titlebar-controlButton[aria-label='close']:hover {
+  background-color: var(--red-9);
+  cursor: pointer;
+  color: var(--window-c-control-close-hover-text, inherit);
+}
+
+.titlebar-menuItem:hover .menuItem-label,
+.titlebar-menuItem.active .menuItem-label {
+  background-color: var(--accent-3);
+}
+
+.titlebar-menuItem .menuItem-popup {
+  position: fixed;
+  background-color: var(--gray-1);
+  min-width: 100px;
+  border: 1px solid var(--gray-6);
+  padding: 0rem 0;
+  z-index: 10000;
+  overflow: hidden;
+  border-radius: var(--radius-4);
+}
+
+.titlebar-menuItem .menuItem-popupItem {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 18px;
+  justify-content: space-between;
+  font-weight: 200;
+}
+
+.titlebar-menuItem .menuItem-shortcut {
+  color: var(--gray-9);
+  margin-left: 3rem;
+}
+
+.titlebar-menuItem .menuItem-popupItem:not(.static):hover {
+  cursor: pointer;
+  background-color: var(--accent-4);
+}
+
+.titlebar-menuItem .menuItem-popupItem.menuItem-separator {
+  border-top: 1px solid var(--gray-6);
+  pointer-events: none;
+}

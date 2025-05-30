@@ -1,132 +1,128 @@
-import type { ProgressInfo } from 'electron-updater'
-import { useCallback, useEffect, useState } from 'react'
-import Modal from '@/components/update/Modal'
-import Progress from '@/components/update/Progress'
-import './update.css'
+import { useCallback, useEffect, useState } from 'react';
+import { Button, Badge, Flex, Progress, Text } from '@radix-ui/themes';
+import { UpdateIcon } from '@radix-ui/react-icons';
+import type { ProgressInfo } from 'electron-updater';
+import Modal from './Modal';
+import ContainerInterface from '../template/ContainerInterface';
+import './update.css';
 
-const Update = () => {
-  const [checking, setChecking] = useState(false)
-  const [updateAvailable, setUpdateAvailable] = useState(false)
-  const [versionInfo, setVersionInfo] = useState<VersionInfo>()
-  const [updateError, setUpdateError] = useState<ErrorType>()
-  const [progressInfo, setProgressInfo] = useState<Partial<ProgressInfo>>()
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalBtn, setModalBtn] = useState<{
-    cancelText?: string
-    okText?: string
-    onCancel?: () => void
-    onOk?: () => void
-  }>({
-    onCancel: () => setModalOpen(false),
-    onOk: () => window.ipcRenderer.invoke('start-download'),
-  })
-
-  const checkUpdate = async () => {
-    setChecking(true)
-    /**
-     * @type {import('electron-updater').UpdateCheckResult | null | { message: string, error: Error }}
-     */
-    const result = await window.ipcRenderer.invoke('check-update')
-    setProgressInfo({ percent: 0 })
-    setChecking(false)
-    setModalOpen(true)
-    if (result?.error) {
-      setUpdateAvailable(false)
-      setUpdateError(result?.error)
-    }
-  }
-
-  const onUpdateCanAvailable = useCallback((_event: Electron.IpcRendererEvent, arg1: VersionInfo) => {
-    setVersionInfo(arg1)
-    setUpdateError(undefined)
-    // Can be update
-    if (arg1.update) {
-      setModalBtn(state => ({
-        ...state,
-        cancelText: 'Cancel',
-        okText: 'Update',
-        onOk: () => window.ipcRenderer.invoke('start-download'),
-      }))
-      setUpdateAvailable(true)
-    } else {
-      setUpdateAvailable(false)
-    }
-  }, [])
-
-  const onUpdateError = useCallback((_event: Electron.IpcRendererEvent, arg1: ErrorType) => {
-    setUpdateAvailable(false)
-    setUpdateError(arg1)
-  }, [])
-
-  const onDownloadProgress = useCallback((_event: Electron.IpcRendererEvent, arg1: ProgressInfo) => {
-    setProgressInfo(arg1)
-  }, [])
-
-  const onUpdateDownloaded = useCallback((_event: Electron.IpcRendererEvent, ...args: any[]) => {
-    setProgressInfo({ percent: 100 })
-    setModalBtn(state => ({
-      ...state,
-      cancelText: 'Later',
-      okText: 'Install now',
-      onOk: () => window.ipcRenderer.invoke('quit-and-install'),
-    }))
-  }, [])
-
-  useEffect(() => {
-    // Get version information and whether to update
-    window.ipcRenderer.on('update-can-available', onUpdateCanAvailable)
-    window.ipcRenderer.on('update-error', onUpdateError)
-    window.ipcRenderer.on('download-progress', onDownloadProgress)
-    window.ipcRenderer.on('update-downloaded', onUpdateDownloaded)
-
-    return () => {
-      window.ipcRenderer.off('update-can-available', onUpdateCanAvailable)
-      window.ipcRenderer.off('update-error', onUpdateError)
-      window.ipcRenderer.off('download-progress', onDownloadProgress)
-      window.ipcRenderer.off('update-downloaded', onUpdateDownloaded)
-    }
-  }, [])
-
-  return (
-    <>
-      <Modal
-        open={modalOpen}
-        cancelText={modalBtn?.cancelText}
-        okText={modalBtn?.okText}
-        onCancel={modalBtn?.onCancel}
-        onOk={modalBtn?.onOk}
-        footer={updateAvailable ? /* hide footer */null : undefined}
-      >
-        <div className='modal-slot'>
-          {updateError
-            ? (
-              <div>
-                <p>Error downloading the latest version.</p>
-                <p>{updateError.message}</p>
-              </div>
-            ) : updateAvailable
-              ? (
-                <div>
-                  <div>The last version is: v{versionInfo?.newVersion}</div>
-                  <div className='new-version__target'>v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}</div>
-                  <div className='update__progress'>
-                    <div className='progress__title'>Update progress:</div>
-                    <div className='progress__bar'>
-                      <Progress percent={progressInfo?.percent} ></Progress>
-                    </div>
-                  </div>
-                </div>
-              )
-              : (
-                <div className='can-not-available'>{JSON.stringify(versionInfo ?? {}, null, 2)}</div>
-              )}
-        </div>
-      </Modal>
-      <button disabled={checking} onClick={checkUpdate}>
-        {checking ? 'Checking...' : 'Check update'}
-      </button>
-    </>
-  )
+interface VersionInfo {
+    update: boolean;
+    version: string;
+    newVersion: string;
 }
 
-export default Update
+const UpdatePage = () => {
+    const [isChecking, setIsChecking] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState({
+        available: false,
+        version: '',
+        newVersion: '',
+        error: '',
+        progress: 0,
+        isDownloaded: false
+    });
+    const [showModal, setShowModal] = useState(false);
+
+    const checkUpdate = async () => {
+        setIsChecking(true);
+        try {
+            const result = await window.ipcRenderer.invoke('check-update');
+            if (result?.error) {
+                setUpdateInfo(prev => ({ ...prev, error: result.message }));
+            }
+        } catch (error) {
+            setUpdateInfo(prev => ({ ...prev, error: 'Erreur lors de la vérification' }));
+        } finally {
+            setIsChecking(false);
+        }
+    };
+
+    const onUpdateAvailable = useCallback((_event: Electron.IpcRendererEvent, arg: VersionInfo) => {
+        setUpdateInfo(prev => ({
+            ...prev,
+            available: arg.update,
+            version: arg.version,
+            newVersion: arg.newVersion,
+            error: ''
+        }));
+        setShowModal(true);
+    }, []);
+
+    const onProgress = useCallback((_event: Electron.IpcRendererEvent, arg: ProgressInfo) => {
+        setUpdateInfo(prev => ({ ...prev, progress: arg.percent || 0 }));
+    }, []);
+
+    const onUpdateDownloaded = useCallback(() => {
+        setUpdateInfo(prev => ({ ...prev, isDownloaded: true }));
+        setTimeout(() => window.ipcRenderer.invoke('quit-and-install'), 2000);
+    }, []);
+
+    useEffect(() => {
+        window.ipcRenderer.on('update-can-available', onUpdateAvailable);
+        window.ipcRenderer.on('download-progress', onProgress);
+        window.ipcRenderer.on('update-downloaded', onUpdateDownloaded);
+
+        return () => {
+            window.ipcRenderer.off('update-can-available', onUpdateAvailable);
+            window.ipcRenderer.off('download-progress', onProgress);
+            window.ipcRenderer.off('update-downloaded', onUpdateDownloaded);
+        }
+    }, [onUpdateAvailable, onProgress, onUpdateDownloaded]);
+
+    const getChangeDescription = () => {
+        if (!updateInfo.available) return null;
+        
+        return (
+            <Flex direction="column" gap="3">
+                <Text size="2" color="gray">Changements dans cette version :</Text>
+                <Flex direction="column" gap="2">
+                    <Text as="p" size="2">• Améliorations de performance</Text>
+                    <Text as="p" size="2">• Nouvelles fonctionnalités</Text>
+                    <Text as="p" size="2">• Corrections de bugs</Text>
+                </Flex>
+            </Flex>
+        );
+    };
+
+    return (
+        <ContainerInterface height='100%' padding='4' justify='center' align='center'>
+            <Modal 
+                open={showModal} 
+                cancelText="Fermer" 
+                okText={updateInfo.available && !updateInfo.isDownloaded ? "Télécharger" : undefined}
+                onCancel={() => setShowModal(false)}
+                onOk={() => window.ipcRenderer.invoke('start-download')}
+                title={updateInfo.error ? "Erreur" : "Mise à jour"}
+            >
+                {updateInfo.error ? (
+                    <Badge color="red">{updateInfo.error}</Badge>
+                ) : updateInfo.available ? (
+                    <Flex direction="column" gap="3">
+                        <Flex gap="2" align="center">
+                            <Badge variant="soft" color="red">{updateInfo.version}</Badge>
+                            →
+                            <Badge variant="soft" color="indigo">{updateInfo.newVersion}</Badge>
+                        </Flex>
+                        {getChangeDescription()}
+                        {updateInfo.progress > 0 && (
+                            <Progress value={updateInfo.progress} />
+                        )}
+                        {updateInfo.isDownloaded && (
+                            <Badge color="green">Installation en cours...</Badge>
+                        )}
+                    </Flex>
+                ) : (
+                    <Badge color="green">Vous utilisez la dernière version</Badge>
+                )}
+            </Modal>
+
+            <Button size="3" disabled={isChecking} onClick={checkUpdate}>
+                <UpdateIcon width={16} height={16} />
+                {isChecking ? 'Vérification...' : 'Vérifier les mises à jour'}
+            </Button>
+        </ContainerInterface>
+    );
+};
+
+export default UpdatePage;

@@ -1,8 +1,6 @@
 .navbar {
     background-color: var(--gray-1);
-    /* background-color: var(--color-panel); */
-
-    border: 1px solid var(--gray-4);
+    border: 1px solid var(--gray-6);
     border-radius: var(--radius-4);
     overflow: hidden;
 }
@@ -27,7 +25,6 @@
     width: 100%;
     position: relative;
     height: 40px;
-    /* padding: 10px 30px; */
     border: none;
 
     border-top-left-radius: var(--tab-border-radius);
@@ -53,7 +50,7 @@
     position: absolute;
     bottom: 0;
     height: 100%;
-    background-color: var(--color-panel-solid);
+    background-color: var(--gray-2);
     border-top-left-radius: var(--tab-border-radius);
     border-top-right-radius: var(--tab-border-radius);
     transition: left 0.3s ease;
@@ -68,7 +65,7 @@
     bottom: 0;
     width: var(--tab-corner-size);
     height: var(--tab-corner-size);
-    background-color: var(--color-panel);
+    background-color: var(--gray-2);
     mask: url('../assets/trim.svg') no-repeat center;
     -webkit-mask: url('../assets/trim.svg') no-repeat center;
     mask-size: contain;
@@ -76,8 +73,7 @@
 }
 
 .tab__content {
-    /* background-color: var(--gray-2); */
-    background-color: var(--color-panel);
+    background-color: var(--gray-2);
 }
 
 .tab-indicator::before {
@@ -89,3 +85,10 @@
 .tab-indicator::after {
     right: calc(var(--tab-corner-offset));
 }
+
+.card_hephai {
+
+    border-color: var(--gray-6);
+    background-color: var(--gray-1) !important;
+}
+

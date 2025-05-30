@@ -1,10 +1,10 @@
-import React from 'react'
+import { t } from 'i18next'
 
 export default function NotFoundPage() {
   setTimeout(() => {
     window.location.href = '/'
   }, 1000)
   return (
-    <div>NotFoundPage</div>
+    <div>{t('text.notFound')}</div>
   )
 }

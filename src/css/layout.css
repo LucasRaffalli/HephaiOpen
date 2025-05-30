@@ -1,74 +1,5 @@
-#layout {
-    background-color: blue;
-    /* width: 100vw; */
-    /* height: 100vh; */
-}
-
-.header {
-    /* background-color: aqua; */
-}
-
-.layout-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.main-nav {
-    display: flex;
-    background-color: #f0f0f0;
-    padding: 10px;
-}
-
-.main-nav button {
-    padding: 10px 20px;
-    margin-right: 10px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.main-nav button.active {
-    background-color: #e0e0e0;
-    font-weight: bold;
-}
-
-.main-nav button:hover {
-    background-color: #d0d0d0;
-}
-
-.content-layout {
-    display: flex;
-    flex: 1;
-}
-
-.sidebar {
-    width: 200px;
-    background-color: #f5f5f5;
-    padding: 20px;
-}
-
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar li {
-    margin-bottom: 10px;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar li:hover {
-    background-color: #d0d0d0;
-}
-
-.tab-item {
-    display: flex;
-    align-items: center;
+:root {
+    --titlebar-height: 32px;
 }
 
 .content {
@@ -77,6 +8,53 @@
     background-color: #fff;
 }
 
-.view__container{
+.view__container {
     overflow: hidden;
+}
+
+.layout {
+    width: 100%;
+    position: relative;
+    margin-top: var(--titlebar-height);
+    flex: 1;
+    min-height: 0;
+}
+
+.navbar-normal {
+    margin: 0rem 0rem 1rem 1rem;
+}
+
+.navbar-absolute {
+    padding: 1rem;
+    position: absolute !important;
+    z-index: 1000;
+    background-color: var(--gray-1);
+    border: 1px solid var(--gray-6);
+    border-radius: var(--radius-4);
+    height: 90vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    top: 2.35%;
+    left: -0.5%;
+}
+
+/* Ajustement pour la toolbar quand la navbar est visible */
+.navbar-normal ~ .small-toolbar__all {
+    transform: translateX(calc(-50% + 120px)); /* La moitié de la largeur de la navbar */
+}
+
+.no-hover {
+    position: relative !important;
+    z-index: auto !important;
+}
+
+.radix-container {
+    --radix-scroll-strut: 0px;
+}
+
+[data-radix-scroll-area-viewport] {
+    height: 100% !important;
+}
+
+:where(.rt-PopperContent) {
+    max-height: none !important;
 }

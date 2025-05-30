@@ -1,0 +1,27 @@
+.popup__container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: var(--gray-5);
+    border-radius: var(--radius-4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.popup__topbar {
+    background-color: var(--color-panel);
+
+}
+
+.popup__inner {
+
+    background-color: var(--white);
+    border-radius: var(--radius-4);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: blue;
+
+}

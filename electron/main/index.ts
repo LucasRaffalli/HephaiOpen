@@ -1,12 +1,10 @@
-import { app, BrowserWindow, shell, ipcMain, nativeImage } from 'electron'
+import { app, BrowserWindow, ipcMain, nativeImage } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
 import { update } from './update'
-import Store from 'electron-store';
-import { SettingsSchema } from '@/type/hephai';
-import { session } from 'electron/main'
+import { registerWindowIPC } from '../win/ipcEvents'
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -31,10 +29,8 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, 'public')
   : RENDERER_DIST
 
-// Disable GPU Acceleration for Windows 7
 if (os.release().startsWith('6.1')) app.disableHardwareAcceleration()
 
-// Set application name for Windows 10+ notifications
 if (process.platform === 'win32') app.setAppUserModelId(app.getName())
 
 if (!app.requestSingleInstanceLock()) {
@@ -44,37 +40,66 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null
 const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
-
+console.log('Loading file:', indexHtml)
 async function createWindow() {
+  const icon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'favicon.ico'))
+  icon.setTemplateImage(true)
+
+  const resizedIcon = icon.resize({
+    width: 256,
+    height: 256,
+    quality: 'better'
+  })
+
   win = new BrowserWindow({
     title: 'Main window',
     height: 860,
+    backgroundColor: '#1c1c1c',
+    frame: false,
+    titleBarStyle: 'hiddenInset',
+    maximizable: true,
+    resizable: true,
     width: 1260,
     minHeight: 860,
     minWidth: 1260,
-    icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
-    webPreferences: { preload, nodeIntegration: true, contextIsolation: true, },
+    icon: resizedIcon,
+    webPreferences: {
+      preload,
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: true,
+      // devTools: false
+    },
   })
-  // win.setOverlayIcon(nativeImage.createFromPath('path/to/overlay.png'), 'Description de la superposition')
-  if (VITE_DEV_SERVER_URL) { // #298
+  if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
-    // Open devTool if the app is not packaged
   } else {
+
     win.loadFile(indexHtml)
   }
 
-  // Test actively push message to the Electron-Renderer
-  // win.webContents.on('did-finish-load', () => {
-  //   win?.webContents.send('main-process-message', new Date().toLocaleString())
-  // })
+  win.webContents.openDevTools()
 
-  // Make all links open with the browser, not with the application
-  // win.webContents.setWindowOpenHandler(({ url }) => {
-  //   if (url.startsWith('https:')) shell.openExternal(url)
-  //   return { action: 'deny' }
-  // })
+  win.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    console.error('Erreur de chargement:', errorCode, errorDescription);
+  });
+
+  win.webContents.on('did-finish-load', () => {
+  });
+  // Register all window IPC handlers
+  registerWindowIPC(win)
+
   // Auto update
+  console.log("Initializing auto-updater...")
   update(win)
+
+  win.on('maximize', () => {
+    win?.webContents.send('window-maximized-change', true)
+  })
+
+  win.on('unmaximize', () => {
+    win?.webContents.send('window-maximized-change', false)
+  })
 }
 
 app.whenReady().then(async () => {
@@ -118,8 +143,9 @@ ipcMain.handle('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload,
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: false
     },
   })
 

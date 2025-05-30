@@ -37,7 +37,7 @@ npm run dev
 
 ## 🧰 Technologies Used
 This project uses the following technologies and libraries:
-- **Electron**  for the desktop application: `electron`,`electron-builder`, `electron-store`, `electron-updater`
+- **Electron**  for the desktop application: `electron`,`electron-builder`, `electron-updater`
 - **React** for the user interface: `react`, `react-dom`, `react-router-dom`, `react-toastify`, `react-i18next`
 - **PDF** Generation with `jsPDF` and `react-pdf` for creating PDF invoices
 - **Internationalisation** with  `i18next` and `react-i18next`

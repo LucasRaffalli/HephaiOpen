@@ -1,96 +1,82 @@
-import React, { useEffect, useRef, useState, forwardRef } from 'react'
-import { useTheme } from '@/utils/ThemeContext';
-import { AspectRatio, Avatar, Box, Button, Flex, Heading, IconButton, Select, Separator, Skeleton, Text, TextField, Tooltip } from '@radix-ui/themes';
-import { AccentColor, CompanyInfo } from '@/type/hephai'
-import { useTranslation } from 'react-i18next';
 import '@/css/setting.css'
-import themeLight from '/img/themeLight.png'
-import themeDark from '/img/themeDark.png'
-import themeSystem from '/img/themeSystem.png'
+import React, { useEffect, useRef, useState } from 'react'
+import { useTheme } from '@/context/ThemeContext';
+import { Avatar, Box, Button, Flex, Heading, Kbd, Skeleton, Text, Tooltip } from '@radix-ui/themes';
+import { AccentColor, CompanyInfo, Client } from '@/types/hephai'
 import { exportData } from '@/utils/exportData';
-import { importData } from '@/utils/importData';
-import i18n from '@/i18n';
+import i18n, { t } from '@/i18n';
 import { ToastContainer, toast } from 'react-toastify';
-import { DotsHorizontalIcon, EyeClosedIcon, EyeOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@radix-ui/react-icons';
 import { getAccentColorHex, colorMap } from '@/utils/getAccentColorHex';
-
+import LanguageSettings from '@/components/Settings/LanguageSettings';
+import UserInformation from '@/components/Settings/UserInformation';
+import ProfileImage from '@/components/Settings/ProfileImage';
+import ThemeSettings from '@/components/Settings/ThemeSettings';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import Tva from '@/components/Settings/Tva';
+import { motion } from "motion/react"
+import PriceUnit from '@/components/Settings/PriceUnit';
 
 export default function Settings() {
 
     const loadVisibilityPreferences = () => {
-        const savedVisibility = localStorage.getItem('visibilityPreferences');
-        return savedVisibility ? JSON.parse(savedVisibility) : {
-            companyName: true,
-            authorAddress: false,
-            authorPhone: false,
-            authorEmail: false,
-            siret: false
-        };
-    };
-    const [visibility, setVisibility] = useState(loadVisibilityPreferences);
+        const defaultVisibility = { authorCompanyName: true, authorAddress: false, authorPhone: false, authorEmail: false, siret: false };
 
+        const savedVisibility = localStorage.getItem('visibilityPreferences');
+        if (!savedVisibility) {
+            localStorage.setItem('visibilityPreferences', JSON.stringify(defaultVisibility));
+            return defaultVisibility;
+        }
+
+        return { ...defaultVisibility, ...JSON.parse(savedVisibility) };
+    };
+
+    const [visibility, setVisibility] = useState(loadVisibilityPreferences);
     const { toggleTheme, accentColor, setAccentColor } = useTheme();
-    const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const imageFileInputRef = useRef<HTMLInputElement | null>(null);
-    const [isDarkMode, setIsDarkMode] = useState<boolean>(() => { const savedMode = localStorage.getItem('isDarkMode'); return savedMode ? JSON.parse(savedMode) : false; });
+    const [isDarkMode, setIsDarkMode] = useDarkMode();
     const firstJoinDate = localStorage.getItem("dateJoins");
     const [imageSrc, setImageSrc] = useState<string | null>(localStorage.getItem('profileImage') || null);
-
-    const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
-        authorCompanyName: '',
-        authorAddress: '',
-        authorPhone: '',
-        authorEmail: '',
-        siret: '',
-    });
-
+    const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({ authorCompanyName: '', authorAddress: '', authorPhone: '', authorEmail: '', siret: '', });
     const colorHexTheme = getAccentColorHex();
-    const gradientBackground = isDarkMode
-        ? `linear-gradient(180deg, ${colorHexTheme}, transparent 92%)` // Dégradé sombre
-        : `linear-gradient(180deg, ${colorHexTheme}, transparent)`; // Dégradé clair
+    const gradientBackground = isDarkMode ? `linear-gradient(180deg, ${colorHexTheme}, transparent 92%)` : `linear-gradient(180deg, ${colorHexTheme}, transparent)`;
+    const [tva, setTva] = useState(localStorage.getItem('tva') || '0');
+    const [customFileNamePrefix, setCustomFileNamePrefix] = useState(localStorage.getItem('customFileNamePrefix') || '');
+    const [clients, setClients] = useState<Client[]>(() => { const storedClients = localStorage.getItem('clients'); return storedClients ? JSON.parse(storedClients) : []; });
+    const [settingsData, setSettingsData] = useState(() => ({ accentColor: accentColor, customFileNamePrefix: customFileNamePrefix, companyInfo: companyInfo, language: localStorage.getItem('language') || 'en', dateJoins: localStorage.getItem('dateJoins'), visibilityPreferences: visibility, clients: clients, profileImage: localStorage.getItem('profileImage'), tva: tva, toggleTheme: localStorage.getItem('themeMode') || 'light' || 'dark' || 'system' }));
 
+
+    useEffect(() => {
+        setSettingsData({
+            toggleTheme: localStorage.getItem('themeMode') || 'light' || 'dark' || 'system',
+            accentColor: accentColor,
+            customFileNamePrefix: customFileNamePrefix,
+            companyInfo: companyInfo,
+            language: localStorage.getItem('language') || 'en',
+            dateJoins: localStorage.getItem('dateJoins'),
+            visibilityPreferences: visibility,
+            clients: clients,
+            tva: tva,
+            profileImage: localStorage.getItem('profileImage')
+        });
+    }, [accentColor, companyInfo, visibility, clients, customFileNamePrefix, toggleTheme]);
 
     const handleExportJson = () => {
         try {
-            const settingsData = {
-                theme: isDarkMode ? 'true' : 'false',
-                accentColor: accentColor,
-                companyInfo: companyInfo,
-                language: localStorage.getItem('language') || 'en',
-                dateJoins: localStorage.getItem('dateJoins'),
-                profileImage: localStorage.getItem('profileImage'),
-                visibilityPreferences: visibility
-            };
-
             exportData([settingsData], 'json');
-
-            toast.success(t('toast.export.success'), {
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: isDarkMode ? 'dark' : 'light',
-            });
+            toast.success(t('toast.export.success'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
         } catch (error) {
             console.error('Erreur lors de l\'exportation des données:', error);
-            toast.error(t('toast.export.error'), {
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: isDarkMode ? 'dark' : 'light',
-            });
+            toast.error(t('toast.export.error'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
         }
     };
-
+    const handleResetSettings = () => {
+        localStorage.clear();
+        window.location.reload();
+    }
     const handleChangeLanguage = (language: string) => {
         i18n.changeLanguage(language);
         localStorage.setItem('language', language);
+        window.location.reload();
     };
 
     const handleImportSettings = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,8 +87,9 @@ export default function Settings() {
                 const importedSettings = JSON.parse(text);
                 if (Array.isArray(importedSettings) && importedSettings.length > 0) {
                     const settings = importedSettings[0];
-                    if (settings.theme) {
-                        toggleTheme(settings.theme === 'dark' ? 'dark' : 'light');
+                    if (settings.toggleTheme) {
+                        setIsDarkMode(settings.toggleTheme === 'dark' || settings.toggleTheme === 'system' ? true : false);
+                        localStorage.setItem('themeMode', settings.toggleTheme);
                     }
                     if (settings.accentColor) {
                         setAccentColor(settings.accentColor);
@@ -114,32 +101,32 @@ export default function Settings() {
                         setImageSrc(settings.profileImage);
                         localStorage.setItem('profileImage', settings.profileImage);
                     }
-                    localStorage.setItem('isDarkMode', settings.theme === 'dark' ? 'true' : 'false');
+                    if (settings.clients) {
+                        setClients(settings.clients);
+                        localStorage.setItem('clients', JSON.stringify(settings.clients));
+                    }
+                    if (settings.companyInfo) {
+                        setCompanyInfo(settings.companyInfo);
+                        localStorage.setItem('companyInfos', JSON.stringify([settings.companyInfo]));
+                    }
+                    if (settings.tva) {
+                        setTva(settings.tva);
+                        localStorage.setItem('tva', settings.tva);
+                    }
+                    if (settings.customFileNamePrefix) {
+                        setCustomFileNamePrefix(settings.customFileNamePrefix);
+                        localStorage.setItem('customFileNamePrefix', settings.customFileNamePrefix);
+                    }
                     localStorage.setItem('accentColor', settings.accentColor);
                     localStorage.setItem('language', settings.language);
-                    toast.success(t('toast.import.success'), {
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: isDarkMode ? 'dark' : 'light',
-                    });
+                    window.location.reload();
+                    toast.success(t('toast.import.success'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
                 } else {
                     console.error('Le fichier importé n\'est pas au format attendu.');
                 }
             } catch (error) {
                 console.error('Erreur lors de l\'importation du fichier JSON:', error);
-                toast.error(t('toast.import.error'), {
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: isDarkMode ? 'dark' : 'light',
-                });
+                toast.error(t('toast.import.error'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
             }
         }
     };
@@ -162,27 +149,15 @@ export default function Settings() {
     };
     const handleSave = () => {
         localStorage.setItem('companyInfos', JSON.stringify([companyInfo]));
-        toast.success(t('toast.saveInfo.success'), {
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: isDarkMode ? 'dark' : 'light',
-        });
+        toast.success(t('toast.saveInfo.success'), { autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: isDarkMode ? 'dark' : 'light', });
     };
 
     if (!localStorage.getItem("dateJoins")) {
         if (!localStorage.getItem("dateJoins")) {
             const today = new Date();
-
-            // Utilise i18n pour obtenir le mois et le transformer en majuscules
             const day = String(today.getDate()).padStart(2, "0");
             const month = i18n.t(`date.months_short.${today.getMonth()}`).toUpperCase();
             const year = today.getFullYear();
-
-            // Formate la date au format "YYYY-MMM-DD"
             const formattedDate = `${month} ${day}, ${year}`;
             localStorage.setItem("dateJoins", formattedDate);
         }
@@ -196,253 +171,273 @@ export default function Settings() {
             reader.onloadend = () => {
                 const imageUrl = reader.result as string;
                 setImageSrc(imageUrl);
-                localStorage.setItem('profileImage', imageUrl); // Stocke l'image dans le localStorage
+                localStorage.setItem('profileImage', imageUrl);
             };
             reader.readAsDataURL(file);
         }
     };
 
+    const handleImageDelete = () => {
+        setImageSrc(null);
+        localStorage.removeItem('profileImage');
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    };
 
-    const saveVisibilityPreferences = (newVisibility: typeof visibility) => {
+    const toggleVisibility = (field: string) => {
+        const newVisibility = {
+            ...visibility,
+            [field]: !visibility[field]
+        };
+        setVisibility(newVisibility);
         localStorage.setItem('visibilityPreferences', JSON.stringify(newVisibility));
     };
 
-    const toggleVisibility = (field: keyof typeof visibility) => {
-        setVisibility((prev: any) => {
-            const newVisibility = { ...prev, [field]: !prev[field] };
-            saveVisibilityPreferences(newVisibility);
-            return newVisibility;
-        });
-    };
-
     const maskEmail = (email: string) => {
+        if (!email) return '••••••••••';
         const [localPart, domain] = email.split('@');
-        const maskedLocalPart = localPart.replace(/./g, '*');
+        if (!domain) return '••••••••••';
+        const maskedLocalPart = '•'.repeat(Math.min(localPart.length, 6));
         return `${maskedLocalPart}@${domain}`;
     };
 
     const maskPhone = (phone: string) => {
-        const phoneNumber = phone.replace(/\D/g, '');
-        const visiblePart = phoneNumber.slice(-4);
-        const maskedPart = phoneNumber.slice(0, -4).replace(/\d/g, '*');
-
-        return `${maskedPart}${visiblePart}`;
+        if (!phone) return '••••••••••';
+        const cleaned = phone.replace(/\D/g, '');
+        if (cleaned.length < 4) return '••••••••••';
+        return '•'.repeat(cleaned.length - 4) + cleaned.slice(-4);
     };
 
+    const maskSiret = (siret: string) => {
+        if (!siret) return '••••••••••';
+        const cleaned = siret.replace(/\D/g, '');
+        if (cleaned.length < 5) return '••••••••••';
+        return '•'.repeat(cleaned.length - 4) + cleaned.slice(-4);
+    };
 
+    const maskCompanyName = (name: string) => {
+        if (!name || name.trim().length === 0) return '••••••••••';
+        return '•'.repeat(10);
+    };
+
+    useEffect(() => {
+        const savedVisibility = localStorage.getItem('visibilityPreferences');
+        if (savedVisibility) {
+            setVisibility(JSON.parse(savedVisibility));
+        }
+    }, []);
+
+    const containerLeftVariants = {
+        hidden: {
+            x: -500,
+            opacity: 0,
+            scale: 0.95,
+            skew: 2
+        },
+        visible: {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            skew: 0,
+            transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+                duration: 0.3,
+                when: "beforeChildren",
+                staggerChildren: 0.05,
+                delayChildren: 0.1
+            }
+        }
+    };
+
+    const featureVariants = {
+        hidden: {
+            x: -30,
+            opacity: 0,
+            scale: 0.95
+        },
+        visible: {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 20,
+                mass: 0.8
+            }
+        }
+    };
+    const handleAccentColorChange = (color: string) => {
+        setAccentColor(color);
+        localStorage.setItem('accentColor', color);
+        window.location.reload();
+    };
     return (
-        <Flex width={'100%'} className='test2' height={'100%'}>
-            <Box>
-
-
-                <Heading mb={'9'} >{t('setting.title')}</Heading>
-                <Flex direction={'row'} className='test'>
-                    <Flex direction={'column'} gap={'9'} ml={'2'}>
-
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('setting.informationUser.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('setting.informationUser.subtitle')}</Text>
-                            </Flex>
-                            <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
-                                <Flex gap="2">
-                                    <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} />
+        <Flex width={'100%'} gap={"6"} height={'100%'} style={{ overflow: 'hidden' }} className='settings__container'>
+            <Box width={'100%'} height={'100%'} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+                <Heading mb={'9'} className="sticky-title">{t('settings.title')}</Heading>
+                <Flex direction={'row'} className='settings__container__left' gap={'9'}>
+                    <motion.div variants={containerLeftVariants} initial="hidden" animate="visible">
+                        <Flex direction={'column'} gap={'9'} ml={'2'}>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.informationUser.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.informationUser.subtitle')}</Text>
+                                    </Flex>
+                                    <ProfileImage imageSrc={imageSrc} handleImageChange={handleImageChange} handleImageDelete={handleImageDelete} />
                                 </Flex>
-                                <Tooltip content={t('utils.tooltips.btnimg')}>
-                                    <Button color={AccentColor as any} variant="soft" className='btncursor' size={'3'} onClick={() => imageFileInputRef.current?.click()}>
-                                        <Text size="2" weight={'regular'}>{t('utils.img.btn')}</Text>
-                                        <input key="inputForImage" type="file" accept="image/*" ref={imageFileInputRef} onChange={handleImageChange} style={{ display: 'none' }} />
-                                    </Button>
-                                </Tooltip>
-                            </Flex>
-                        </Flex>
+                            </motion.div>
 
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('setting.informationUser.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('setting.informationUser.subtitle')}</Text>
-                            </Flex>
-
-                            <Flex direction="row" gap="4" width="50%" height="fit-content" wrap="wrap">
-                                <Box maxWidth="250px">
-                                    <TextField.Root placeholder="CompanyName" name="authorCompanyName" onChange={handleChange} value={companyInfo.authorCompanyName} size="2" type={visibility.companyName ? 'text' : 'password'}>
-                                        <TextField.Slot side={'right'}>
-                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('companyName')}>
-                                                {visibility.companyName ? (
-                                                    <EyeOpenIcon height="14" width="14" />
-                                                ) : (
-                                                    <EyeClosedIcon height="14" width="14" />
-                                                )}
-                                            </IconButton>
-                                        </TextField.Slot>
-                                    </TextField.Root>
-                                </Box>
-                                <Box maxWidth="250px">
-                                    <TextField.Root placeholder="Adress" name="authorAddress" onChange={handleChange} value={companyInfo.authorAddress} size="2" type={visibility.authorAddress ? 'text' : 'password'}>
-                                        <TextField.Slot side={'right'}>
-                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('authorAddress')}>
-                                                {visibility.authorAddress ? (
-                                                    <EyeOpenIcon height="14" width="14" />
-                                                ) : (
-                                                    <EyeClosedIcon height="14" width="14" />
-                                                )}
-                                            </IconButton>
-                                        </TextField.Slot>
-                                    </TextField.Root>
-                                </Box>
-                                <Box maxWidth="250px">
-                                    <TextField.Root placeholder="Phone" name="authorPhone" onChange={handleChange} value={visibility.authorPhone ? companyInfo.authorPhone : maskPhone(companyInfo.authorPhone)} size="2" type="tel">
-                                        <TextField.Slot side={'right'}>
-                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('authorPhone')}>
-                                                {visibility.authorPhone ? (
-                                                    <EyeOpenIcon height="14" width="14" />
-                                                ) : (
-                                                    <EyeClosedIcon height="14" width="14" />
-                                                )}
-                                            </IconButton>
-                                        </TextField.Slot>
-                                    </TextField.Root>
-                                </Box>
-                                <Box maxWidth="250px">
-                                    <TextField.Root placeholder="Email" name="authorEmail" onChange={handleChange} value={visibility.authorEmail ? companyInfo.authorEmail : maskEmail(companyInfo.authorEmail)} size="2" type="email">
-                                        <TextField.Slot side={'right'}>
-                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('authorEmail')}>
-                                                {visibility.authorEmail ? (
-                                                    <EyeOpenIcon height="14" width="14" />
-                                                ) : (
-                                                    <EyeClosedIcon height="14" width="14" />
-                                                )}
-                                            </IconButton>
-                                        </TextField.Slot>
-                                    </TextField.Root>
-                                </Box>
-                                <Box maxWidth="250px">
-                                    <TextField.Root placeholder="Siret" name="siret" onChange={handleChange} value={companyInfo.siret} size="2" type={visibility.siret ? 'text' : 'password'}>
-                                        <TextField.Slot side={'right'}>
-                                            <IconButton size="1" variant="ghost" onClick={() => toggleVisibility('siret')}>
-                                                {visibility.siret ? (
-                                                    <EyeOpenIcon height="14" width="14" />
-                                                ) : (
-                                                    <EyeClosedIcon height="14" width="14" />
-                                                )}
-                                            </IconButton>
-                                        </TextField.Slot>
-                                    </TextField.Root>
-                                </Box>
-                                <Tooltip content={t('utils.tooltips.savedata')}>
-                                    <Button color={AccentColor as any} variant="soft" className='btncursor' size={'3'} onClick={handleSave}>
-                                        <Text size="2" weight={'regular'}>{t('utils.savedata')}</Text>
-                                    </Button>
-                                </Tooltip>
-                            </Flex>
-
-                        </Flex>
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('setting.accentColor.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('setting.accentColor.subtitle')}</Text>
-                            </Flex>
-                            <Flex direction={'row'} gap={'4'} minWidth={'20%'} maxWidth={'50%'} height={'fit-content'} wrap={'wrap'}>
-                                {Object.entries(colorMap).map(([name, colorCode]) => (
-                                    <Tooltip content={t(`utils.tooltips.colors.${name}`)} key={name}>
-                                        <Box height={'32px'} width={'32px'} key={name} onClick={() => setAccentColor(name as AccentColor)} className={`${'accentColor__btn'} ${accentColor === name ? 'selected' : ''}`} style={{ '--color-bg': '#' + colorCode, } as React.CSSProperties} aria-label={name} />
-                                    </Tooltip>
-                                ))}
-                            </Flex>
-
-                        </Flex>
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('setting.themeColor.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('setting.themeColor.subtitle')}</Text>
-                            </Flex>
-                            <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
-                                <Flex direction={'column'} gap={'2'}>
-                                    <Tooltip content={t('utils.tooltips.themeL')}>
-                                        <Box className={`themeColor ${!isDarkMode ? 'selected' : ''}`} style={{ '--color-bg': '' + colorHexTheme } as React.CSSProperties} onClick={() => toggleTheme('light')}>
-                                            <img src={themeLight} alt="Light Theme" />
-                                        </Box>
-                                    </Tooltip>
-                                    <Text color="gray" size="2" weight={'regular'} as={'label'}>{t('setting.themeColor.light')}</Text>
-
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.informationUser.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.informationUser.subtitle')}</Text>
+                                    </Flex>
+                                    <UserInformation companyInfo={companyInfo} handleChange={handleChange} handleSave={handleSave} buttonSize='180px' visibility={visibility} onToggleVisibility={toggleVisibility} />
                                 </Flex>
-                                <Flex direction={'column'} gap={'2'}>
-                                    <Tooltip content={t('utils.tooltips.themeD')}>
-                                        <Box className={`themeColor ${isDarkMode ? 'selected' : ''}`} style={{ '--color-bg': '' + colorHexTheme } as React.CSSProperties} onClick={() => toggleTheme('dark')}>
-                                            <img src={themeDark} alt="Dark Theme" />
-                                        </Box>
-                                    </Tooltip>
-                                    <Text color="gray" size="2" weight={'regular'}>{t('setting.themeColor.dark')}</Text>
+                            </motion.div>
 
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.accentColor.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.accentColor.subtitle')}</Text>
+                                    </Flex>
+                                    <Flex direction={'row'} gap={'4'} minWidth={'20%'} maxWidth={'50%'} height={'fit-content'} wrap={'wrap'}>
+                                        {Object.entries(colorMap).map(([name, colorCode]) => (
+                                            <Tooltip content={t(`utils.tooltips.colors.${name}`)} key={name}>
+                                                <Box height={'32px'} width={'32px'} key={name} onClick={() => handleAccentColorChange(name as AccentColor)} className={`${'accentColor__btn'} ${accentColor === name ? 'selected' : ''}`} style={{ '--color-bg': '#' + colorCode, } as React.CSSProperties} aria-label={name} />
+                                            </Tooltip>
+                                        ))}
+                                    </Flex>
                                 </Flex>
-                            </Flex>
-                        </Flex>
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('setting.language.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('setting.language.subtitle')}</Text>
-                            </Flex>
+                            </motion.div>
 
-                            <Tooltip content={t('utils.tooltips.lang')}>
-                                <Select.Root defaultValue={i18n.language} onValueChange={handleChangeLanguage} size={"2"}>
-                                    <Select.Trigger />
-                                    <Select.Content>
-                                        <Select.Item className='btncursor' value="en">{t('setting.language.lang.en')}</Select.Item>
-                                        <Select.Item className='btncursor' value="fr">{t('setting.language.lang.fr')}</Select.Item>
-                                    </Select.Content>
-                                </Select.Root>
-                            </Tooltip>
-                        </Flex>
-                        <Flex direction={'row'} gap={"9"} >
-                            <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
-                                <Text size={'5'} weight={'medium'}>{t('setting.hephai.title')}</Text>
-                                <Text color="gray" size="2" weight={'regular'}>{t('setting.hephai.subtitle')}</Text>
-                            </Flex>
-                            <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
-                                <Tooltip content={t('utils.tooltips.exportjson')}>
-                                    <Button color={AccentColor as any} variant="soft" size={'3'} className='btncursor' onClick={handleExportJson}>
-                                        <Text size="2" weight={'regular'}>{t('setting.hephai.export.json')}</Text>
-                                    </Button>
-                                </Tooltip>
-                                <Tooltip content={t('utils.tooltips.importjson')}>
-                                    <Button color={'green'} variant="soft" size={'3'} className='btncursor' onClick={() => fileInputRef.current?.click()}>
-                                        <input key="inputForFile" ref={fileInputRef} type="file" accept=".json" onChange={handleImportSettings} style={{ display: 'none' }} />
-                                        <Text size="2" weight={'regular'}>{t('setting.hephai.import.title')}</Text>
-                                    </Button>
-                                </Tooltip>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.themeColor.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.themeColor.subtitle')}</Text>
+                                    </Flex>
+                                    <ThemeSettings isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+                                </Flex>
+                            </motion.div>
 
-                            </Flex>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.language.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.language.subtitle')}</Text>
+                                    </Flex>
+                                    <LanguageSettings currentLanguage={i18n.language} handleChangeLanguage={handleChangeLanguage} />
+                                </Flex>
+                            </motion.div>
+
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.priceUnit.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.priceUnit.subtitle')}</Text>
+                                    </Flex>
+                                    <PriceUnit />
+                                </Flex>
+                            </motion.div>
+
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"}>
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.tva.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.tva.subtitle')}</Text>
+                                    </Flex>
+                                    <Tva valueTva={tva} />
+                                </Flex>
+                            </motion.div>
+                            <motion.div variants={featureVariants}>
+                                <Flex direction={'row'} gap={"9"} >
+                                    <Flex direction={"column"} minWidth={'250px'} maxWidth={'250px'}>
+                                        <Text size={'5'} weight={'medium'}>{t('settings.hephai.title')}</Text>
+                                        <Text color="gray" size="2" weight={'regular'}>{t('settings.hephai.subtitle')}</Text>
+                                    </Flex>
+                                    <Flex direction={'column'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
+                                        <Flex gap={"4"}>
+
+                                            <Tooltip content={t('utils.tooltips.exportjson')}>
+                                                <Button color={AccentColor as any} variant="soft" size={'3'} className='btnCursor' onClick={handleExportJson}>
+                                                    <Text size="2" weight={'regular'}>{t('buttons.export.json')}</Text>
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip content={t('utils.tooltips.importjson')}>
+                                                <Button color={'green'} variant="soft" size={'3'} className='btnCursor' onClick={() => fileInputRef.current?.click()}>
+                                                    <input key="inputForFile" ref={fileInputRef} type="file" accept=".json" onChange={handleImportSettings} style={{ display: 'none' }} />
+                                                    <Text size="2" weight={'regular'}>{t('buttons.import.json')}</Text>
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip content={t('utils.tooltips.reset')}>
+                                                <Button color={'red'} variant="soft" size={'3'} className='btnCursor' onClick={handleResetSettings}>
+                                                    <Text size="2" weight={'regular'}>{t('buttons.reset')}</Text>
+                                                </Button>
+                                            </Tooltip>
+
+                                        </Flex>
+                                        <Flex align={"center"} gap={"4"}>
+                                            <Text size={'2'} weight={'medium'}>{t('menu.window.toolbar')}</Text>
+                                            <Kbd>alt + ctrl </Kbd>
+
+                                        </Flex>
+                                        <Flex align={"center"} gap={"4"}>
+                                            <Text size={'2'} weight={'medium'}>{t('shortcutsPanel.title')}</Text>
+                                            <Kbd>alt + s </Kbd>
+
+                                        </Flex>
+                                    </Flex>
+                                </Flex>
+                            </motion.div>
                         </Flex>
-                    </Flex>
-                    {/* CARD */}
+                    </motion.div>
                 </Flex>
             </Box >
             <ToastContainer position="bottom-right" />
-            <Flex className='card' direction={'column'} p={'3'} style={{ background: gradientBackground }} gap={"4"} >
+            <Flex className='card' direction={'column'} p={'3'} style={{ background: gradientBackground, width: "430px" }} gap={"4"} >
                 <Flex>
                     <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} className='card__img' />
                     <Skeleton>
                     </Skeleton>
                 </Flex>
                 <Flex direction={'column'} className='effect__color' style={{ color: colorHexTheme }}>
-                    <Text size={'8'} weight={'bold'} className={visibility.companyName ? 'visible-field' : 'password-field'}>{companyInfo.authorCompanyName}</Text>
-                    <Text size={'5'} className={visibility.authorAddress ? 'visible-field' : 'password-field'}>{companyInfo.authorAddress}</Text>
-                    <Text size={'5'} className={visibility.authorPhone ? 'visible-field' : 'password-field'}>{companyInfo.authorPhone}</Text>
-                    <Text size={'5'} className={visibility.authorEmail ? 'visible-field' : 'password-field'}>{companyInfo.authorEmail}</Text>
-                    <Text size={'5'} highContrast className={visibility.siret ? 'visible-field' : 'password-field'}>{companyInfo.siret}</Text>
+                    <Text size={'8'} weight={'bold'}>
+                        {companyInfo.authorCompanyName && (visibility.authorCompanyName ? companyInfo.authorCompanyName : maskCompanyName(companyInfo.authorCompanyName))}
+                    </Text>
+                    <Text size={'5'}>
+                        {visibility.authorAddress ? companyInfo.authorAddress : '••••••••••'}
+                    </Text>
+                    <Text size={'5'}>
+                        {visibility.authorPhone ? companyInfo.authorPhone : maskPhone(companyInfo.authorPhone)}
+                    </Text>
+                    <Text size={'5'}>
+                        {visibility.authorEmail ? companyInfo.authorEmail : maskEmail(companyInfo.authorEmail)}
+                    </Text>
+                    <Text size={'5'} highContrast>
+                        {visibility.siret ? companyInfo.siret : maskSiret(companyInfo.siret)}
+                    </Text>
                 </Flex>
                 <Flex className='effect__color footer__container' justify={'between'} style={{ color: colorHexTheme }} width={"100%"} align={'center'}>
-                    <Flex gap={"2"} style={{ border: `2px solid ${colorHexTheme}` }} height={'fit-content'} className='footer__container' >
-                        <Text size={'2'} ml={'2'} weight={'bold'}>HEPH</Text>
-                        <Box width={"26px"} style={{ backgroundColor: colorHexTheme }}></Box>
-                        <Text size={'2'} mr={'2'} weight={"bold"} >{firstJoinDate}</Text>
+                    <Flex className='footer__low' justify={'between'} align={'center'}>
+                        <Flex gap={"2"} style={{ border: `2px solid ${colorHexTheme}` }} height={'fit-content'} className='footer__container' >
+                            <Text size={'2'} ml={'2'} weight={'bold'}>HEPH</Text>
+                            <Box width={"26px"} style={{ backgroundColor: colorHexTheme }}></Box>
+                            <Text size={'2'} mr={'2'} weight={"bold"} >{firstJoinDate}</Text>
+                        </Flex>
+                        <Box width={'20%'} className='footer__hephai__text'>
+                            <Text size={'4'} weight={"bold"} >{t('utils.hephai1')}</Text>
+                        </Box>
                     </Flex>
-                    <Box width={'20%'}>
-
-                        <Text size={'4'} weight={"bold"} >{t('utils.hephai1')}</Text>
-                    </Box>
                 </Flex>
-
             </Flex>
         </Flex >
     )
