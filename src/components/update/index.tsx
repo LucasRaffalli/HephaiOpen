@@ -20,6 +20,7 @@ const UpdatePage = () => {
         newVersion: '',
         error: '',
         progress: 0,
+        isDownloading: false,
         isDownloaded: false
     });
     const [showModal, setShowModal] = useState(false);
@@ -38,6 +39,19 @@ const UpdatePage = () => {
         }
     };
 
+    const startDownload = async () => {
+        setUpdateInfo(prev => ({ ...prev, isDownloading: true, progress: 0 }));
+        try {
+            await window.ipcRenderer.invoke('start-download');
+        } catch (error) {
+            setUpdateInfo(prev => ({ 
+                ...prev, 
+                error: 'Erreur lors du téléchargement',
+                isDownloading: false 
+            }));
+        }
+    };
+
     const onUpdateAvailable = useCallback((_event: Electron.IpcRendererEvent, arg: VersionInfo) => {
         setUpdateInfo(prev => ({
             ...prev,
@@ -50,18 +64,37 @@ const UpdatePage = () => {
     }, []);
 
     const onProgress = useCallback((_event: Electron.IpcRendererEvent, arg: ProgressInfo) => {
-        setUpdateInfo(prev => ({ ...prev, progress: arg.percent || 0 }));
+        setUpdateInfo(prev => ({ 
+            ...prev, 
+            progress: arg.percent || 0,
+            isDownloading: true
+        }));
     }, []);
 
     const onUpdateDownloaded = useCallback(() => {
-        setUpdateInfo(prev => ({ ...prev, isDownloaded: true }));
-        setTimeout(() => window.ipcRenderer.invoke('quit-and-install'), 2000);
+        setUpdateInfo(prev => ({ 
+            ...prev, 
+            isDownloaded: true,
+            isDownloading: false,
+            progress: 100 
+        }));
+        // Attendre un peu pour montrer que le téléchargement est terminé
+        setTimeout(() => {
+            window.ipcRenderer.invoke('quit-and-install');
+        }, 1500);
     }, []);
 
     useEffect(() => {
         window.ipcRenderer.on('update-can-available', onUpdateAvailable);
         window.ipcRenderer.on('download-progress', onProgress);
         window.ipcRenderer.on('update-downloaded', onUpdateDownloaded);
+        window.ipcRenderer.on('update-error', (_event, error) => {
+            setUpdateInfo(prev => ({ 
+                ...prev, 
+                error: error.message || 'Erreur inconnue',
+                isDownloading: false 
+            }));
+        });
 
         return () => {
             window.ipcRenderer.off('update-can-available', onUpdateAvailable);
@@ -90,9 +123,9 @@ const UpdatePage = () => {
             <Modal 
                 open={showModal} 
                 cancelText="Fermer" 
-                okText={updateInfo.available && !updateInfo.isDownloaded ? "Télécharger" : undefined}
+                okText={updateInfo.available && !updateInfo.isDownloaded && !updateInfo.isDownloading ? "Télécharger" : undefined}
                 onCancel={() => setShowModal(false)}
-                onOk={() => window.ipcRenderer.invoke('start-download')}
+                onOk={startDownload}
                 title={updateInfo.error ? "Erreur" : "Mise à jour"}
             >
                 {updateInfo.error ? (
@@ -105,8 +138,13 @@ const UpdatePage = () => {
                             <Badge variant="soft" color="indigo">{updateInfo.newVersion}</Badge>
                         </Flex>
                         {getChangeDescription()}
-                        {updateInfo.progress > 0 && (
-                            <Progress value={updateInfo.progress} />
+                        {(updateInfo.isDownloading || updateInfo.progress > 0) && (
+                            <Flex direction="column" gap="2">
+                                <Text size="2" color="gray">
+                                    Téléchargement: {Math.round(updateInfo.progress)}%
+                                </Text>
+                                <Progress value={updateInfo.progress} radius="full" />
+                            </Flex>
                         )}
                         {updateInfo.isDownloaded && (
                             <Badge color="green">Installation en cours...</Badge>
@@ -117,7 +155,7 @@ const UpdatePage = () => {
                 )}
             </Modal>
 
-            <Button size="3" disabled={isChecking} onClick={checkUpdate}>
+            <Button size="3" disabled={isChecking || updateInfo.isDownloading} onClick={checkUpdate}>
                 <UpdateIcon width={16} height={16} />
                 {isChecking ? 'Vérification...' : 'Vérifier les mises à jour'}
             </Button>

@@ -15,17 +15,14 @@ let isDownloading = false
 let downloadTimeout: NodeJS.Timeout | null = null
 
 export function update(win: BrowserWindow) {
-  // Configuration de base de l'auto-updater avec timeouts
+  // Configuration de l'auto-updater
   autoUpdater.autoDownload = false
-  autoUpdater.disableWebInstaller = false
-  autoUpdater.allowDowngrade = false
   autoUpdater.autoInstallOnAppQuit = true
-  
-  // Ajout de logs détaillés
+  autoUpdater.allowDowngrade = false
   autoUpdater.logger = log
   autoUpdater.logger.transports.file.level = 'debug'
   log.info('Version actuelle:', app.getVersion())
-
+  
   // En mode dev, utiliser le mock
   if (!app.isPackaged) {
     ipcMain.handle('check-update', async () => {
@@ -40,7 +37,7 @@ export function update(win: BrowserWindow) {
     return
   }
 
-  // Configuration pour GitHub avec timeout
+  // Configuration pour GitHub
   const options = {
     provider: 'github',
     owner: 'LucasRaffalli',
@@ -53,7 +50,7 @@ export function update(win: BrowserWindow) {
   log.info('Configuration auto-updater:', options)
   Object.assign(autoUpdater, options)
 
-  // Événements d'auto-updater avec gestion améliorée
+  // Événements d'auto-updater
   autoUpdater.on('checking-for-update', () => {
     log.info('Vérification des mises à jour...')
   })
@@ -72,26 +69,25 @@ export function update(win: BrowserWindow) {
 
   autoUpdater.on('error', (error: Error) => {
     log.error('Erreur de l\'auto-updater:', error)
+    win.webContents.send('update-error', { message: error.message })
   })
 
-  // 🔎 Vérification des mises à jour
+  // Vérification des mises à jour
   ipcMain.handle('check-update', async (): Promise<UpdateCheckResult | { message: string; error: Error; currentVersion: string }> => {
     try {
-      console.log("🔎 Vérification des mises à jour...")
-      console.log("URL du feed:", autoUpdater.getFeedURL())
-      
+      log.info("🔎 Vérification des mises à jour...")
       const updateCheck = await autoUpdater.checkForUpdates()
-      console.log("Résultat de la vérification:", updateCheck)
+      log.info("Résultat de la vérification:", updateCheck)
       
       if (updateCheck?.updateInfo) {
-        console.log("Nouvelle version disponible:", updateCheck.updateInfo.version)
+        log.info("Nouvelle version disponible:", updateCheck.updateInfo.version)
         win.webContents.send('update-can-available', {
           update: true,
           version: app.getVersion(),
           newVersion: updateCheck.updateInfo.version
         })
       } else {
-        console.log("Pas de nouvelle version disponible")
+        log.info("Pas de nouvelle version disponible")
         win.webContents.send('update-can-available', { 
           update: false,
           version: app.getVersion()
@@ -99,7 +95,7 @@ export function update(win: BrowserWindow) {
       }
       return updateCheck
     } catch (error) {
-      console.error("❌ Erreur lors de la vérification des mises à jour:", error)
+      log.error("❌ Erreur lors de la vérification des mises à jour:", error)
       const err = error instanceof Error ? error : new Error('Unknown error')
       return { 
         message: `Erreur réseau: ${err.message}`, 
@@ -109,72 +105,93 @@ export function update(win: BrowserWindow) {
     }
   })
 
-  // 📥 Lancement du téléchargement avec gestion du timeout
-  ipcMain.handle('start-download', (event) => {
-    if (isDownloading) {
-      log.warn("⚠️ Téléchargement déjà en cours...")
-      return
-    }
-
-    // Reset du statut de téléchargement
-    isDownloading = true
-    
-    // Définir un timeout de 5 minutes pour le téléchargement
-    downloadTimeout = setTimeout(() => {
+  // Téléchargement
+  ipcMain.handle('start-download', () => {
+    return new Promise((resolve, reject) => {
       if (isDownloading) {
-        log.error("❌ Timeout du téléchargement")
+        log.warn("⚠️ Téléchargement déjà en cours...")
+        return resolve(null)
+      }
+
+      isDownloading = true
+      
+      // Timeout de 5 minutes
+      downloadTimeout = setTimeout(() => {
+        if (isDownloading) {
+          log.error("❌ Timeout du téléchargement")
+          isDownloading = false
+          win.webContents.send('update-error', { 
+            message: 'Le téléchargement a pris trop de temps'
+          })
+          reject(new Error('Download timeout'))
+        }
+      }, 5 * 60 * 1000)
+
+      // Gestion de la progression
+      const onProgress = (progress: ProgressInfo) => {
+        log.info(`📊 Progression : ${progress.percent.toFixed(2)}% à ${progress.bytesPerSecond} octets/s`)
+        win.webContents.send('download-progress', progress)
+      }
+
+      // Gestion du téléchargement terminé
+      const onDownloaded = (event: UpdateDownloadedEvent) => {
+        log.info("✅ Mise à jour téléchargée", event.version)
+        if (downloadTimeout) {
+          clearTimeout(downloadTimeout)
+          downloadTimeout = null
+        }
         isDownloading = false
-        event.sender.send('update-error', { 
-          message: 'Le téléchargement a pris trop de temps', 
-          error: new Error('Download timeout') 
+        win.webContents.send('update-downloaded', { 
+          version: event.version,
+          files: event.files,
+          path: event.path
         })
-        autoUpdater.removeAllListeners('download-progress')
-        autoUpdater.removeAllListeners('update-downloaded')
+        
+        // Nettoyage des listeners
+        autoUpdater.removeListener('download-progress', onProgress)
+        autoUpdater.removeListener('update-downloaded', onDownloaded)
+        autoUpdater.removeListener('error', onError)
+        
+        resolve(null)
       }
-    }, 5 * 60 * 1000)
 
-    autoUpdater.downloadUpdate().catch((error: Error) => {
-      log.error("❌ Erreur lors du démarrage du téléchargement:", error)
-      if (downloadTimeout) {
-        clearTimeout(downloadTimeout)
-        downloadTimeout = null
+      // Gestion des erreurs
+      const onError = (error: Error) => {
+        log.error("❌ Erreur lors du téléchargement:", error)
+        if (downloadTimeout) {
+          clearTimeout(downloadTimeout)
+          downloadTimeout = null
+        }
+        isDownloading = false
+        win.webContents.send('update-error', { message: error.message })
+        
+        // Nettoyage des listeners
+        autoUpdater.removeListener('download-progress', onProgress)
+        autoUpdater.removeListener('update-downloaded', onDownloaded)
+        autoUpdater.removeListener('error', onError)
+        
+        reject(error)
       }
-      isDownloading = false
-      event.sender.send('update-error', { message: error.message, error })
-    })
 
-    autoUpdater.on('download-progress', (progress: ProgressInfo) => {
-      log.info(`📊 Progression : ${progress.percent.toFixed(2)}% à ${progress.bytesPerSecond} octets/s`)
-      event.sender.send('download-progress', progress)
-    })
+      // Ajout des listeners
+      autoUpdater.on('download-progress', onProgress)
+      autoUpdater.on('update-downloaded', onDownloaded)
+      autoUpdater.on('error', onError)
 
-    autoUpdater.on('update-downloaded', (event: UpdateDownloadedEvent) => {
-      log.info("✅ Mise à jour téléchargée")
-      if (downloadTimeout) {
-        clearTimeout(downloadTimeout)
-        downloadTimeout = null
-      }
-      isDownloading = false
-      win.webContents.send('update-downloaded', { 
-        version: event.version,
-        files: event.files,
-        path: event.path
-      })
+      // Démarrage du téléchargement
+      autoUpdater.downloadUpdate().catch(onError)
     })
   })
 
-  // ⚡ Installation de la mise à jour avec vérification
+  // Installation
   ipcMain.handle('quit-and-install', () => {
     log.info("🚀 Installation de la mise à jour...")
     try {
-      setImmediate(() => {
-        autoUpdater.quitAndInstall(true, true)
-      })
+      autoUpdater.quitAndInstall(true, true)
     } catch (error) {
       log.error("❌ Erreur lors de l'installation:", error)
       win.webContents.send('update-error', { 
-        message: 'Erreur lors de l\'installation', 
-        error 
+        message: 'Erreur lors de l\'installation'
       })
     }
   })
