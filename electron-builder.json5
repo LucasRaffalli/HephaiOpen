@@ -61,7 +61,14 @@
       }
     ],
     "artifactName": "${productName}_${version}.${ext}",
-    "icon": "public/favicon.ico"
+    "icon": "public/favicon.ico",
+    "extraResources": [
+      {
+        "from": "build",
+        "to": "build",
+        "filter": ["**/*"]
+      }
+    ]
   },
   "linux": {
     "target": [
@@ -89,8 +96,10 @@
     "deleteAppDataOnUninstall": true,
     "installerIcon": "public/installerIcon.ico",
     "uninstallerIcon": "public/uninstallerIcon.ico",
-    "installerSidebar":"build/installerSidebar.bmp",
-    "uninstallerSidebar":"build/uninstallerSidebar.bmp",
-    "include": "public/installer.nsh"
+    "installerSidebar": "build/installerSidebar.bmp",
+    "uninstallerSidebar": "build/uninstallerSidebar.bmp",
+    "include": "public/installer.nsh",
+    "artifactName": "${productName}_${version}_Setup.${ext}",
+    "differentialPackage": true
   }
 }
