@@ -7,10 +7,7 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
     permissions:
       contents: write
     steps:
@@ -30,22 +27,8 @@ jobs:
           npm install -g electron-vite@latest
         shell: bash
 
-      # Linux dependencies
-      - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rpm
-
       - name: Build application
-        run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            npm run build:win
-          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            npm run build:mac
-          elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            npm run build:linux
-          fi
+        run: npm run build
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -59,10 +42,6 @@ jobs:
             release/**/*.exe
             release/**/*.blockmap
             release/**/*.yml
-            release/**/*.dmg
-            release/**/*.AppImage
-            release/**/*.deb
-            release/**/*.rpm
           draft: false
           prerelease: false
           generate_release_notes: true

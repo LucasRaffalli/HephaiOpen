@@ -1,6 +1,6 @@
 {
   "name": "hephai_open",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "main": "dist-electron/main/index.js",
   "description": "Invoice creation application.",
   "author": "LucasRaffalli",
@@ -9,9 +9,6 @@
   "private": true,  "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "build:win": "npx electron-vite build && electron-builder --win",
-    "build:mac": "npx electron-vite build && electron-builder --mac",
-    "build:linux": "npx electron-vite build && electron-builder --linux",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test"
@@ -53,7 +50,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.3",
-    "vite": "^6.3.4",
+    "vite": "^5.0.12",
     "vite-plugin-electron": "^0.29.0",
     "vite-plugin-electron-renderer": "^0.14.6",
     "vite-plugin-svgr": "^4.3.0"
