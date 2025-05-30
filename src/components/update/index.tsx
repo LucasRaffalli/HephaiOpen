@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Badge, Flex, Progress } from '@radix-ui/themes';
+import { Button, Badge, Flex, Progress, Text } from '@radix-ui/themes';
 import { UpdateIcon } from '@radix-ui/react-icons';
 import type { ProgressInfo } from 'electron-updater';
 import Modal from './Modal';
@@ -70,6 +70,21 @@ const UpdatePage = () => {
         }
     }, [onUpdateAvailable, onProgress, onUpdateDownloaded]);
 
+    const getChangeDescription = () => {
+        if (!updateInfo.available) return null;
+        
+        return (
+            <Flex direction="column" gap="3">
+                <Text size="2" color="gray">Changements dans cette version :</Text>
+                <Flex direction="column" gap="2">
+                    <Text as="p" size="2">• Améliorations de performance</Text>
+                    <Text as="p" size="2">• Nouvelles fonctionnalités</Text>
+                    <Text as="p" size="2">• Corrections de bugs</Text>
+                </Flex>
+            </Flex>
+        );
+    };
+
     return (
         <ContainerInterface height='100%' padding='4' justify='center' align='center'>
             <Modal 
@@ -89,6 +104,7 @@ const UpdatePage = () => {
                             →
                             <Badge variant="soft" color="indigo">{updateInfo.newVersion}</Badge>
                         </Flex>
+                        {getChangeDescription()}
                         {updateInfo.progress > 0 && (
                             <Progress value={updateInfo.progress} />
                         )}

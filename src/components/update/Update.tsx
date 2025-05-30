@@ -78,6 +78,30 @@ const Update = () => {
     }))
   }, [])
 
+  const getVersionDiff = () => {
+    if (!versionInfo) return null
+
+    const changes = [
+      `👉 Mise à jour de v${versionInfo.version} vers v${versionInfo.newVersion}`,
+      '✨ Nouvelles fonctionnalités et améliorations',
+      '🐛 Corrections de bugs',
+      '🚀 Améliorations de performance',
+    ]
+
+    return (
+      <Flex direction='column' gap='3'>
+        <Text size='3' weight='bold'>
+          {t('update.changes')}
+        </Text>
+        {changes.map((change, index) => (
+          <Text key={index} size='2' color='gray'>
+            {change}
+          </Text>
+        ))}
+      </Flex>
+    )
+  }
+
   useEffect(() => {
     window.ipcRenderer.on('update-can-available', onUpdateCanAvailable)
     window.ipcRenderer.on('update-error', onUpdateError)
@@ -93,36 +117,52 @@ const Update = () => {
   }, [])
 
   return (
-    <ContainerInterface height='100%' padding='4' justify='center' align='center' direction='column' >
-
+    <ContainerInterface height='100%' padding='4' justify='center' align='center' direction='column'>
       <div className='modal-slot'>
-        {updateError
-          ? (
-            <div>
-              <Text color="red" size="3">{t('errors.update.downloadError')}</Text>
-              <Text color="red" size="2"></Text>
-            </div>
-          ) : updateAvailable
-            ? (
-              <Flex direction="column" gap="3">
-                <Text size="3">{t('update.latestVersion')}: v{versionInfo?.newVersion}</Text>
-                <Text size="2" color="gray">v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}</Text>
-                <Flex direction="column" gap="2">
-                  <Text size="2">{t('update.progress')}:</Text>
-                </Flex>
-              </Flex>
-            )
-            : (
-              <Text>{JSON.stringify(versionInfo ?? null, null, 2)}</Text>
-            )}
+        {updateError ? (
+          <div>
+            <Text color='red' size='3'>
+              {t('errors.update.downloadError')}
+            </Text>
+            <Text color='red' size='2'>
+              {updateError.message || JSON.stringify(updateError)}
+            </Text>
+          </div>
+        ) : updateAvailable ? (
+          <Flex direction='column' gap='3'>
+            <Text size='3'>{t('update.latestVersion')}: v{versionInfo?.newVersion}</Text>
+            <Text size='2' color='gray'>
+              v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}
+            </Text>
+            {getVersionDiff()}
+            <Flex direction='column' gap='2'>
+              <Text size='2'>{t('update.progress')}:</Text>
+              {progressInfo && (
+                <Text size='2' color='gray'>
+                  {Math.round(progressInfo.percent || 0)}%
+                </Text>
+              )}
+            </Flex>
+          </Flex>
+        ) : (
+          <Text>{JSON.stringify(versionInfo ?? null, null, 2)}</Text>
+        )}
       </div>
 
-      <CardStylized onClick={checkUpdate} effectVariant='update' isGrayTop sizeTextSmall="3" uppercase sizeText='4' weight='bold' contentTop="HephaiOpen Update" topSmallText="Update available! Get the latest improvements and enhancements." bottomTitle="hephai Update" bottomDescription={<SmokeEffect text="Available now" size='2' uppercase weight='medium' color='gray' />} />
-      {/* <Box className='shadowCard' /> */}
-
-
+      <CardStylized
+        onClick={checkUpdate}
+        effectVariant='update'
+        isGrayTop
+        sizeTextSmall='3'
+        uppercase
+        sizeText='4'
+        weight='bold'
+        contentTop='HephaiOpen Update'
+        topSmallText='Update available! Get the latest improvements and enhancements.'
+        bottomTitle='hephai Update'
+        bottomDescription={<SmokeEffect text='Available now' size='2' uppercase weight='medium' color='gray' />}
+      />
     </ContainerInterface>
-
   )
 }
 
