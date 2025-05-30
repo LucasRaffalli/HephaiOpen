@@ -1,6 +1,5 @@
 import type { ProgressInfo } from 'electron-updater'
 import { useCallback, useEffect, useState } from 'react'
-import Progress from '@/components/update/Progress'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Heading, Text } from '@radix-ui/themes'
 import './update.css'
