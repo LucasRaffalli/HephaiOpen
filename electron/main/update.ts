@@ -8,6 +8,7 @@ import type {
 } from 'electron-updater'
 import { mockUpdate } from './update.mock'
 import log from 'electron-log'
+import semver from 'semver'
 
 const { autoUpdater } = createRequire(import.meta.url)('electron-updater')
 
@@ -76,15 +77,22 @@ export function update(win: BrowserWindow) {
   ipcMain.handle('check-update', async (): Promise<UpdateCheckResult | { message: string; error: Error; currentVersion: string }> => {
     try {
       log.info("🔎 Vérification des mises à jour...")
+      log.info("Version actuelle:", app.getVersion())
+      
       const updateCheck = await autoUpdater.checkForUpdates()
       log.info("Résultat de la vérification:", updateCheck)
       
       if (updateCheck?.updateInfo) {
-        log.info("Nouvelle version disponible:", updateCheck.updateInfo.version)
+        const currentVersion = app.getVersion()
+        const newVersion = updateCheck.updateInfo.version
+        const hasUpdate = semver.gt(newVersion, currentVersion)
+        
+        log.info(`Comparaison des versions - Actuelle: ${currentVersion}, Nouvelle: ${newVersion}, Mise à jour disponible: ${hasUpdate}`)
+        
         win.webContents.send('update-can-available', {
-          update: true,
-          version: app.getVersion(),
-          newVersion: updateCheck.updateInfo.version
+          update: hasUpdate,
+          version: currentVersion,
+          newVersion: newVersion
         })
       } else {
         log.info("Pas de nouvelle version disponible")

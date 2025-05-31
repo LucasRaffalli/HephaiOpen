@@ -11,7 +11,7 @@ import { useUpdate } from '@/context/UpdateContext';
 export default function Features() {
     const { t } = useTranslation();
     const location = useLocation();
-    const { updateAvailable } = useUpdate();
+    const { updateAvailable, versionInfo } = useUpdate();
 
     const cardVariants = {
         hidden: {
@@ -47,19 +47,21 @@ export default function Features() {
     return (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" style={{ width: '100%', display: "flex", flexDirection: "column", gap: "0.5rem" }}>
 
-            {updateAvailable && (
+            {updateAvailable && versionInfo?.new && (
                 <motion.div variants={cardVariants}>
                     <Box className="update">
                         <Link to="/update" style={{ textDecoration: 'none' }}>
                             <Card className={`glow btnCursor update ${isActive('/update') ? 'active' : ''}`}>
                                 <Flex gap="3" justify={'between'} align="center" height={'5vh'}>
                                     <Box>
-                                        <Text as="div" size="2" weight="bold">{t('update.checkButton')}</Text>
+                                        <Text as="div" size="2" weight="bold">
+                                            {t('update.checkButton')} (v{versionInfo.current} → v{versionInfo.new})
+                                        </Text>
                                     </Box>
                                     <Flex direction={'row'} justify={'end'} className='card__container__grid__update btnNotEvent'>
                                         <Flex style={{ 'zIndex': 0 }} direction={"row"} align={"center"} justify={"center"}>
                                             <div className={`filter__paper__update ${isActive('/update') ? 'active' : ''}`}></div>
-                                            <img src={UpdateHephaiIcon} alt="premiumImg" />
+                                            <img src={UpdateHephaiIcon} alt="updateImg" />
                                         </Flex>
                                     </Flex>
                                 </Flex>
