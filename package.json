@@ -26,7 +26,7 @@
     "install": "^0.13.0",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
-    "lucide-react": "^0.503.0",
+    "lucide-react": "^0.511.0",
     "motion": "^12.9.4",
     "pdfjs-dist": "^5.2.133",
     "react-i18next": "^15.5.1",
