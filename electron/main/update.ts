@@ -58,11 +58,16 @@ export function update(win: BrowserWindow) {
 
   // Événements d'auto-updater
   autoUpdater.on('checking-for-update', () => {
-    log.info('Vérification des mises à jour...')
+    log.info('🔍 Vérification des mises à jour en cours...')
+    win.webContents.send('update-status', { status: 'checking' })
   })
 
   autoUpdater.on('update-available', (info: UpdateInfo) => {
-    log.info('Mise à jour disponible:', info)
+    log.info('✨ Mise à jour disponible:', {
+      version: info.version,
+      releaseDate: info.releaseDate,
+      releaseNotes: info.releaseNotes
+    })
     if (downloadTimeout) {
       clearTimeout(downloadTimeout)
       downloadTimeout = null
@@ -70,20 +75,34 @@ export function update(win: BrowserWindow) {
   })
 
   autoUpdater.on('update-not-available', (info: UpdateInfo) => {
-    log.info('Pas de mise à jour disponible:', info)
+    log.info('✅ Pas de mise à jour disponible:', {
+      currentVersion: app.getVersion(),
+      latestVersion: info.version,
+      releaseDate: info.releaseDate
+    })
+    win.webContents.send('update-status', { 
+      status: 'not-available',
+      currentVersion: app.getVersion(),
+      latestVersion: info.version
+    })
   })
 
   autoUpdater.on('error', (error: Error) => {
-    log.error('Erreur de l\'auto-updater:', error)
-    win.webContents.send('update-error', { message: error.message })
+    log.error('❌ Erreur de l\'auto-updater:', error)
+    win.webContents.send('update-error', { 
+      message: error.message,
+      stack: error.stack
+    })
   })
 
   // Vérification des mises à jour
   ipcMain.handle('check-update', async (): Promise<UpdateCheckResult | { message: string; error: Error; currentVersion: string }> => {
     try {
-      log.info("🔎 Vérification des mises à jour...")
+      log.info("🔎 Démarrage de la vérification des mises à jour...")
+      log.info("📦 Version actuelle:", app.getVersion())
+      
       const updateCheck = await autoUpdater.checkForUpdates()
-      log.info("Résultat de la vérification:", updateCheck)
+      log.info("📝 Résultat de la vérification:", updateCheck)
       
       if (updateCheck?.updateInfo) {
         const currentVersion = app.getVersion()
@@ -91,7 +110,12 @@ export function update(win: BrowserWindow) {
         const hasUpdate = semver.gt(newVersion, currentVersion)
         const releaseNotes = updateCheck.updateInfo.releaseNotes || "Nouvelles améliorations et corrections de bugs"
         
-        log.info(`Comparaison des versions - Actuelle: ${currentVersion}, Nouvelle: ${newVersion}, Mise à jour disponible: ${hasUpdate}`)
+        log.info('📊 Comparaison des versions:', {
+          currentVersion,
+          newVersion,
+          hasUpdate,
+          updateInfo: updateCheck.updateInfo
+        })
         
         win.webContents.send('update-can-available', {
           update: hasUpdate,
@@ -100,7 +124,7 @@ export function update(win: BrowserWindow) {
           releaseNotes: releaseNotes
         })
       } else {
-        log.info("Pas de nouvelle version disponible")
+        log.info("❌ Pas d'informations de mise à jour disponibles")
         win.webContents.send('update-can-available', { 
           update: false,
           version: app.getVersion()
