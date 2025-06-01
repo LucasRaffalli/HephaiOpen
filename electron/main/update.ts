@@ -31,9 +31,14 @@ export function update(win: BrowserWindow) {
       return { update: true, message: 'Mode développement : simulation de mise à jour' }
     })
 
+    ipcMain.handle('start-download', () => {
+      log.info("🚀 [DEV] Simulation du téléchargement de la mise à jour...")
+      return Promise.resolve();
+    });
+
     ipcMain.handle('quit-and-install', () => {
       console.log("🚀 [DEV] Simulation de l'installation de la mise à jour...")
-      app.quit()
+      // app.quit()
     })
     return
   }
@@ -77,8 +82,6 @@ export function update(win: BrowserWindow) {
   ipcMain.handle('check-update', async (): Promise<UpdateCheckResult | { message: string; error: Error; currentVersion: string }> => {
     try {
       log.info("🔎 Vérification des mises à jour...")
-      log.info("Version actuelle:", app.getVersion())
-      
       const updateCheck = await autoUpdater.checkForUpdates()
       log.info("Résultat de la vérification:", updateCheck)
       
@@ -86,13 +89,15 @@ export function update(win: BrowserWindow) {
         const currentVersion = app.getVersion()
         const newVersion = updateCheck.updateInfo.version
         const hasUpdate = semver.gt(newVersion, currentVersion)
+        const releaseNotes = updateCheck.updateInfo.releaseNotes || "Nouvelles améliorations et corrections de bugs"
         
         log.info(`Comparaison des versions - Actuelle: ${currentVersion}, Nouvelle: ${newVersion}, Mise à jour disponible: ${hasUpdate}`)
         
         win.webContents.send('update-can-available', {
           update: hasUpdate,
           version: currentVersion,
-          newVersion: newVersion
+          newVersion: newVersion,
+          releaseNotes: releaseNotes
         })
       } else {
         log.info("Pas de nouvelle version disponible")

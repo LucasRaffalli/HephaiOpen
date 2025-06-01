@@ -55,7 +55,7 @@ export default function Features() {
                                 <Flex gap="3" justify={'between'} align="center" height={'5vh'}>
                                     <Box>
                                         <Text as="div" size="2" weight="bold">
-                                            {t('update.checkButton')} (v{versionInfo.current} → v{versionInfo.new})
+                                            {t('update.available')}
                                         </Text>
                                     </Box>
                                     <Flex direction={'row'} justify={'end'} className='card__container__grid__update btnNotEvent'>

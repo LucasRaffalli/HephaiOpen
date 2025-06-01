@@ -15,6 +15,7 @@ const UpdateContext = createContext<UpdateContextProps | undefined>(undefined);
 export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [updateAvailable, setUpdateAvailable] = useState(false);
     const [versionInfo, setVersionInfo] = useState<{ current: string; new?: string }>();
+    const [hasCheckedInitially, setHasCheckedInitially] = useState(false);
     const { t } = useTranslation();
 
     const checkForUpdates = async () => {
@@ -38,9 +39,11 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     };
 
     useEffect(() => {
-        // Vérifier les mises à jour au démarrage et toutes les heures
-        checkForUpdates();
-        const interval = setInterval(checkForUpdates, 60 * 60 * 1000);
+        // Vérification initiale unique au démarrage
+        if (!hasCheckedInitially) {
+            checkForUpdates();
+            setHasCheckedInitially(true);
+        }
 
         // Écouter les événements de mise à jour
         const handleUpdateAvailable = (_: any, arg: { update: boolean; version: string; newVersion?: string }) => {
@@ -57,10 +60,9 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
         // Nettoyage
         return () => {
-            clearInterval(interval);
-            window.ipcRenderer.removeListener('update-can-available', handleUpdateAvailable);
+            window.ipcRenderer.off('update-can-available', handleUpdateAvailable);
         };
-    }, []);
+    }, [hasCheckedInitially]);
 
     return (
         <UpdateContext.Provider value={{ updateAvailable, checkForUpdates, versionInfo }}>

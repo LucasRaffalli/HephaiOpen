@@ -192,7 +192,7 @@
         "hephai1": "Hephai Invoice",
         "credit": "Made with HephaiOpen",
         "tooltips": {
-            "nameFile":"Enter the name of your document.",
+            "nameFile": "Enter the name of your document.",
             "reset": "Reset application data.",
             "settings": "Settings",
             "bookmarks": "Add a client to your bookmarks.",
@@ -416,9 +416,11 @@
     },
     "update": {
         "latestVersion": "The latest version available is",
+        "currentVersion": "You are using the latest version",
+        "changeUpdate": "Changes in this version",
+        "baseMessage": "New improvements and bug fixes",
         "progress": "Update progress",
         "checking": "Checking in progress... ",
-        "checkButton": "Check for updates",
         "checkUpdate": "Check for updates",
         "checkForUpdates": "Check for updates",
         "clickToCheck": "Click to check",
@@ -426,8 +428,7 @@
         "newVersion": "New version",
         "availableNow": "Available now",
         "downloading": "Downloading in progress",
-        "downloaded": "downloaded",
-        "downloadingNow": "Downloading in progress",
+        "download": "Download",
         "pleaseWait": "Please wait..."
     }
 }

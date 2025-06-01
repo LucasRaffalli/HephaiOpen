@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Badge, Flex, Progress, Text } from '@radix-ui/themes';
-import { UpdateIcon } from '@radix-ui/react-icons';
+import { Button, Badge, Flex, Progress, Text, Separator } from '@radix-ui/themes';
+import { UpdateIcon, DownloadIcon } from '@radix-ui/react-icons';
 import type { ProgressInfo } from 'electron-updater';
 import Modal from './Modal';
 import ContainerInterface from '../template/ContainerInterface';
 import './update.css';
+import { t } from 'i18next';
 
 interface VersionInfo {
     update: boolean;
     version: string;
     newVersion: string;
+    releaseNotes?: string;
 }
 
 const UpdatePage = () => {
@@ -18,6 +20,7 @@ const UpdatePage = () => {
         available: false,
         version: '',
         newVersion: '',
+        releaseNotes: '',
         error: '',
         progress: 0,
         isDownloading: false,
@@ -32,6 +35,7 @@ const UpdatePage = () => {
             if (result?.error) {
                 setUpdateInfo(prev => ({ ...prev, error: result.message }));
             }
+            setShowModal(true);
         } catch (error) {
             setUpdateInfo(prev => ({ ...prev, error: 'Erreur lors de la vérification' }));
         } finally {
@@ -40,14 +44,18 @@ const UpdatePage = () => {
     };
 
     const startDownload = async () => {
+        if (!confirm(t("update.confirmDownload"))) {
+            return;
+        }
+
         setUpdateInfo(prev => ({ ...prev, isDownloading: true, progress: 0 }));
         try {
             await window.ipcRenderer.invoke('start-download');
         } catch (error) {
-            setUpdateInfo(prev => ({ 
-                ...prev, 
-                error: 'Erreur lors du téléchargement',
-                isDownloading: false 
+            setUpdateInfo(prev => ({
+                ...prev,
+                error: 'Erreur lors du téléchargement2',
+                isDownloading: false
             }));
         }
     };
@@ -58,25 +66,25 @@ const UpdatePage = () => {
             available: arg.update,
             version: arg.version,
             newVersion: arg.newVersion,
+            releaseNotes: arg.releaseNotes || '',
             error: ''
         }));
-        setShowModal(true);
     }, []);
 
     const onProgress = useCallback((_event: Electron.IpcRendererEvent, arg: ProgressInfo) => {
-        setUpdateInfo(prev => ({ 
-            ...prev, 
+        setUpdateInfo(prev => ({
+            ...prev,
             progress: arg.percent || 0,
             isDownloading: true
         }));
     }, []);
 
     const onUpdateDownloaded = useCallback(() => {
-        setUpdateInfo(prev => ({ 
-            ...prev, 
+        setUpdateInfo(prev => ({
+            ...prev,
             isDownloaded: true,
             isDownloading: false,
-            progress: 100 
+            progress: 100
         }));
         // Attendre un peu pour montrer que le téléchargement est terminé
         setTimeout(() => {
@@ -89,10 +97,10 @@ const UpdatePage = () => {
         window.ipcRenderer.on('download-progress', onProgress);
         window.ipcRenderer.on('update-downloaded', onUpdateDownloaded);
         window.ipcRenderer.on('update-error', (_event, error) => {
-            setUpdateInfo(prev => ({ 
-                ...prev, 
+            setUpdateInfo(prev => ({
+                ...prev,
                 error: error.message || 'Erreur inconnue',
-                isDownloading: false 
+                isDownloading: false
             }));
         });
 
@@ -105,14 +113,14 @@ const UpdatePage = () => {
 
     const getChangeDescription = () => {
         if (!updateInfo.available) return null;
-        
+
         return (
             <Flex direction="column" gap="3">
-                <Text size="2" color="gray">Changements dans cette version :</Text>
+                <Text size="2" color="gray">{t("update.changeUpdate")}: </Text>
                 <Flex direction="column" gap="2">
-                    <Text as="p" size="2">• Améliorations de performance</Text>
-                    <Text as="p" size="2">• Nouvelles fonctionnalités</Text>
-                    <Text as="p" size="2">• Corrections de bugs</Text>
+                    <Text as="p" size="2">
+                        {updateInfo.releaseNotes || "• Nouvelles améliorations et corrections de bugs"}
+                    </Text>
                 </Flex>
             </Flex>
         );
@@ -120,44 +128,52 @@ const UpdatePage = () => {
 
     return (
         <ContainerInterface height='100%' padding='4' justify='center' align='center'>
-            <Modal 
-                open={showModal} 
-                cancelText="Fermer" 
-                okText={updateInfo.available && !updateInfo.isDownloaded && !updateInfo.isDownloading ? "Télécharger" : undefined}
-                onCancel={() => setShowModal(false)}
-                onOk={startDownload}
-                title={updateInfo.error ? "Erreur" : "Mise à jour"}
-            >
+            <Modal open={showModal} cancelText={t("update.close")} onCancel={() => setShowModal(false)} title={updateInfo.error ? t("update.error") : t("update.title")}>
                 {updateInfo.error ? (
                     <Badge color="red">{updateInfo.error}</Badge>
                 ) : updateInfo.available ? (
-                    <Flex direction="column" gap="3">
+                    <Flex direction="column" gap="3" width="100%">
                         <Flex gap="2" align="center">
-                            <Badge variant="soft" color="red">{updateInfo.version}</Badge>
+                            <Badge variant="soft" color="red" size={"3"}>{updateInfo.version}</Badge>
                             →
-                            <Badge variant="soft" color="indigo">{updateInfo.newVersion}</Badge>
+                            <Badge variant="soft" size={"3"}>{updateInfo.newVersion}</Badge>
                         </Flex>
+
                         {getChangeDescription()}
+                        <Separator size={"4"} mt={"2"} />
                         {(updateInfo.isDownloading || updateInfo.progress > 0) && (
                             <Flex direction="column" gap="2">
                                 <Text size="2" color="gray">
-                                    Téléchargement: {Math.round(updateInfo.progress)}%
+                                    {t("update.download")} {Math.round(updateInfo.progress)}%
                                 </Text>
                                 <Progress value={updateInfo.progress} radius="full" />
                             </Flex>
                         )}
-                        {updateInfo.isDownloaded && (
-                            <Badge color="green">Installation en cours...</Badge>
+                        {updateInfo.isDownloaded ? (
+                            <Flex direction="column" gap="2">
+                                <Badge color="green" size="3">{t("update.downloaded")}</Badge>
+                                <Text size="2" color="gray">{t("update.restartMessage")}</Text>
+                            </Flex>
+                        ) : !updateInfo.isDownloading && (
+                            <Flex direction="column" gap="3">
+                                <Text size="2" color="gray">{t("update.availableMessage")}</Text>
+                                <Flex>
+                                    <Button onClick={startDownload} disabled={updateInfo.isDownloading}>
+                                        <DownloadIcon />
+                                        {t("update.downloadButton")}
+                                    </Button>
+                                </Flex>
+                            </Flex>
                         )}
                     </Flex>
                 ) : (
-                    <Badge color="green">Vous utilisez la dernière version</Badge>
+                    <Badge color="amber" size="3">{t("update.currentVersion")}</Badge>
                 )}
             </Modal>
 
             <Button size="3" disabled={isChecking || updateInfo.isDownloading} onClick={checkUpdate}>
                 <UpdateIcon width={16} height={16} />
-                {isChecking ? 'Vérification...' : 'Vérifier les mises à jour'}
+                {isChecking ? t("update.checking") : t("update.checkUpdate")}
             </Button>
         </ContainerInterface>
     );

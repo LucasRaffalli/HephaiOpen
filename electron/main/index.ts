@@ -68,7 +68,7 @@ async function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       webSecurity: true,
-      // devTools: false
+      devTools: false
     },
   })
   if (VITE_DEV_SERVER_URL) {
