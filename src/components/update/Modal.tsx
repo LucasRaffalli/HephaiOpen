@@ -24,11 +24,10 @@ const Modal: React.FC<ModalProps> = ({
     return (
         <Theme>
             <Dialog.Root open={open} onOpenChange={() => onCancel?.()}>
-                <Dialog.Content>
-                    {title && <Dialog.Title mb="2">{title}</Dialog.Title>}
+                <Dialog.Content>                    {title && <Dialog.Title mb="2">{title}</Dialog.Title>}
                     {description && (
                         <Dialog.Description size="2" mb="4">
-                            {description}
+                            <div dangerouslySetInnerHTML={{ __html: description }} />
                         </Dialog.Description>
                     )}
 
