@@ -2,17 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Badge, Flex, Progress, Text, Separator } from '@radix-ui/themes';
 import { UpdateIcon, DownloadIcon } from '@radix-ui/react-icons';
 import type { ProgressInfo } from 'electron-updater';
+import type { VersionInfo } from '../../types/hephai';
 import Modal from './Modal';
 import ContainerInterface from '../template/ContainerInterface';
-import './update.css';
 import { t } from 'i18next';
 
-interface VersionInfo {
-    update: boolean;
-    version: string;
-    newVersion: string;
-    releaseNotes?: string;
-}
 
 const UpdatePage = () => {
     const [isChecking, setIsChecking] = useState(false);
@@ -86,7 +80,6 @@ const UpdatePage = () => {
             isDownloading: false,
             progress: 100
         }));
-        // Attendre un peu pour montrer que le téléchargement est terminé
         setTimeout(() => {
             window.ipcRenderer.invoke('quit-and-install');
         }, 1500);
@@ -119,7 +112,7 @@ const UpdatePage = () => {
                 <Text size="2" color="gray">{t("update.changeUpdate")}: </Text>
                 <Flex direction="column" gap="2">
                     <Text as="p" size="2">
-                        {updateInfo.releaseNotes || "• Nouvelles améliorations et corrections de bugs"}
+                        {updateInfo.releaseNotes || "• Nouvelles améliorations et 2corrections de bugs"}
                     </Text>
                 </Flex>
             </Flex>
@@ -128,7 +121,7 @@ const UpdatePage = () => {
 
     return (
         <ContainerInterface height='100%' padding='4' justify='center' align='center'>
-            <Modal open={showModal} cancelText={t("update.close")} onCancel={() => setShowModal(false)} title={updateInfo.error ? t("update.error") : t("update.title")}>
+            <Modal open={showModal} cancelText={t("buttons.close")} onCancel={() => setShowModal(false)} title={updateInfo.error ? t("update.error") : t("update.title")}>
                 {updateInfo.error ? (
                     <Badge color="red">{updateInfo.error}</Badge>
                 ) : updateInfo.available ? (
@@ -144,7 +137,7 @@ const UpdatePage = () => {
                         {(updateInfo.isDownloading || updateInfo.progress > 0) && (
                             <Flex direction="column" gap="2">
                                 <Text size="2" color="gray">
-                                    {t("update.download")} {Math.round(updateInfo.progress)}%
+                                    {t("buttons.download.download")} {Math.round(updateInfo.progress)}%
                                 </Text>
                                 <Progress value={updateInfo.progress} radius="full" />
                             </Flex>
@@ -160,7 +153,7 @@ const UpdatePage = () => {
                                 <Flex>
                                     <Button onClick={startDownload} disabled={updateInfo.isDownloading}>
                                         <DownloadIcon />
-                                        {t("update.downloadButton")}
+                                        {t("buttons.download.update.button")}
                                     </Button>
                                 </Flex>
                             </Flex>

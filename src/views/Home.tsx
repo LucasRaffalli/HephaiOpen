@@ -14,7 +14,6 @@ export default function Home() {
       <Flex height={'100%'} width={'100%'} justify={'center'} align={'center'} direction={'column'} >
         <Heading size="8" style={{}}>HephaiOpen // {version}</Heading>
         <Text color="gray" size="4">{description}</Text>
-        <Link to={'update'}> update page</Link>
       </Flex>
 
     </ContainerInterface>

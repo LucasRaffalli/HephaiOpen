@@ -27,6 +27,8 @@ export default defineConfig(({ command }) => {
       minify: 'esbuild',
       emptyOutDir: true,
       target: ['chrome89', 'edge89', 'firefox89', 'safari15'],
+      cssCodeSplit: true,
+      sourcemap: false,
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
@@ -36,6 +38,7 @@ export default defineConfig(({ command }) => {
           entryFileNames: '[name].[hash].js',
           chunkFileNames: '[name].[hash].js',
           assetFileNames: '[name].[hash].[ext]',
+          inlineDynamicImports: false,
           manualChunks: {
             'vendor': [
               'react', 
@@ -43,9 +46,13 @@ export default defineConfig(({ command }) => {
             ],
             'router': ['react-router-dom'],
             'ui': ['@radix-ui/themes', '@radix-ui/react-icons'],
+            'pdf': ['jspdf', 'jspdf-autotable', 'pdfjs-dist'],
+            'i18n': ['i18next', 'react-i18next']
           }
         }
       },
+      reportCompressedSize: false, // Désactive le calcul de la taille compressée pour accélérer la build
+      chunkSizeWarningLimit: 1000,
     },
     plugins: [
       react({

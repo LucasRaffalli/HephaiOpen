@@ -23,6 +23,11 @@ export const addLogoToPDF = async (doc: jsPDF, imageSrc: string | null, pageHeig
     doc.setFillColor("F2F2F2");
 };
 
+const getTranslatedPaymentType = (type: string) => {
+    const key = type.toLowerCase();
+    return t(`features.invoice.paymentMethods.${key}`);
+};
+
 export const setupPDFHeader = (doc: jsPDF, pageWidth: number, paymentText: string, selectedDate: string, paymentInfo: PaymentInfo, invoiceNumber: string,) => {
     doc.setFillColor("F2F2F2");
     doc.rect(0, 0, pageWidth, 60, "F");
@@ -38,7 +43,7 @@ export const setupPDFHeader = (doc: jsPDF, pageWidth: number, paymentText: strin
     doc.text(`${t('features.invoice.number')}: ${invoiceNumber}`, pageWidth - 10, 30, { align: "right" });
     doc.text(`${t('features.invoice.dated')}: ${selectedDate}`, pageWidth - 10, 35, { align: "right" });
     doc.setFont("helvetica", "bold");
-    doc.text(`${t('features.invoice.paymentMode')}:${paymentText ? ' ' + paymentText : ''}`, pageWidth - 10, 40, { align: "right" });
+    doc.text(`${t('features.invoice.paymentMode')}: ${getTranslatedPaymentType(paymentInfo.type)}`, pageWidth - 10, 40, { align: "right" });
 
     const normalizedType = paymentInfo.type.trim().toUpperCase();
 
@@ -197,7 +202,6 @@ export const setupPDFModality = (doc: jsPDF, options: any, text1: string, text2:
     let currentY = startY;
     let lastEndY = currentY;
 
-    // Titre initial
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.text(t('features.invoice.modalitiesAndConditions'), marginX, currentY);

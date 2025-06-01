@@ -52,7 +52,7 @@ async function createWindow() {
   })
 
   win = new BrowserWindow({
-    title: 'Main window',
+    title: 'HephaiOpen',
     height: 860,
     backgroundColor: '#1c1c1c',
     frame: false,
@@ -86,10 +86,8 @@ async function createWindow() {
 
   win.webContents.on('did-finish-load', () => {
   });
-  // Register all window IPC handlers
   registerWindowIPC(win)
 
-  // Auto update
   console.log("Initializing auto-updater...")
   update(win)
 
@@ -138,7 +136,6 @@ app.on('activate', () => {
   }
 })
 
-// New window example arg: new windows url
 ipcMain.handle('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
     webPreferences: {

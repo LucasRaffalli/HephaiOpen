@@ -13,15 +13,12 @@ export const Titlebar = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.altKey && menuItems?.length) {
-        // Ignore repeated keydown events
         if (e.repeat) return
-        // Close active menu if it's open
         if (menusVisible) closeActiveMenu()
         setMenusVisible(!menusVisible)
       }
     }
 
-    // Add event listener for Ctrl+Alt keys
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
@@ -34,8 +31,6 @@ export const Titlebar = () => {
       {wcontext?.platform === 'win32' && (
         <div className="window-titlebar-icon">
           {typeof icon === 'string' ? (
-            // <img src={icon} alt="Icon" />
-            // <Flex align={"center"} justify={"center"} ><img src="/img/premium.svg" alt="" /> </Flex>
             <Flex align={"center"} justify={"center"} > <HephaiIcon size={24} /> </Flex>
           ) : (
             icon
@@ -59,7 +54,6 @@ export const Titlebar = () => {
 const TitlebarMenu = () => {
   const { menuItems } = useWindowContext().titlebar
 
-  // If there are no menu items, hide the menu
   if (!menuItems) return null
 
   return (
@@ -77,12 +71,10 @@ const TitlebarMenuItem = ({ menu, index }: { menu: TitlebarMenu; index: number }
     e.preventDefault()
     e.stopPropagation()
 
-    // Check if the current menu item is the active one
     if (activeMenuIndex === index) {
       menuItemRef.current?.classList.remove('active')
       setActiveMenuIndex(null)
     }
-    // If the menu item is not active, activate it
     else if (!menuItemRef.current?.classList.contains('active')) {
       setActiveMenuIndex(index)
       menuItemRef.current?.classList.add('active')

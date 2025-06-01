@@ -172,7 +172,7 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
                                                 <AlertDialog.Root>
                                                     <AlertDialog.Trigger onClick={(e) => { e.stopPropagation() }}>
                                                         <Flex align={"center"} gap={"2"} justify={"between"} width={"100%"}>
-                                                            <Text>{t('buttons.delete')}</Text>
+                                                            <Text>{t('buttons.delete.client')}</Text>
                                                             <DeleteIcon size={16} />
                                                         </Flex>
                                                     </AlertDialog.Trigger>
@@ -187,7 +187,7 @@ const ClientsList: React.FC<ClientsListProps> = ({ onInsertClient }) => {
                                                             </AlertDialog.Cancel>
                                                             <AlertDialog.Action>
                                                                 <Button variant="solid" color="red" onClick={() => handleDeleteClient(client.email)}>
-                                                                    {t('buttons.delete')}
+                                                                    {t('buttons.delete.delete')}
                                                                 </Button>
                                                             </AlertDialog.Action>
                                                         </Flex>

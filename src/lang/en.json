@@ -81,7 +81,12 @@
         },
         "download": {
             "pdf": "Download PDF",
-            "download": "Download"
+            "download": "Download",
+            "downloading": "Download in progress...",
+            "downloaded": "Downloaded update",
+            "update": {
+                "button": "Download the update"
+            }
         },
         "data": {
             "save": "Save data"
@@ -127,6 +132,7 @@
             "noProducts": "No product available",
             "paymentMode": "Payment method",
             "paymentMethods": {
+                "": "",
                 "iban": "Bank transfer",
                 "paypal": "PayPal",
                 "cash": "Cash",
@@ -309,6 +315,13 @@
                 "phone": "Phone",
                 "email": "Email",
                 "siret": "SIRET"
+            },
+            "placeholder": {
+                "authorCompanyName": "Name of your company.",
+                "authorAddress": "Your company address.",
+                "authorPhone": "Your company phone.",
+                "authorEmail": "Your company's email address.",
+                "siret": "SIRET number."
             }
         },
         "accentColor": {
@@ -415,20 +428,29 @@
         }
     },
     "update": {
-        "latestVersion": "The latest version available is",
-        "currentVersion": "You are using the latest version",
-        "changeUpdate": "Changes in this version",
-        "baseMessage": "New improvements and bug fixes",
-        "progress": "Update progress",
-        "checking": "Checking in progress... ",
+        "title": "Update",
+        "error": "Error",
+        "checking": "Check in progress...",
         "checkUpdate": "Check for updates",
-        "checkForUpdates": "Check for updates",
-        "clickToCheck": "Click to check",
+        "currentVersion": "You have the latest version.",
+        "changeUpdate": "Release notes",
         "available": "Update available",
-        "newVersion": "New version",
-        "availableNow": "Available now",
-        "downloading": "Downloading in progress",
-        "download": "Download",
-        "pleaseWait": "Please wait..."
+        "availableMessage": "A new version is now available. Would you like to download it?",
+        "restartMessage": "The application will restart to install the update",
+        "confirmDownload": "Would you like to download this update?"
+    },
+    "form": {
+        "fields": {
+            "name": "Name",
+            "email": "Email",
+            "phone": "Phone",
+            "address": "Address",
+            "website": "Website",
+            "company": "Company",
+            "siret": "SIRET Number",
+            "tva": "VAT Number",
+            "iban": "IBAN",
+            "bic": "BIC"
+        }
     }
 }

@@ -6,10 +6,8 @@ const handleIPC = (channel: string, handler: (...args: any[]) => void) => {
 }
 
 export const registerWindowIPC = (mainWindow: BrowserWindow) => {
-  // Hide the menu bar
   mainWindow.setMenuBarVisibility(false)
 
-  // Register window IPC
   handleIPC('init-window', () => {
     const { width, height } = mainWindow.getBounds()
     const minimizable = mainWindow.isMinimizable()

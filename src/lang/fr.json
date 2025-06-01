@@ -81,7 +81,12 @@
         },
         "download": {
             "pdf": "Télécharger le PDF",
-            "download": "Télécharger"
+            "download": "Télécharger",
+            "downloading": "Téléchargement en cours...",
+            "downloaded": "Mise à jour téléchargée",
+            "update": {
+                "button": "Télécharger la mise à jour"
+            }
         },
         "data": {
             "save": "Enregistrer les données"
@@ -127,6 +132,7 @@
             "noProducts": "Aucun produit disponible",
             "paymentMode": "Mode de paiement",
             "paymentMethods": {
+                "":"",
                 "iban": "Virement bancaire",
                 "paypal": "Paypal",
                 "cash": "Espèces",
@@ -308,6 +314,13 @@
                 "phone": "Téléphone",
                 "email": "Email",
                 "siret": "SIRET"
+            },
+            "placeholder": {
+                "authorCompanyName": "Nom de ton entreprise.",
+                "authorAddress": "L'adresse de ton entreprise.",
+                "authorPhone": "Téléphone de ton entreprise.",
+                "authorEmail": "L'email de ton entreprise.",
+                "siret": "Le numéro SIRET."
             }
         },
         "accentColor": {
@@ -416,16 +429,11 @@
     "update": {
         "title": "Mise à jour",
         "error": "Erreur",
-        "close": "Fermer",
         "checking": "Vérification en cours...",
         "checkUpdate": "Vérifier les mises à jour",
         "currentVersion": "Vous avez la dernière version",
         "changeUpdate": "Notes de version",
-        "download": "Téléchargement",
-        "downloading": "Téléchargement en cours...",
-        "downloaded": "Mise à jour téléchargée",
-        "available": "Update available",
-        "downloadButton": "Télécharger la mise à jour",
+        "available": "Mise à jour disponible",
         "availableMessage": "Une nouvelle version est disponible. Souhaitez-vous la télécharger ?",
         "restartMessage": "L'application va redémarrer pour installer la mise à jour",
         "confirmDownload": "Voulez-vous télécharger cette mise à jour ?"

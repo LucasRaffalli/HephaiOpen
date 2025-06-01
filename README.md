@@ -14,8 +14,11 @@ Hephai is an open-source invoice creation application that works locally.
 ## 🚀 Features
 
 - **Invoice Creation**: Generate invoices quickly and easily.
+
 - **Statistics Visualization**: View graphs on the number of invoices generated and other important metrics.
-- **Offline Mode**: Works entirely locally, without the need for an internet connection.
+
+- **Offline mode**: Runs entirely locally, with no need for an Internet connection, except for **updates** via GitHub (handled automatically by `electron-updater`).
+
 - **Local Storage**: All data is securely stored on your machine.
 
 
@@ -41,13 +44,22 @@ This project uses the following technologies and libraries:
 - **React** for the user interface: `react`, `react-dom`, `react-router-dom`, `react-toastify`, `react-i18next`
 - **PDF** Generation with `jsPDF` and `react-pdf` for creating PDF invoices
 - **Internationalisation** with  `i18next` and `react-i18next`
-- **UI/UX** with Radix UI: `@radix-ui/react-icons`, `@radix-ui/themes`
+- **UI/UX** with Radix UI: `@radix-ui/react-icons`, `@radix-ui/themes`, `lucide-react`
 
 ## 🤝 Contributing
 If you wish to contribute to Hephai, feel free to open a pull request or report bugs via issues.
 
-
 ## 📄 License
 This project is under the MIT license. See the LICENSE file for more details.
 
+⚠️ Attribution appreciated:
+If you use or modify HephaiOpen, a mention of Lucas Raffalli is welcome (README, site, application, etc.).
+
 ## 🌐 Website
+
+soon
+
+## 🔒 Privacy
+Hephai runs entirely locally.  
+The **only external interaction** is the **automatic update** system, managed by `electron-updater`, which checks the project's **GitHub-releases**.  
+No personal data is sent or stored externally.

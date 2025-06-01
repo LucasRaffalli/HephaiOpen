@@ -1,7 +1,7 @@
 import React from 'react';
 import { Theme, Button, Dialog, Flex } from '@radix-ui/themes';
-import { Cross2Icon } from '@radix-ui/react-icons';
-import { Trash } from 'lucide-react';
+import { t } from 'i18next';
+
 
 interface ModalProps {
     open: boolean;
@@ -9,8 +9,6 @@ interface ModalProps {
     cancelText?: string;
     okText?: string;
     onCancel?: () => void;
-    onOk?: () => void;
-    footer?: React.ReactNode;
     title?: string;
     description?: string;
 }
@@ -18,10 +16,8 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
     open,
     children,
-    cancelText = 'Annuler',
+    cancelText = `${t('buttons.cancel')}`,
     onCancel,
-    onOk,
-    footer,
     title,
     description
 }) => {

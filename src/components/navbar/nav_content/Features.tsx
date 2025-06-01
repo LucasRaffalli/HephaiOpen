@@ -91,7 +91,7 @@ export default function Features() {
                 </Box>
             </motion.div>
 
-            <motion.div variants={cardVariants}>
+            {/* <motion.div variants={cardVariants}>
                 <Box className="premium">
                     <Link to="/navigation/premium" style={{ textDecoration: 'none' }}>
                         <Card className={`glow btnCursor premium ${isActive('/navigation/premium') ? 'active__premium' : ''}`}>
@@ -108,7 +108,7 @@ export default function Features() {
                         </Card>
                     </Link>
                 </Box>
-            </motion.div>
+            </motion.div> */}
 
 
         </motion.div>

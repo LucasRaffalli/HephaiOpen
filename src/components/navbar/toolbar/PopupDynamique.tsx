@@ -34,15 +34,21 @@ const PopupDynamique: React.FC<PopupDynamiqueProps> = ({ isOpen, onClose, anchor
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (
-                popupRef.current &&
-                !popupRef.current.contains(event.target as Node) &&
-                anchorRef.current &&
-                !anchorRef.current.contains(event.target as Node)
-            ) {
+            if (!popupRef.current || !anchorRef.current) return;
+
+            const target = event.target as Element;
+            const isSelectInteraction = target.closest('[role="listbox"]') ||
+                target.closest('[role="option"]') ||
+                target.closest('[data-radix-hover-card-content]');
+
+            if (isSelectInteraction) return;
+
+            if (!popupRef.current.contains(event.target as Node) &&
+                !anchorRef.current.contains(event.target as Node)) {
                 onClose();
             }
         };
+
         if (isOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }

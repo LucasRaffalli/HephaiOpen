@@ -94,7 +94,7 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
             setIsSmall(window.innerWidth < 121);
         };
 
-        handleResize(); // call once on mount
+        handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
@@ -108,13 +108,19 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
                     <Select.Content position="popper" style={{ height: "fit-content", maxHeight: "10.5rem" }}>
                         {rows.length > 0 ? (
                             rows.map((row, index) => (
-                                <Select.Item key={index} value={String(index)} className="btnCursor">
-                                    <Flex direction={"row"}>
+                                <Select.Item
+                                    key={index}
+                                    value={String(index)}
+                                    className="btnCursor"
+                                    onSelect={(event) => {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }}
+                                >
+                                    <Flex justify="between" align="center" style={{ width: "100%" }}>
+                                        <Text>{row.product}</Text>
                                         <HoverCard.Root>
-                                            <HoverCard.Trigger>
-                                                <Text>{row.product}</Text>
-                                            </HoverCard.Trigger>
-                                            <HoverCard.Content sideOffset={0} style={{ display: "flex", flexDirection: "column" }}>
+                                            <HoverCard.Content side="right" align="start" style={{ display: "flex", flexDirection: "column" }}>
                                                 <Text>{t('features.invoice.tableItem.product')}: {row.product} </Text>
                                                 {dynamicColumns.map((col) => (
                                                     <Text key={col.dataKey}>{col.header}: {row[col.dataKey]}</Text>
@@ -136,7 +142,10 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
 
                 <Separator orientation="horizontal" style={{ width: "100%" }} />
                 <>
-                    <TextField.Root placeholder={t("features.invoice.tableItem.product")} value={formData.product} onChange={(e) => handleChange("product", e.target.value)} />
+                    <TextField.Root placeholder={t("features.invoice.tableItem.product")} value={formData.product} onChange={(e) => handleChange("product", e.target.value)} onSelect={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }} />
                     {dynamicColumns.map((col) => (
                         <TextField.Root key={`form-${col.dataKey}`} placeholder={col.header} value={formData[col.dataKey] || ""} onChange={(e) => handleChange(col.dataKey, e.target.value)} />
                     ))}
@@ -151,7 +160,7 @@ const InvoiceItemEditor: React.FC<InvoiceItemEditorProps> = ({ priceUnit, boxWid
                                     <Tooltip content={t('utils.tooltips.delete')} side="left">
                                         <Box style={{ width: "100%" }}>
                                             <Button variant="soft" color="red" className="btnCursor btnCustom1" onClick={handleDeleteRow}>
-                                                {t("buttons.delete.product")}
+                                                {t("buttons.delete.delete")}
                                             </Button>
                                         </Box>
                                     </Tooltip>

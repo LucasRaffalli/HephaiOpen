@@ -14,7 +14,8 @@ Hephai est une application open-source de création de factures fonctionnant en 
 
 - **Création de factures** : Génère des factures de manière simple et rapide.
 - **Visualisation de statistiques** : Affichez des graphiques sur le nombre de factures générées et d'autres métriques importantes.
-- **Mode hors-ligne** : Fonctionne entièrement en local, sans nécessité de connexion Internet.
+- **Mode hors-ligne** : Fonctionne entièrement en local, sans nécessité de connexion Internet, sauf pour les **mises à jour** via GitHub (gérées automatiquement par `electron-updater`).
+
 - **Stockage local** : Toutes les données sont stockées en toute sécurité sur votre machine.
 
 ## 🛫 Installation rapide
@@ -39,13 +40,22 @@ Ce projet utilise les technologies et bibliothèques suivantes :
 - **React** pour l'interface utilisateur : `react`, `react-dom`, `react-router-dom`, `react-toastify`, `react-i18next`
 - **PDF** Generation avec `jsPDF` et `react-pdf` pour la création de factures PDF
 - **Internationalisation** avec `i18next` et `react-i18next`
-- **UI/UX** avec Radix UI: `@radix-ui/react-icons`, `@radix-ui/themes`
+- **UI/UX** avec Radix UI: `@radix-ui/react-icons`, `@radix-ui/themes`, `lucide-react`
 
 ## 🤝 Contribuer
 Si tu souhaites contribuer à Hephai, n'hésite pas à ouvrir une pull request ou à signaler des bugs via les issues.
 
-
 ## 📄 Licence
 Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 
+⚠️ Attribution appréciée :
+Si tu utilises ou modifies HephaiOpen, une mention à Lucas Raffalli est la bienvenue (README, site, application, etc.).
+
 ## 🌐 Site Web
+
+bientot
+
+## 🔒 Confidentialité
+Hephai fonctionne entièrement en local.  
+La **seule interaction extérieure** est le système de **mise à jour automatique**, géré par `electron-updater`, qui vérifie les **releases GitHub** du projet.  
+Aucune donnée personnelle n’est envoyée ou stockée à l’extérieur.

@@ -9,13 +9,11 @@ import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { PDFProvider } from '@/context/PDFContext';
 
 interface HephaiContextType {
-    // Date
     selectedDate: string;
     isAutoDate: boolean;
     setIsAutoDate: (value: boolean) => void;
     setSelectedDate: (date: string) => void;
 
-    // Payment
     paymentData: {
         iban: string;
         paypal: string;
@@ -26,7 +24,6 @@ interface HephaiContextType {
     handleFieldSelect: (field: string) => void;
     handleInputChange: (field: string, value: string) => void;
 
-    // DynamicTable
     columns: Array<{ dataKey: string; header: string }>;
     rows: any[];
     maxColumns: number;
@@ -38,32 +35,25 @@ interface HephaiContextType {
     removeRow: (index: number) => void;
     clearRows: () => void;
 
-    // Modalities
     text1: string;
     text2: string;
     isModalitiesEnabled: boolean;
     updateModalitiesText: (type: "text1" | "text2", value: string) => void;
     toggleModalities: () => void;
 
-    // Comments
     commentsText: string;
     isCommentsEnabled: boolean;
     updateCommentsText: (value: string) => void;
     toggleComments: () => void;
 
-    // Footer
     isFooterEnabled: boolean;
     setIsFooterEnabled: (value: boolean) => void;
 
-    // Theme
     isDarkMode: boolean;
     accentColor: string;
     toggleTheme: (mode?: 'light' | 'dark' | 'system') => void;
     setAccentColor: (color: string) => void;
 }
-
-const HephaiContext = createContext<HephaiContextType | null>(null);
-
 
 export const HephaiProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (

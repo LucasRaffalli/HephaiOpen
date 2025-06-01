@@ -16,7 +16,7 @@ import { useEscapeKey } from './hooks/useEscapeKey'
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 function App() {
-  useEscapeKey(); // Ajouter le hook pour la navigation avec Échap
+  useEscapeKey();
 
   return (
     <>

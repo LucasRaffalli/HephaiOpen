@@ -89,11 +89,17 @@ export interface PageDimensions {
     height: number;
 }
 
+export interface VersionInfo {
+    update: boolean;
+    version: string;
+    newVersion: string;
+    releaseNotes?: string;
+}
 export enum AccentColor {
     Tomato = 'tomato',
     Red = 'red',
     Ruby = 'ruby',
-    // Crimson = 'Crimson',
+    Crimson = 'crimson',
     Pink = 'pink',
     Plum = 'plum',
     Purple = 'purple',

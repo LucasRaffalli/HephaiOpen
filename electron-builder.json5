@@ -1,7 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "net.protocol.hephaiopen",
-  "asar": true,
+  "asar": {
+    "compress": true
+  },
   "productName": "HephaiOpen",
   "directories": {
     "output": "release/${version}",
@@ -10,7 +12,11 @@
   "files": [
     "dist",
     "dist-electron",
-    "node_modules/**/*",
+    "!node_modules/**/{CHANGELOG.md,README.md,README,readme.md,readme}",
+    "!node_modules/**/{test,__tests__,tests,powered-test,example,examples}",
+    "!node_modules/**/*.d.ts",
+    "!node_modules/**/*.map",
+    "!node_modules/**/*.esm.js",
     "package.json"
   ],
   "publish": [{

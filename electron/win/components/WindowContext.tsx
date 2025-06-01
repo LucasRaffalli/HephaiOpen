@@ -41,16 +41,13 @@ export const WindowContextProvider = ({ children, titlebar }: WindowContextProvi
     menuItems: [],
   }
 
-  // Merge default titlebar props with user defined props
   titlebar = { ...defaultTitlebar, ...titlebar }
 
   useEffect(() => {
-    // Load window init props
     window.api.invoke('init-window')
       .then((value: WindowInitProps) => setInitProps(value))
       .catch((error) => {
         console.error('Failed to initialize window:', error)
-        // Définir des valeurs par défaut en cas d'erreur
         setInitProps({
           width: 800,
           height: 600,
@@ -60,7 +57,6 @@ export const WindowContextProvider = ({ children, titlebar }: WindowContextProvi
         })
       })
 
-    // Add class to parent element
     const parent = document.querySelector('.window-content')?.parentElement
     if (parent) {
       parent.classList.add('window-frame')

@@ -5,7 +5,7 @@ import { Flex, Text } from "@radix-ui/themes";
 interface SmokeEffectProps {
     text: string;
     size?: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
-    uppercase?: boolean; // Nouvelle prop
+    uppercase?: boolean;
     weight?: 'light' | 'regular' | 'medium' | 'bold';
     color?: 'gray';
 }

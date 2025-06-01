@@ -10,7 +10,6 @@ export function mockUpdate(win: BrowserWindow) {
     progressInterval = null;
   }
 
-  // Simuler la disponibilité de la mise à jour
   setTimeout(() => {
     win.webContents.send('update-can-available', {
       update: true,
@@ -20,7 +19,6 @@ export function mockUpdate(win: BrowserWindow) {
     })
   }, 1000)
 
-  // Le téléchargement ne démarre que lorsque l'utilisateur clique sur le bouton
   win.webContents.on('ipc-message', (event, channel) => {
     if (channel === 'start-download' && !downloadStarted) {
       downloadStarted = true;
@@ -45,7 +43,7 @@ export function mockUpdate(win: BrowserWindow) {
           }
           downloadStarted = false;
           win.webContents.send('update-downloaded');
-          log.info("✅ [DEV] Simulation du téléchargement terminée");
+          log.info("[DEV] Simulation du telechargement terminee");
         }
       }, 1000);
     }
