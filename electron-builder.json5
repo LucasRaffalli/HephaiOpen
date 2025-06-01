@@ -1,9 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "net.protocol.hephaiopen",
-  "asar": {
-    "compress": true
-  },
+  "appId": "net.protocol.hephaiopen",  "asar": true,
   "productName": "HephaiOpen",
   "directories": {
     "output": "release/${version}",
