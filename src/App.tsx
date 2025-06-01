@@ -11,10 +11,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import Premium from './views/premium'
 import ShortcutsPanel from './components/shortcut/ShortcutsPanel'
 import UpdatePage from './components/update'
+import { useEscapeKey } from './hooks/useEscapeKey'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 function App() {
+  useEscapeKey(); // Ajouter le hook pour la navigation avec Échap
+
   return (
     <>
       <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" className="toast-container-custom" toastClassName="toast-custom" style={{ zIndex: 9999 }} />
