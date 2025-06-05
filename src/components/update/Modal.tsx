@@ -36,7 +36,7 @@ const Modal: React.FC<ModalProps> = ({
                     </Flex>
                     <Flex gap="3" mt="4" justify="end">
                         <Dialog.Close>
-                            <Button variant="soft" color="red" onClick={onCancel}>
+                            <Button variant="soft" color="red" onClick={onCancel} className='btnCursor'>
                                 {cancelText}
                             </Button>
                         </Dialog.Close>

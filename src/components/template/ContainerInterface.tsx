@@ -15,7 +15,7 @@ interface ContainerInterfaceProps {
 
 export default function ContainerInterface({ children, align, gap, height, justify, direction, width, margin, padding }: ContainerInterfaceProps) {
     return (
-        <Flex p={padding} m={margin} direction={direction} justify={justify} gap={gap} align={align} height={height} width={width} style={{ background: "var(--gray-1)", border: "1px solid var(--gray-6)", borderRadius: "var(--radius-4)" }}>
+        <Flex position={"relative"} p={padding} m={margin} direction={direction} justify={justify} gap={gap} align={align} height={height} width={width} style={{ background: "var(--gray-1)", border: "1px solid var(--gray-6)", borderRadius: "var(--radius-4)" }}>
             {children}
         </Flex>
     )

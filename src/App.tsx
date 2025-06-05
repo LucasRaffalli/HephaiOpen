@@ -8,7 +8,6 @@ import Clients from './components/navbar/nav_content/Clients'
 import { pdfjs } from 'react-pdf';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Premium from './views/premium'
 import ShortcutsPanel from './components/shortcut/ShortcutsPanel'
 import UpdatePage from './components/update'
 import { useEscapeKey } from './hooks/useEscapeKey'
@@ -26,7 +25,6 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="navigation/factures" element={<Invoice />} />
-          <Route path="navigation/premium" element={<Premium />} />
           <Route path="clients" element={<Clients />} />
           <Route path="settings" element={<Settings />} />
           <Route path="update" element={<UpdatePage />} />

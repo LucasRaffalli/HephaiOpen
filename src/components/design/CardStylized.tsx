@@ -17,12 +17,13 @@ interface CardStylized {
     isGrayTop?: boolean;
     isGrayBottom?: boolean;
     isItalicTopSmall?: boolean;
+    isCursorPointer?: boolean;
     effectVariant?: "stars" | "bubbles" | "sparkles" | "none" | "update";
     onClick?: () => void;
     style?: ""
 }
 
-export default function CardStylized({ contentTop, topSmallText, bottomTitle, bottomDescription, sizeText, sizeTextSmall, weight, isGrayTop, isGrayBottom, effectVariant = "stars", onClick, style }: CardStylized) {
+export default function CardStylized({ isCursorPointer, contentTop, topSmallText, bottomTitle, bottomDescription, sizeText, sizeTextSmall, weight, isGrayTop, isGrayBottom, effectVariant = "stars", onClick, style }: CardStylized) {
     const cardAnimation = {
         hidden: { opacity: 0, y: 20, scale: 0.9 },
         visible: {
@@ -43,7 +44,7 @@ export default function CardStylized({ contentTop, topSmallText, bottomTitle, bo
     };
 
     return (
-        <motion.div variants={cardAnimation} initial="hidden" animate="visible" onClick={onClick} className="btnCursor" style={{ border: 'none', }}>
+        <motion.div variants={cardAnimation} initial="hidden" animate="visible" onClick={onClick} className={isCursorPointer ? "btnCursor" : ""} style={{ border: 'none', }}>
             <Flex p="4" height="43vh" width="30vh" className='cardStylized__base'>
                 <Box className='gradient' />
                 {effectVariant !== "none" && <Box className={`${effectVariant}Effect`} />}
@@ -78,6 +79,6 @@ export default function CardStylized({ contentTop, topSmallText, bottomTitle, bo
                     </Flex>
                 </Flex>
             </Flex>
-        </motion.div>
+        </motion.div >
     );
 }

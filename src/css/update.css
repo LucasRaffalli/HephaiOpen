@@ -1,0 +1,16 @@
+.update__bg {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -0;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    background-image: url('/img/arrow_bg.webp');
+    background-size: 50%;
+    /* filter: blur(2px); */
+    /* background-position: 100% 100% !important; */
+    /* background-repeat: no-repeat; */
+    opacity: 1;
+}

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, nativeImage } from 'electron'
+import { app, BrowserWindow, ipcMain, nativeImage, shell } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -68,7 +68,7 @@ async function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       webSecurity: true,
-      devTools: false
+      devTools: true
     },
   })
   if (VITE_DEV_SERVER_URL) {
@@ -78,8 +78,10 @@ async function createWindow() {
     win.loadFile(indexHtml)
   }
 
-  win.webContents.openDevTools()
-
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https:')) shell.openExternal(url)
+    return { action: 'deny' }
+  })
   win.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
     console.error('Erreur de chargement:', errorCode, errorDescription);
   });

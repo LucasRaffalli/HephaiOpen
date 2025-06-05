@@ -15,6 +15,7 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import Tva from '@/components/Settings/Tva';
 import { motion } from "motion/react"
 import PriceUnit from '@/components/Settings/PriceUnit';
+import ButtonReset from '@/components/Settings/ButtonReset';
 
 export default function Settings() {
 
@@ -70,8 +71,11 @@ export default function Settings() {
         }
     };
     const handleResetSettings = () => {
-        localStorage.clear();
-        window.location.reload();
+        const confirmed = window.confirm("Es-tu sûr de vouloir réinitialiser les paramètres ?");
+        if (confirmed) {
+            localStorage.clear();
+            window.location.reload();
+        }
     }
     const handleChangeLanguage = (language: string) => {
         i18n.changeLanguage(language);
@@ -364,9 +368,8 @@ export default function Settings() {
                                         <Text size={'5'} weight={'medium'}>{t('settings.hephai.title')}</Text>
                                         <Text color="gray" size="2" weight={'regular'}>{t('settings.hephai.subtitle')}</Text>
                                     </Flex>
-                                    <Flex direction={'column'} gap={'4'} width={'100%'} height={'fit-content'} wrap={'wrap'}>
-                                        <Flex gap={"4"}>
-
+                                    <Flex direction={'column'} gap={'4'} width={'100%'}>
+                                        <Flex gap={"4"} width={"100%"} wrap={"wrap"}>
                                             <Tooltip content={t('utils.tooltips.exportjson')}>
                                                 <Button color={AccentColor as any} variant="soft" size={'3'} className='btnCursor' onClick={handleExportJson}>
                                                     <Text size="2" weight={'regular'}>{t('buttons.export.json')}</Text>
@@ -379,9 +382,10 @@ export default function Settings() {
                                                 </Button>
                                             </Tooltip>
                                             <Tooltip content={t('utils.tooltips.reset')}>
-                                                <Button color={'red'} variant="soft" size={'3'} className='btnCursor' onClick={handleResetSettings}>
+                                                <ButtonReset />
+                                                {/* <Button color={'red'} variant="soft" size={'3'} className='btnCursor' onClick={handleResetSettings}>
                                                     <Text size="2" weight={'regular'}>{t('buttons.reset')}</Text>
-                                                </Button>
+                                                </Button> */}
                                             </Tooltip>
 
                                         </Flex>

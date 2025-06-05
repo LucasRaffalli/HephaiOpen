@@ -195,6 +195,7 @@
         ]
     },
     "utils": {
+        "imageSize": "The image must be at least 512x512.",
         "hephai1": "Hephai Invoice",
         "credit": "Made with HephaiOpen",
         "tooltips": {
@@ -368,6 +369,13 @@
             "thb": "Thai Baht",
             "brl": "Brazilian Real",
             "pln": "Polish Zloty"
+        },
+        "reset": {
+            "modal": {
+                "title": "Reset Data",
+                "description": "Are you sure you want to reset all app data? This action is permanent.",
+                "confirm": "Confirm Reset"
+            }
         }
     },
     "shortcutsPanel": {
@@ -425,32 +433,29 @@
         },
         "update": {
             "downloadError": "Error downloading the latest version."
-        }
+        },
+        "image_size_min": "The image must be at least 512x512 pixels."
+    },
+    "premium": {
+        "title": "Premium features, Elegant & intuitive design, Instant Online Access",
+        "text1": "An optimised experience for simplified, efficient management.",
+        "title2": "hephai Premium",
+        "text2": "coming soon"
     },
     "update": {
         "title": "Update",
+        "smallText1": "Send us feedback, or suggest new ideas. Every suggestion counts!",
+        "smallText2": "Get the latest from Hephai and help shape its future.",
         "error": "Error",
         "checking": "Check in progress...",
         "checkUpdate": "Check for updates",
         "currentVersion": "You have the latest version.",
+        "currentVersion2": "Current version",
         "changeUpdate": "Release notes",
         "available": "Update available",
+        "downloded": " Update downloaded",
         "availableMessage": "A new version is now available. Would you like to download it?",
         "restartMessage": "The application will restart to install the update",
         "confirmDownload": "Would you like to download this update?"
-    },
-    "form": {
-        "fields": {
-            "name": "Name",
-            "email": "Email",
-            "phone": "Phone",
-            "address": "Address",
-            "website": "Website",
-            "company": "Company",
-            "siret": "SIRET Number",
-            "tva": "VAT Number",
-            "iban": "IBAN",
-            "bic": "BIC"
-        }
     }
 }

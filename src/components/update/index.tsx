@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Badge, Flex, Progress, Text, Separator } from '@radix-ui/themes';
+import { Button, Badge, Flex, Progress, Text, Separator, Box } from '@radix-ui/themes';
 import { UpdateIcon, DownloadIcon } from '@radix-ui/react-icons';
 import type { ProgressInfo } from 'electron-updater';
 import type { VersionInfo } from '../../types/hephai';
 import Modal from './Modal';
 import ContainerInterface from '../template/ContainerInterface';
 import { t } from 'i18next';
-
+import ParallaxEffect from '../design/ParallaxEffect';
+import CardStylized from '../design/CardStylized';
+import SmokeEffect from '../design/SmokeEffect';
+import '@/css/update.css'
+import { Link } from 'react-router';
+import { shell } from 'electron';
+import ConfirmDialog from '../template/ConfirmDialog';
 
 const UpdatePage = () => {
     const [isChecking, setIsChecking] = useState(false);
@@ -38,10 +44,6 @@ const UpdatePage = () => {
     };
 
     const startDownload = async () => {
-        if (!confirm(t("update.confirmDownload"))) {
-            return;
-        }
-
         setUpdateInfo(prev => ({ ...prev, isDownloading: true, progress: 0 }));
         try {
             await window.ipcRenderer.invoke('start-download');
@@ -118,7 +120,6 @@ const UpdatePage = () => {
             </Flex>
         );
     };
-
     return (
         <ContainerInterface height='100%' padding='4' justify='center' align='center'>
             <Modal open={showModal} cancelText={t("buttons.close")} onCancel={() => setShowModal(false)} title={updateInfo.error ? t("update.error") : t("update.title")}>
@@ -151,10 +152,7 @@ const UpdatePage = () => {
                             <Flex direction="column" gap="3">
                                 <Text size="2" color="gray">{t("update.availableMessage")}</Text>
                                 <Flex>
-                                    <Button onClick={startDownload} disabled={updateInfo.isDownloading}>
-                                        <DownloadIcon />
-                                        {t("buttons.download.update.button")}
-                                    </Button>
+                                    <ConfirmDialog title={t("update.title")} description={t("update.confirmDownload")} triggerLabel={t('buttons.download.update.button')} onConfirm={startDownload} confirmLabel={t('buttons.download.update.button')} />
                                 </Flex>
                             </Flex>
                         )}
@@ -164,10 +162,31 @@ const UpdatePage = () => {
                 )}
             </Modal>
 
-            <Button size="3" disabled={isChecking || updateInfo.isDownloading} onClick={checkUpdate}>
-                <UpdateIcon width={16} height={16} />
-                {isChecking ? t("update.checking") : t("update.checkUpdate")}
-            </Button>
+
+            <Flex direction={"column"} align={"center"} justify={"between"} height={"100%"} width={"100%"} style={{ overflow: "hidden", position: "relative" }}>
+                <Flex width={"100%"} height={"100%"} justify={"center"} align={"center"} direction={"column"}>
+                    <Flex direction={"column"}>
+
+                        <ParallaxEffect intensity={0.7} perspective={1200} tiltMax={45} deadzoneX={0.1} deadzoneY={0.245}>
+                            <CardStylized effectVariant='update' isGrayTop sizeTextSmall="3" uppercase sizeText='4' weight='bold' contentTop={t('update.smallText2')} topSmallText={t('update.smallText1')} bottomTitle={t('update.currentVersion2')} bottomDescription={<SmokeEffect text={updateInfo.version} size='2' uppercase weight='medium' color='gray' />} />
+                        </ParallaxEffect>
+                        <Box className='shadowCard'></Box>
+                    </Flex>
+                    <Button size="3" disabled={isChecking || updateInfo.isDownloading} onClick={checkUpdate} className='btnCursor'>
+                        <UpdateIcon width={16} height={16} />
+                        {isChecking ? t("update.checking") : t("update.checkUpdate")}
+                    </Button>
+                </Flex>
+
+                <Flex width={"100%"} align={"center"} justify={"center"} gap={"4"}>
+                    <a href="https://github.com/LucasRaffalli/HephaiOpen" target="_blank" rel="noopener noreferrer" className='hover__underline'>Github</a>
+                    <a href="https://github.com/LucasRaffalli/HephaiOpen" target="_blank" rel="noopener noreferrer" className='hover__underline'>HephaiWeb</a>
+                </Flex>
+            </Flex>
+
+
+
+
         </ContainerInterface>
     );
 };

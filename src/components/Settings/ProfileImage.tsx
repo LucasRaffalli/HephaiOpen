@@ -42,7 +42,9 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ imageSrc, handleImageChange
     return (
         <Flex direction={'column'} gap={'2'} width={'100%'}>
             <Flex direction={'row'} gap={'4'} width={'100%'} height={'fit-content'} align={'center'}>
-                <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} alt="Profile" style={{ background: "var(--gray-a8)", padding: "0.25rem" }} />
+                <Tooltip content={t('utils.tooltips.imageSize')}>
+                    <Avatar size={'8'} variant={"soft"} fallback="heph" src={imageSrc || ''} alt="Profile" style={{ background: "var(--gray-a8)", padding: "0.25rem" }} />
+                </Tooltip>
                 <Flex direction={'column'} gap={'2'}>
                     <Tooltip content={t('utils.tooltips.btnimg')}>
                         <Button variant="soft" className='btnCursor' size={'3'} onClick={handleButtonClick}>

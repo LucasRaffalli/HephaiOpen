@@ -103,6 +103,8 @@
     "uninstallerSidebar": "build/uninstallerSidebar.bmp",
     "include": "public/installer.nsh",
     "artifactName": "${productName}_${version}_Setup.${ext}",
-    "differentialPackage": true
+    "differentialPackage": true,
+    "multiLanguageInstaller": true,
+    "displayLanguageSelector": true
   }
 }

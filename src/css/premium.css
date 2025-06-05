@@ -2,7 +2,7 @@
     font-weight: 900 !important;
     text-transform: uppercase;
     position: relative;
-    background: linear-gradient(135deg, #ffffff 85%, var(--accent-9) 100%);
+    background: linear-gradient(135deg, var(--gray-12) 85%, var(--accent-9) 100%);
     background-position: 200% 10%;
     color: transparent;
     -webkit-background-clip: text;

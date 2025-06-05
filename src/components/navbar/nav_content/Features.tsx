@@ -90,27 +90,6 @@ export default function Features() {
                     </Link>
                 </Box>
             </motion.div>
-
-            {/* <motion.div variants={cardVariants}>
-                <Box className="premium">
-                    <Link to="/navigation/premium" style={{ textDecoration: 'none' }}>
-                        <Card className={`glow btnCursor premium ${isActive('/navigation/premium') ? 'active__premium' : ''}`}>
-                            <Flex gap="3" justify={'between'} align="center" height={'5vh'}>
-                                <Box>
-                                    <Text as="div" size="2" weight="bold">{t('features.premium.title')}</Text>
-                                </Box>
-                                <Flex direction={'row'} justify={'end'} className='card__container__grid__premium btnNotEvent'>
-                                    <Flex style={{ 'zIndex': 22 }} direction={"row"} align={"center"} justify={"center"}>
-                                        <img src={StarsHephaiIcon} alt="premiumImg" className={`filter__paper__premium ${isActive('/navigation/premium') ? 'active' : ''}`} />
-                                    </Flex>
-                                </Flex>
-                            </Flex>
-                        </Card>
-                    </Link>
-                </Box>
-            </motion.div> */}
-
-
         </motion.div>
     );
 }

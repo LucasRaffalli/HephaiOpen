@@ -132,7 +132,7 @@
             "noProducts": "Aucun produit disponible",
             "paymentMode": "Mode de paiement",
             "paymentMethods": {
-                "":"",
+                "": "",
                 "iban": "Virement bancaire",
                 "paypal": "Paypal",
                 "cash": "Espèces",
@@ -196,6 +196,7 @@
         "hephai1": "Hephai Facture",
         "credit": "Fait avec HephaiOpen",
         "tooltips": {
+            "imageSize": "L'image doit faire minimum 512x512.",
             "nameFile": "Saisissez le nom de votre document.",
             "reset": "Réinitialiser les données de l'application.",
             "settings": "Paramètres",
@@ -367,6 +368,13 @@
             "thb": "Baht thaïlandais",
             "brl": "Réel brésilien",
             "pln": "Zloty polonais"
+        },
+        "reset": {
+            "modal": {
+                "title": "Réinitialiser les données",
+                "description": "Es-tu sûr de vouloir réinitialiser toutes les données de l’application ? Cette action est irréversible.",
+                "confirm": "Confirmer la réinitialisation"
+            }
         }
     },
     "shortcutsPanel": {
@@ -424,16 +432,27 @@
         },
         "update": {
             "downloadError": "Erreur lors du téléchargement de la dernière version."
-        }
+        },
+        "image_size_min": "L'image doit faire au moins 512x512 pixels."
+    },
+    "premium": {
+        "title": "Des fonctionnalités avancées, un design raffiné, un accès immédiat en ligne",
+        "text1": "Une expérience optimisée pour une gestion simple et efficace.",
+        "title2": "hephai Premium",
+        "text2": "Arrive très bientôt !"
     },
     "update": {
         "title": "Mise à jour",
+        "smallText1": "Envoie des retours, ou propose de nouvelles idées. Chaque suggestion compte !",
+        "smallText2": "Garde Hephai à jour et aide à l’améliorer.",
         "error": "Erreur",
         "checking": "Vérification en cours...",
         "checkUpdate": "Vérifier les mises à jour",
         "currentVersion": "Vous avez la dernière version",
+        "currentVersion2": "Version actuelle",
         "changeUpdate": "Notes de version",
         "available": "Mise à jour disponible",
+        "downloded": "Mise à jour téléchargée",
         "availableMessage": "Une nouvelle version est disponible. Souhaitez-vous la télécharger ?",
         "restartMessage": "L'application va redémarrer pour installer la mise à jour",
         "confirmDownload": "Voulez-vous télécharger cette mise à jour ?"
