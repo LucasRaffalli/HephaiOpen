@@ -57,7 +57,7 @@ If you use or modify HephaiOpen, a mention of Lucas Raffalli is welcome (README,
 
 ## 🌐 Website
 
-soon
+https://hephai-open-web.vercel.app/en
 
 ## 🔒 Privacy
 Hephai runs entirely locally.  
